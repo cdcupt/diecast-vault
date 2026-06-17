@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Diecast Vault — PRD</title>
+<style>
+  :root{
+    --ink:#15171c; --ink-soft:#3b3f49; --muted:#6b7280;
+    --paper:#faf8f4; --surface:#ffffff; --line:#e7e2d8;
+    --accent:#ff4326; --accent-soft:#fff1ec; --steel:#2b3a55; --steel-soft:#eef2f8;
+    --ok:#1f9d62; --ok-soft:#e8f6ee; --warn:#b8860b; --warn-soft:#fbf3dd;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    --r:14px; --shadow:0 1px 2px rgba(20,23,28,.05),0 8px 30px rgba(20,23,28,.06);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.55;
+    -webkit-font-smoothing:antialiased;font-size:16px}
+  .wrap{max-width:1120px;margin:0 auto;padding:clamp(20px,3vw,48px)}
+  header.masthead{display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px;justify-content:space-between;
+    border-bottom:3px solid var(--ink);padding-bottom:18px;margin-bottom:8px}
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{width:46px;height:46px;border-radius:12px;background:var(--ink);display:grid;place-items:center;flex:0 0 auto}
+  .logo span{color:var(--accent);font-weight:800;font-size:22px;font-family:var(--mono)}
+  h1{font-size:clamp(1.9rem,1.2rem+2.4vw,3rem);line-height:1.02;margin:0;letter-spacing:-.02em}
+  .sub{color:var(--muted);font-size:.95rem;margin-top:4px}
+  .meta-pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+  .pill{font-family:var(--mono);font-size:.72rem;letter-spacing:.02em;padding:5px 10px;border-radius:999px;
+    background:var(--surface);border:1px solid var(--line);color:var(--ink-soft);white-space:nowrap}
+  .pill.accent{background:var(--accent);border-color:var(--accent);color:#fff}
+  .pill.warn{background:var(--warn-soft);border-color:#ecd9a0;color:#7a5a00}
+  .toc{display:flex;flex-wrap:wrap;gap:6px;margin:22px 0 6px;font-size:.82rem}
+  .toc a{color:var(--steel);text-decoration:none;font-family:var(--mono);padding:4px 9px;border:1px solid var(--line);
+    border-radius:8px;background:var(--surface)}
+  .toc a:hover{border-color:var(--accent);color:var(--accent)}
+  section{margin-top:40px}
+  h2{font-size:clamp(1.15rem,.9rem+.9vw,1.55rem);letter-spacing:-.01em;margin:0 0 4px;display:flex;align-items:baseline;gap:10px}
+  h2 .n{font-family:var(--mono);color:var(--accent);font-size:.85em}
+  h3{font-size:1.02rem;margin:22px 0 8px;letter-spacing:-.01em}
+  p{margin:10px 0;color:var(--ink-soft);max-width:72ch}
+  .lead{font-size:1.06rem;color:var(--ink)}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:clamp(16px,2vw,26px);box-shadow:var(--shadow)}
+  .fig{margin:18px 0;max-width:100%}
+  .fig svg{display:block;width:100%;height:auto}
+  figcaption{font-size:.82rem;color:var(--muted);margin-top:8px;font-style:italic}
+  .grid{display:grid;gap:16px}
+  @media(min-width:720px){.grid.c2{grid-template-columns:1fr 1fr}.grid.c3{grid-template-columns:repeat(3,1fr)}}
+  .tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .tile h4{margin:0 0 6px;font-size:.95rem}
+  .tile p{margin:0;font-size:.9rem}
+  .tag{display:inline-block;font-family:var(--mono);font-size:.68rem;padding:2px 8px;border-radius:6px;margin-bottom:8px;letter-spacing:.03em;text-transform:uppercase}
+  .tag.in{background:var(--ok-soft);color:#0d6b3f}
+  .tag.out{background:#fdecea;color:#a82a17}
+  .tag.later{background:var(--steel-soft);color:var(--steel)}
+  .tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:16px 0}
+  table{border-collapse:collapse;width:100%;font-size:.9rem}
+  @media(min-width:680px){table{min-width:540px}}
+  th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#f3efe7;font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft)}
+  tr:last-child td{border-bottom:none}
+  code{font-family:var(--mono);font-size:.86em;background:#f1ece3;padding:1px 6px;border-radius:5px;color:var(--steel)}
+  .sev{font-family:var(--mono);font-size:.7rem;padding:2px 8px;border-radius:6px;font-weight:700}
+  .sev.h{background:#fdecea;color:#a82a17}.sev.m{background:var(--warn-soft);color:#7a5a00}.sev.l{background:var(--ok-soft);color:#0d6b3f}
+  .validating{border-left:4px solid var(--warn);background:var(--warn-soft);border-radius:0 10px 10px 0;padding:14px 18px;margin:14px 0}
+  .validating b{color:#7a5a00}
+  ul.clean{margin:10px 0;padding-left:20px}ul.clean li{margin:5px 0;color:var(--ink-soft)}
+  .q{counter-reset:q}
+  .q .item{position:relative;padding:12px 0 12px 42px;border-bottom:1px dashed var(--line);color:var(--ink-soft)}
+  .q .item:before{counter-increment:q;content:"Q" counter(q);position:absolute;left:0;top:12px;font-family:var(--mono);color:var(--accent);font-weight:700}
+  .q .item:last-child{border-bottom:none}
+  footer{margin-top:48px;border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:.82rem}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.8rem;color:var(--muted);margin-top:6px}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="brand">
+      <div class="logo"><span>1:64</span></div>
+      <div>
+        <h1>Diecast&nbsp;Vault</h1>
+        <div class="sub">Product Requirements Document · iOS app to digitize a physical diecast collection</div>
+      </div>
+    </div>
+    <div class="meta-pills">
+      <span class="pill accent">PRD v0.9 · DRAFT</span>
+      <span class="pill">Pipeline Step 1</span>
+      <span class="pill">2026-06-17</span>
+      <span class="pill warn">2 sections validating</span>
+    </div>
+  </header>
+  <p class="sub" style="margin-top:10px">Working title — not final; deliberately avoids the “Mini&nbsp;GT” trademark in the product name (see §10). PM: Erik · Coordinator: Claude (SDD pipeline).</p>
+
+  <nav class="toc">
+    <a href="#glance">★ At a glance</a>
+    <a href="#problem">1 · Problem</a>
+    <a href="#users">2 · Users</a>
+    <a href="#goals">3 · Goals</a>
+    <a href="#journeys">4 · Journeys</a>
+    <a href="#scope">5 · Scope</a>
+    <a href="#features">6 · Features</a>
+    <a href="#data">7 · Data model</a>
+    <a href="#arch">8 · Architecture</a>
+    <a href="#storage">9 · Storage ⏳</a>
+    <a href="#ip">10 · IP posture ⏳</a>
+    <a href="#success">11 · Success</a>
+    <a href="#risks">12 · Risks</a>
+    <a href="#open">13 · Open questions</a>
+    <a href="#phasing">14 · Phasing</a>
+  </nav>
+
+  <!-- ★ AT A GLANCE -->
+  <section id="glance">
+    <h2><span class="n">★</span> At a glance</h2>
+    <p class="lead">Turn a shelf of physical Mini&nbsp;GT diecast cars into a 3D collection you carry in your pocket — scan a real car, get a rotatable model bonded to its catalog number, and (optionally) share that scan so other owners never have to scan the same car twice.</p>
+    <div class="card fig fit">
+      <svg viewBox="0 0 1120 470" role="img" aria-label="Product loop and scope overview">
+        <defs>
+          <marker id="ah" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#15171c"/></marker>
+          <marker id="aha" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#ff4326"/></marker>
+        </defs>
+        <text x="20" y="30" font-family="var(--mono)" font-size="13" font-weight="700" fill="#6b7280" style="letter-spacing:.08em">THE CORE LOOP</text>
+
+        <!-- step boxes -->
+        <g font-family="var(--sans)">
+          <!-- 1 scan -->
+          <rect x="20" y="48" width="158" height="74" rx="12" fill="#fff" stroke="#15171c" stroke-width="2"/>
+          <text x="99" y="78" text-anchor="middle" font-size="22">📷</text>
+          <text x="99" y="104" text-anchor="middle" font-size="13" font-weight="700" fill="#15171c">1 · Scan car</text>
+          <!-- 2 reconstruct -->
+          <rect x="208" y="48" width="170" height="74" rx="12" fill="#fff" stroke="#15171c" stroke-width="2"/>
+          <text x="293" y="78" text-anchor="middle" font-size="22">🧊</text>
+          <text x="293" y="100" text-anchor="middle" font-size="12.5" font-weight="700" fill="#15171c">2 · Reconstruct</text>
+          <text x="293" y="116" text-anchor="middle" font-size="10.5" fill="#6b7280">Object Capture → USDZ</text>
+          <!-- 3 bond -->
+          <rect x="408" y="48" width="170" height="74" rx="12" fill="#fff1ec" stroke="#ff4326" stroke-width="2"/>
+          <text x="493" y="78" text-anchor="middle" font-size="22">🔖</text>
+          <text x="493" y="100" text-anchor="middle" font-size="12.5" font-weight="700" fill="#15171c">3 · Bond to #</text>
+          <text x="493" y="116" text-anchor="middle" font-size="10.5" fill="#a82a17">Mini GT catalog no.</text>
+          <!-- 4 display -->
+          <rect x="608" y="48" width="170" height="74" rx="12" fill="#fff" stroke="#15171c" stroke-width="2"/>
+          <text x="693" y="78" text-anchor="middle" font-size="22">📱</text>
+          <text x="693" y="100" text-anchor="middle" font-size="12.5" font-weight="700" fill="#15171c">4 · Display</text>
+          <text x="693" y="116" text-anchor="middle" font-size="10.5" fill="#6b7280">3D rotate + AR</text>
+          <!-- 5 store -->
+          <rect x="808" y="48" width="170" height="74" rx="12" fill="#fff" stroke="#15171c" stroke-width="2"/>
+          <text x="893" y="78" text-anchor="middle" font-size="22">💾</text>
+          <text x="893" y="100" text-anchor="middle" font-size="12.5" font-weight="700" fill="#15171c">5 · Store</text>
+          <text x="893" y="116" text-anchor="middle" font-size="10.5" fill="#6b7280">local + iCloud</text>
+
+          <!-- arrows row1 -->
+          <line x1="178" y1="85" x2="206" y2="85" stroke="#15171c" stroke-width="2" marker-end="url(#ah)"/>
+          <line x1="378" y1="85" x2="406" y2="85" stroke="#15171c" stroke-width="2" marker-end="url(#ah)"/>
+          <line x1="578" y1="85" x2="606" y2="85" stroke="#15171c" stroke-width="2" marker-end="url(#ah)"/>
+          <line x1="778" y1="85" x2="806" y2="85" stroke="#15171c" stroke-width="2" marker-end="url(#ah)"/>
+        </g>
+
+        <!-- optional community branch -->
+        <text x="20" y="186" font-family="var(--mono)" font-size="13" font-weight="700" fill="#6b7280" style="letter-spacing:.08em">OPTIONAL · OPT-IN COMMUNITY LIBRARY</text>
+        <line x1="893" y1="122" x2="893" y2="208" stroke="#ff4326" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#aha)"/>
+        <text x="905" y="170" font-size="11" fill="#a82a17">opt-in</text>
+
+        <rect x="700" y="208" width="278" height="70" rx="12" fill="#fff" stroke="#ff4326" stroke-width="2"/>
+        <text x="839" y="237" text-anchor="middle" font-size="13" font-weight="700" fill="#15171c">☁️ Share scan → community</text>
+        <text x="839" y="258" text-anchor="middle" font-size="10.5" fill="#6b7280">uploaded to VPS, keyed by catalog no.</text>
+
+        <line x1="700" y1="243" x2="520" y2="243" stroke="#ff4326" stroke-width="2" marker-end="url(#aha)"/>
+        <rect x="120" y="208" width="380" height="70" rx="12" fill="#fff1ec" stroke="#ff4326" stroke-width="2"/>
+        <text x="310" y="237" text-anchor="middle" font-size="13" font-weight="700" fill="#15171c">👥 Other owners PICK the existing scan</text>
+        <text x="310" y="258" text-anchor="middle" font-size="10.5" fill="#a82a17">dedup by catalog no. — scan each release once</text>
+
+        <!-- scope strip -->
+        <rect x="20" y="316" width="1080" height="134" rx="12" fill="#f3efe7" stroke="#e7e2d8"/>
+        <text x="40" y="344" font-family="var(--mono)" font-size="12" font-weight="700" fill="#6b7280" style="letter-spacing:.08em">V1 SCOPE</text>
+        <!-- IN -->
+        <text x="40" y="372" font-size="12" font-weight="700" fill="#0d6b3f">✓ IN</text>
+        <text x="40" y="392" font-size="11.5" fill="#3b3f49">Scan · on-device reconstruct · bond to catalog no. · 3D + AR view · local + iCloud · opt-in share/pick</text>
+        <!-- OUT -->
+        <text x="40" y="420" font-size="12" font-weight="700" fill="#a82a17">✗ OUT</text>
+        <text x="40" y="440" font-size="11.5" fill="#3b3f49">3D printing · Android / web viewer · marketplace &amp; payments · social feed · non-MiniGT brands</text>
+      </svg>
+      <figcaption>Master view: the five-step core loop (top), the optional community-library branch that lets a scan be reused (middle), and the v1 scope boundary (bottom).</figcaption>
+    </div>
+  </section>
+
+  <!-- 1 PROBLEM -->
+  <section id="problem">
+    <h2><span class="n">1</span> Problem &amp; insight</h2>
+    <p>Erik owns a sizeable physical <strong>Mini&nbsp;GT (1:64)</strong> diecast collection, displayed in a wall cabinet. Three frictions motivate going digital:</p>
+    <div class="grid c3">
+      <div class="tile"><h4>Not portable</h4><p>To show a model to a friend you must physically carry a fragile, cased car. You can’t share the shelf when you’re away from it.</p></div>
+      <div class="tile"><h4>No digital twin exists</h4><p>Mini&nbsp;GT publishes <em>no</em> official 3D models, and no open library exists. The only way to get a digital twin of <em>your</em> exact car is to capture it yourself.</p></div>
+      <div class="tile"><h4>Effort doesn’t compound</h4><p>If every collector scans the same popular release in isolation, the work is wasted. A shared, catalog-keyed library means each release is scanned <em>once</em> for everyone.</p></div>
+    </div>
+    <p class="lead" style="margin-top:18px"><strong>Insight:</strong> the catalog number is the universal join key. Bond every scan to its Mini&nbsp;GT release number and the collection becomes both a personal 3D shelf <em>and</em> a community asset that gets richer with every contribution.</p>
+  </section>
+
+  <!-- 2 USERS -->
+  <section id="users">
+    <h2><span class="n">2</span> Target users</h2>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Persona</th><th>Wants</th><th>v1 priority</th></tr></thead>
+        <tbody>
+          <tr><td><strong>The Collector</strong> (Erik)</td><td>Digitize my shelf; rotate any car on my phone; never lose the collection.</td><td>P0 — primary</td></tr>
+          <tr><td><strong>The Show-off</strong></td><td>Hand my phone to a friend and spin the car in 3D / drop it into AR on the table.</td><td>P0</td></tr>
+          <tr><td><strong>The Contributor</strong></td><td>Share a good scan so other owners benefit; get credited.</td><td>P1</td></tr>
+          <tr><td><strong>The Picker</strong></td><td>Own a release someone already scanned → just pick it, skip scanning.</td><td>P1</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 3 GOALS -->
+  <section id="goals">
+    <h2><span class="n">3</span> Goals &amp; non-goals</h2>
+    <div class="grid c2">
+      <div class="card">
+        <h3 style="margin-top:0">Goals</h3>
+        <ul class="clean">
+          <li>Scan a physical diecast into a usable 3D model <strong>entirely on the iPhone</strong>.</li>
+          <li>Bond every model to its Mini&nbsp;GT catalog number + edition metadata.</li>
+          <li>Browse the collection as a fast 3D grid; rotate &amp; view any car in AR.</li>
+          <li>Local-first storage with optional iCloud sync across the owner’s devices.</li>
+          <li>Opt-in community library, deduplicated by catalog number, so scans are reusable.</li>
+          <li>Feel finished: smooth capture guidance, graceful empty/error states.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Non-goals (v1)</h3>
+        <ul class="clean">
+          <li>3D printing / mesh export (explicitly dropped by PM).</li>
+          <li>Android or web viewer (iOS-only; revisit later).</li>
+          <li>Marketplace, payments, trading, valuations.</li>
+          <li>A social feed / following / comments.</li>
+          <li>Brands beyond Mini&nbsp;GT (architecture stays brand-extensible, but content focus is Mini&nbsp;GT).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 JOURNEYS -->
+  <section id="journeys">
+    <h2><span class="n">4</span> Core user journeys</h2>
+    <div class="card fig">
+      <svg viewBox="0 0 1120 360" role="img" aria-label="Scan-and-bond and share-and-pick sequences">
+        <defs><marker id="ah2" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#2b3a55"/></marker></defs>
+        <!-- lanes -->
+        <g font-family="var(--sans)" font-size="11.5">
+          <text x="70" y="30" text-anchor="middle" font-weight="700" fill="#15171c">Owner</text>
+          <text x="320" y="30" text-anchor="middle" font-weight="700" fill="#15171c">iPhone app</text>
+          <text x="600" y="30" text-anchor="middle" font-weight="700" fill="#15171c">On-device</text>
+          <text x="880" y="30" text-anchor="middle" font-weight="700" fill="#15171c">VPS library</text>
+          <line x1="70" y1="40" x2="70" y2="330" stroke="#e7e2d8" stroke-width="2"/>
+          <line x1="320" y1="40" x2="320" y2="330" stroke="#e7e2d8" stroke-width="2"/>
+          <line x1="600" y1="40" x2="600" y2="330" stroke="#e7e2d8" stroke-width="2"/>
+          <line x1="880" y1="40" x2="880" y2="330" stroke="#e7e2d8" stroke-width="2"/>
+        </g>
+        <g font-family="var(--sans)" font-size="11" fill="#2b3a55">
+          <!-- scan & bond -->
+          <line x1="70" y1="64" x2="318" y2="64" stroke="#2b3a55" stroke-width="1.5" marker-end="url(#ah2)"/><text x="80" y="58">tap “Scan a car”, orbit the model</text>
+          <line x1="320" y1="92" x2="598" y2="92" stroke="#2b3a55" stroke-width="1.5" marker-end="url(#ah2)"/><text x="330" y="86">capture photos (guided)</text>
+          <line x1="600" y1="120" x2="322" y2="120" stroke="#2b3a55" stroke-width="1.5" marker-end="url(#ah2)"/><text x="360" y="114">reconstruct → USDZ + poster</text>
+          <line x1="320" y1="148" x2="72" y2="148" stroke="#2b3a55" stroke-width="1.5" marker-end="url(#ah2)"/><text x="90" y="142">“Which release?” → enter / pick catalog no.</text>
+          <text x="74" y="172" fill="#a82a17" font-weight="700">↳ model saved &amp; bonded — appears in 3D grid</text>
+          <line x1="40" y1="184" x2="1090" y2="184" stroke="#e7e2d8" stroke-dasharray="3 4"/>
+          <!-- share & pick -->
+          <line x1="70" y1="210" x2="318" y2="210" stroke="#2b3a55" stroke-width="1.5" marker-end="url(#ah2)"/><text x="80" y="204">toggle “Share to community”</text>
+          <line x1="320" y1="238" x2="878" y2="238" stroke="#2b3a55" stroke-width="1.5" marker-end="url(#ah2)"/><text x="330" y="232">upload USDZ + metadata (keyed by catalog no.)</text>
+          <text x="884" y="262" fill="#a82a17" font-weight="700">dedup: 1 canonical model per release</text>
+          <line x1="880" y1="288" x2="322" y2="288" stroke="#2b3a55" stroke-width="1.5" marker-end="url(#ah2)"/><text x="500" y="282">another owner searches catalog no.</text>
+          <line x1="320" y1="316" x2="72" y2="316" stroke="#2b3a55" stroke-width="1.5" marker-end="url(#ah2)"/><text x="90" y="310">“Add to my shelf” — no scan needed</text>
+        </g>
+      </svg>
+      <figcaption>Two primary sequences. Top: capture → reconstruct → <em>bond</em> to a catalog number (the value-creating loop). Bottom: opt-in share → another owner reuses the scan (the network effect).</figcaption>
+    </div>
+  </section>
+
+  <!-- 5 SCOPE -->
+  <section id="scope">
+    <h2><span class="n">5</span> Scope (v1)</h2>
+    <div class="grid c3">
+      <div class="tile"><span class="tag in">In · build now</span><p>Guided scan, on-device reconstruction, catalog bonding, 3D grid, rotate + AR viewer, local store, iCloud sync, opt-in community upload/browse/pick, lightweight identity for attribution.</p></div>
+      <div class="tile"><span class="tag later">Later · designed-for</span><p>Server-side reconstruction fallback for older devices, manual model touch-up, collection stats, web share link for non-iOS friends, brand expansion beyond Mini&nbsp;GT.</p></div>
+      <div class="tile"><span class="tag out">Out · not v1</span><p>3D printing / STL export, Android app, payments / marketplace, social feed, AI auto-recognition of the car (nice future, not now).</p></div>
+    </div>
+  </section>
+
+  <!-- 6 FEATURES -->
+  <section id="features">
+    <h2><span class="n">6</span> Feature requirements</h2>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>#</th><th>Capability</th><th>Requirement (v1)</th><th>Pri</th></tr></thead>
+        <tbody>
+          <tr><td>F1</td><td>Guided capture</td><td>On-screen guidance to orbit a small object; capture a photo set suitable for reconstruction; clear “good enough?” feedback.</td><td>P0</td></tr>
+          <tr><td>F2</td><td>On-device reconstruction</td><td>Produce a USDZ model + poster thumbnail on-device; show progress; handle failure with a retry path.</td><td>P0</td></tr>
+          <tr><td>F3</td><td>Catalog bonding</td><td>Attach a Mini&nbsp;GT catalog number (+ name, livery, edition stamp e.g. <code>1510/2022</code>) to each model. Free-entry now, picker-assisted as catalog data grows.</td><td>P0</td></tr>
+          <tr><td>F4</td><td>3D collection grid</td><td>Fast grid of poster thumbnails; tap → full 3D viewer; search/sort by catalog no., name, livery.</td><td>P0</td></tr>
+          <tr><td>F5</td><td>3D + AR viewer</td><td>Rotate / pinch-zoom; one-tap AR placement (AR Quick Look). “Show a friend” is one tap from the grid.</td><td>P0</td></tr>
+          <tr><td>F6</td><td>Local + iCloud storage</td><td>Local-first; optional iCloud sync of the owner’s collection across their devices.</td><td>P0 / P1</td></tr>
+          <tr><td>F7</td><td>Community share (opt-in)</td><td>Per-model toggle to upload to the shared library; clear consent + attribution; revocable.</td><td>P1</td></tr>
+          <tr><td>F8</td><td>Community browse &amp; pick</td><td>Search the shared library by catalog no.; preview; “add to my shelf” without scanning.</td><td>P1</td></tr>
+          <tr><td>F9</td><td>Identity &amp; attribution</td><td>Lightweight account (Sign in with Apple) so uploads can be credited and takedowns honored.</td><td>P1</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 7 DATA MODEL -->
+  <section id="data">
+    <h2><span class="n">7</span> Data &amp; bonding model</h2>
+    <div class="card fig">
+      <svg viewBox="0 0 1120 330" role="img" aria-label="Entity relationship diagram">
+        <defs><marker id="ah3" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#2b3a55"/></marker></defs>
+        <g font-family="var(--mono)" font-size="11">
+          <!-- Release (bonding key) -->
+          <rect x="430" y="30" width="250" height="120" rx="10" fill="#fff1ec" stroke="#ff4326" stroke-width="2"/>
+          <text x="445" y="52" font-size="12.5" font-weight="700" fill="#a82a17">Release  «bonding key»</text>
+          <line x1="430" y1="60" x2="680" y2="60" stroke="#ffd2c6"/>
+          <text x="445" y="78" fill="#3b3f49">catalogNo  PK  (MGT00xxx)</text>
+          <text x="445" y="96" fill="#3b3f49">name · maker · livery</text>
+          <text x="445" y="114" fill="#3b3f49">scale (1:64) · year</text>
+          <text x="445" y="132" fill="#3b3f49">editionSize? · variant?</text>
+          <!-- User -->
+          <rect x="40" y="40" width="220" height="92" rx="10" fill="#fff" stroke="#2b3a55" stroke-width="1.6"/>
+          <text x="55" y="62" font-size="12.5" font-weight="700" fill="#2b3a55">User</text>
+          <line x1="40" y1="70" x2="260" y2="70" stroke="#dbe2ee"/>
+          <text x="55" y="88" fill="#3b3f49">id PK (Apple sub)</text>
+          <text x="55" y="106" fill="#3b3f49">handle · createdAt</text>
+          <!-- CollectionItem -->
+          <rect x="40" y="190" width="250" height="110" rx="10" fill="#fff" stroke="#2b3a55" stroke-width="1.6"/>
+          <text x="55" y="212" font-size="12.5" font-weight="700" fill="#2b3a55">CollectionItem (owned)</text>
+          <line x1="40" y1="220" x2="290" y2="220" stroke="#dbe2ee"/>
+          <text x="55" y="238" fill="#3b3f49">id PK · ownerId FK</text>
+          <text x="55" y="256" fill="#3b3f49">catalogNo FK</text>
+          <text x="55" y="274" fill="#3b3f49">modelId FK · editionNo?</text>
+          <text x="55" y="292" fill="#3b3f49">acquiredAt · notes</text>
+          <!-- Model -->
+          <rect x="430" y="190" width="250" height="110" rx="10" fill="#fff" stroke="#2b3a55" stroke-width="1.6"/>
+          <text x="445" y="212" font-size="12.5" font-weight="700" fill="#2b3a55">Model (3D asset)</text>
+          <line x1="430" y1="220" x2="680" y2="220" stroke="#dbe2ee"/>
+          <text x="445" y="238" fill="#3b3f49">id PK · catalogNo FK</text>
+          <text x="445" y="256" fill="#3b3f49">usdzBlob · posterImg</text>
+          <text x="445" y="274" fill="#3b3f49">origin (scan|community)</text>
+          <text x="445" y="292" fill="#3b3f49">capturedBy FK · sizeBytes</text>
+          <!-- CommunityModel -->
+          <rect x="820" y="190" width="260" height="110" rx="10" fill="#eef2f8" stroke="#2b3a55" stroke-width="1.6"/>
+          <text x="835" y="212" font-size="12.5" font-weight="700" fill="#2b3a55">CommunityModel (shared)</text>
+          <line x1="820" y1="220" x2="1080" y2="220" stroke="#dbe2ee"/>
+          <text x="835" y="238" fill="#3b3f49">catalogNo PK «dedup»</text>
+          <text x="835" y="256" fill="#3b3f49">canonicalModelId FK</text>
+          <text x="835" y="274" fill="#3b3f49">uploaderId · downloads</text>
+          <text x="835" y="292" fill="#3b3f49">status (live|flagged)</text>
+          <!-- relations -->
+          <line x1="150" y1="132" x2="150" y2="188" stroke="#2b3a55" stroke-width="1.4" marker-end="url(#ah3)"/><text x="156" y="166" fill="#6b7280">1→N owns</text>
+          <line x1="290" y1="250" x2="428" y2="250" stroke="#2b3a55" stroke-width="1.4" marker-end="url(#ah3)"/><text x="312" y="244" fill="#6b7280">uses</text>
+          <line x1="500" y1="190" x2="500" y2="152" stroke="#2b3a55" stroke-width="1.4" marker-end="url(#ah3)"/><text x="506" y="174" fill="#6b7280">N→1 of</text>
+          <line x1="680" y1="245" x2="818" y2="245" stroke="#2b3a55" stroke-width="1.4" marker-end="url(#ah3)"/><text x="700" y="239" fill="#6b7280">canonical</text>
+          <line x1="555" y1="150" x2="900" y2="188" stroke="#ff4326" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#ah3)"/><text x="720" y="160" fill="#a82a17">keyed by catalogNo</text>
+        </g>
+      </svg>
+      <figcaption><strong>Release</strong> is the bonding key — the <code>catalogNo</code> joins a user’s owned items, the 3D asset, and the single canonical community model. Edition stamps (<code>1510/2022</code>) are per-<em>item</em> attributes, not part of the key (two owners can hold different numbered copies of the same release).</figcaption>
+    </div>
+  </section>
+
+  <!-- 8 ARCHITECTURE -->
+  <section id="arch">
+    <h2><span class="n">8</span> Architecture spine</h2>
+    <div class="card fig">
+      <svg viewBox="0 0 1120 300" role="img" aria-label="System architecture">
+        <defs><marker id="ah4" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#15171c"/></marker></defs>
+        <!-- iOS client -->
+        <rect x="20" y="40" width="430" height="230" rx="14" fill="#fff" stroke="#15171c" stroke-width="2"/>
+        <text x="40" y="66" font-family="var(--mono)" font-size="12" font-weight="700" fill="#6b7280">iOS CLIENT · SwiftUI + RealityKit</text>
+        <g font-family="var(--sans)" font-size="11.5" fill="#15171c">
+          <rect x="40" y="80" width="180" height="48" rx="9" fill="#fff1ec" stroke="#ff4326"/><text x="130" y="100" text-anchor="middle" font-weight="700">Capture</text><text x="130" y="116" text-anchor="middle" font-size="10" fill="#a82a17">ObjectCaptureSession</text>
+          <rect x="250" y="80" width="180" height="48" rx="9" fill="#f3efe7" stroke="#e7e2d8"/><text x="340" y="100" text-anchor="middle" font-weight="700">Reconstruct</text><text x="340" y="116" text-anchor="middle" font-size="10" fill="#6b7280">PhotogrammetrySession</text>
+          <rect x="40" y="140" width="180" height="48" rx="9" fill="#f3efe7" stroke="#e7e2d8"/><text x="130" y="160" text-anchor="middle" font-weight="700">3D / AR viewer</text><text x="130" y="176" text-anchor="middle" font-size="10" fill="#6b7280">QuickLook / RealityView</text>
+          <rect x="250" y="140" width="180" height="48" rx="9" fill="#f3efe7" stroke="#e7e2d8"/><text x="340" y="160" text-anchor="middle" font-weight="700">Collection grid</text><text x="340" y="176" text-anchor="middle" font-size="10" fill="#6b7280">SwiftUI</text>
+          <rect x="40" y="200" width="180" height="48" rx="9" fill="#eef2f8" stroke="#2b3a55"/><text x="130" y="220" text-anchor="middle" font-weight="700">Local store</text><text x="130" y="236" text-anchor="middle" font-size="10" fill="#2b3a55">SwiftData + files</text>
+          <rect x="250" y="200" width="180" height="48" rx="9" fill="#eef2f8" stroke="#2b3a55"/><text x="340" y="220" text-anchor="middle" font-weight="700">iCloud sync</text><text x="340" y="236" text-anchor="middle" font-size="10" fill="#2b3a55">CloudKit (private)</text>
+        </g>
+        <!-- VPS -->
+        <rect x="640" y="40" width="460" height="230" rx="14" fill="#fff" stroke="#2b3a55" stroke-width="2"/>
+        <text x="660" y="66" font-family="var(--mono)" font-size="12" font-weight="700" fill="#6b7280">SHARED VPS · behind Caddy (multi-tenant)</text>
+        <g font-family="var(--sans)" font-size="11.5" fill="#15171c">
+          <rect x="660" y="80" width="200" height="54" rx="9" fill="#eef2f8" stroke="#2b3a55"/><text x="760" y="102" text-anchor="middle" font-weight="700">Library API</text><text x="760" y="120" text-anchor="middle" font-size="10" fill="#2b3a55">own port · Sign in w/ Apple</text>
+          <rect x="880" y="80" width="200" height="54" rx="9" fill="#eef2f8" stroke="#2b3a55"/><text x="980" y="102" text-anchor="middle" font-weight="700">Postgres</text><text x="980" y="120" text-anchor="middle" font-size="10" fill="#2b3a55">own DB+role · metadata</text>
+          <rect x="660" y="150" width="200" height="54" rx="9" fill="#fff1ec" stroke="#ff4326"/><text x="760" y="172" text-anchor="middle" font-weight="700">Object storage</text><text x="760" y="190" text-anchor="middle" font-size="10" fill="#a82a17">USDZ blobs + posters</text>
+          <rect x="880" y="150" width="200" height="54" rx="9" fill="#f3efe7" stroke="#e7e2d8"/><text x="980" y="172" text-anchor="middle" font-weight="700">Moderation</text><text x="980" y="190" text-anchor="middle" font-size="10" fill="#6b7280">flag / takedown</text>
+          <text x="660" y="240" font-size="10.5" fill="#6b7280">Rules: official APIs only · coexist with 9relay/BillMind · no personal CLI relay.</text>
+        </g>
+        <!-- link -->
+        <line x1="450" y1="120" x2="638" y2="120" stroke="#15171c" stroke-width="2" marker-end="url(#ah4)"/>
+        <text x="470" y="110" font-family="var(--sans)" font-size="10.5" fill="#6b7280">opt-in upload</text>
+        <line x1="638" y1="170" x2="452" y2="170" stroke="#15171c" stroke-width="2" marker-end="url(#ah4)"/>
+        <text x="470" y="190" font-family="var(--sans)" font-size="10.5" fill="#6b7280">browse / pick</text>
+      </svg>
+      <figcaption>Local-first iOS client (left) does all capture, reconstruction, viewing, and storage on-device. The VPS (right) is touched <em>only</em> for the opt-in community library, and obeys the multi-tenant house rules.</figcaption>
+    </div>
+  </section>
+
+  <!-- 9 STORAGE (validating) -->
+  <section id="storage">
+    <h2><span class="n">9</span> Storage feasibility <span class="pill warn">⏳ validating</span></h2>
+    <p>This section answers your direct question — <em>“can/should I store all the models on my VPS, given the storage requirements?”</em> — with real numbers from the in-flight research pass.</p>
+    <div class="validating">
+      <b>⏳ Pending research (workflow in flight).</b> The kickoff research pass is computing: typical USDZ size per scan at low/med/high texture; collection-size math (50 / 200 / 500 cars); the <em>deduped</em> shared-library ceiling (bounded by the number of distinct Mini&nbsp;GT SKUs, not by user count); object-storage choice (local FS vs MinIO vs R2/B2, weighing egress); and a monthly cost envelope. I’ll replace this box with the verdict + numbers the moment it lands.
+    </div>
+    <p><strong>Current working assumption (to be confirmed):</strong> a small-object USDZ runs ~5–40&nbsp;MB. Because the shared library is <em>deduplicated by catalog number</em>, its size is capped by the count of distinct Mini&nbsp;GT releases (low thousands), <em>not</em> by how many users upload — so the entire canonical catalog is plausibly tens of GB, which a VPS with object storage handles comfortably. Egress (community downloads) is the variable to watch; thumbnails-first browsing keeps it down. <em>Verdict: likely “yes, feasible” — final numbers pending.</em></p>
+  </section>
+
+  <!-- 10 IP (validating) -->
+  <section id="ip">
+    <h2><span class="n">10</span> IP &amp; community-sharing posture <span class="pill warn">⏳ validating</span></h2>
+    <p>Redistributing user scans of licensed cars from your server is the one area with real legal nuance, so it’s being researched rather than guessed.</p>
+    <div class="validating">
+      <b>⏳ Pending research (workflow in flight).</b> Computing how comparable platforms (Sketchfab, Printables, Polycam) handle user-uploaded scans of branded objects + takedowns, and which mitigations are worth baking into v1 defaults.
+    </div>
+    <p><strong>Default-safe posture we’ll adopt unless research says otherwise:</strong></p>
+    <ul class="clean">
+      <li><strong>Personal-use by default, sharing strictly opt-in</strong> and revocable.</li>
+      <li><strong>No trademark in the product name</strong> (hence the “Diecast Vault” working title, not “Mini&nbsp;GT …”).</li>
+      <li><strong>Uploader attestation + clear ToS</strong>; a <strong>DMCA-style takedown</strong> path and a model <code>status</code> flag in the schema (already in §7).</li>
+      <li><strong>Dropping 3D printing reduces exposure</strong> — view-first, and whether the community lets you <em>download the mesh</em> vs only view it is a PM decision (see §13).</li>
+    </ul>
+  </section>
+
+  <!-- 11 SUCCESS -->
+  <section id="success">
+    <h2><span class="n">11</span> Success criteria</h2>
+    <div class="grid c2">
+      <div class="card">
+        <h3 style="margin-top:0">Product / quality bar</h3>
+        <ul class="clean">
+          <li>A first-time user can scan a car and see it rotating in the grid in <strong>under ~5 minutes</strong>, unaided.</li>
+          <li>Reconstruction succeeds on a “reasonable” scan of a representative Mini&nbsp;GT car on a target iPhone.</li>
+          <li>“Show a friend” (grid → spinning 3D / AR) is <strong>one tap</strong>.</li>
+          <li>Both beta-testers sign “ship” before Gate&nbsp;3.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Engineering bar</h3>
+        <ul class="clean">
+          <li>Capture → reconstruction is fully on-device on supported hardware.</li>
+          <li>Community upload/pick round-trips against the VPS with auth + dedup by catalog no.</li>
+          <li>No data loss: local-first, with iCloud sync verified across two devices.</li>
+          <li>VPS deploy coexists with existing tenants (own DB/role/port/vhost).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 RISKS -->
+  <section id="risks">
+    <h2><span class="n">12</span> Top risks</h2>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Risk</th><th>Sev</th><th>Mitigation</th></tr></thead>
+        <tbody>
+          <tr><td>Scan quality on small, glossy, cased cars (reflections, clear windows, thin spoilers, wheels).</td><td><span class="sev h">HIGH</span></td><td>Guided capture; recommend removing from acrylic case; matte-light tips; allow re-scan; community model as fallback.</td></tr>
+          <tr><td>On-device reconstruction needs a recent iPhone / iOS — older devices excluded.</td><td><span class="sev m">MED</span></td><td>Set a clear device floor (research-confirmed); graceful “capture now, can’t reconstruct here” messaging; server-side fallback flagged for later.</td></tr>
+          <tr><td>IP exposure from redistributing scans of licensed cars.</td><td><span class="sev m">MED</span></td><td>§10 posture: opt-in, attestation, takedown, no printing, no trademark name.</td></tr>
+          <tr><td>Storage / egress cost if the community library is popular.</td><td><span class="sev m">MED</span></td><td>Dedup by catalog no.; thumbnails-first; size caps; storage stack chosen for low egress (§9, pending).</td></tr>
+          <tr><td>No catalog data source to seed the picker.</td><td><span class="sev l">LOW</span></td><td>Free-entry bonding works day one; grow a catalog table from community uploads + any scrapeable collector source (research).</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 13 OPEN QUESTIONS -->
+  <section id="open">
+    <h2><span class="n">13</span> Open questions for the PM</h2>
+    <p>None of these block the Design pass — I’ll default safely and you can correct at Gate&nbsp;1 — but they’re the genuine product calls:</p>
+    <div class="card q">
+      <div class="item">Community models: <strong>view-only</strong> in-app, or also <strong>downloadable</strong> to the owner’s device? (Affects IP posture and storage egress.) Default: <em>add-to-shelf for viewing</em>, no raw mesh export.</div>
+      <div class="item">Product name — keep “Diecast Vault”, or something else? (Staying off the “Mini GT” trademark is the only hard constraint.)</div>
+      <div class="item">iCloud sync in v1, or v1.1? Default: <em>build local-first now, ship iCloud as a fast-follow</em> if it risks the v1 timeline.</div>
+      <div class="item">Identity: is <strong>Sign in with Apple</strong> acceptable as the only login (needed for attribution + takedowns on community uploads)? Default: yes.</div>
+    </div>
+  </section>
+
+  <!-- 14 PHASING -->
+  <section id="phasing">
+    <h2><span class="n">14</span> Phasing</h2>
+    <div class="fig fit">
+      <svg viewBox="0 0 1120 150" role="img" aria-label="Release phasing">
+        <defs><marker id="ah5" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#15171c"/></marker></defs>
+        <line x1="40" y1="75" x2="1080" y2="75" stroke="#e7e2d8" stroke-width="3"/>
+        <g font-family="var(--sans)">
+          <circle cx="150" cy="75" r="9" fill="#ff4326"/><text x="150" y="46" text-anchor="middle" font-weight="700" font-size="13">v1</text><text x="150" y="104" text-anchor="middle" font-size="10.5" fill="#6b7280">scan · bond · 3D/AR · local</text>
+          <circle cx="440" cy="75" r="9" fill="#2b3a55"/><text x="440" y="46" text-anchor="middle" font-weight="700" font-size="13">v1.1</text><text x="440" y="104" text-anchor="middle" font-size="10.5" fill="#6b7280">iCloud sync · polish</text>
+          <circle cx="730" cy="75" r="9" fill="#2b3a55"/><text x="730" y="46" text-anchor="middle" font-weight="700" font-size="13">v2</text><text x="730" y="104" text-anchor="middle" font-size="10.5" fill="#6b7280">community library · pick</text>
+          <circle cx="1000" cy="75" r="9" fill="#9aa3b2"/><text x="1000" y="46" text-anchor="middle" font-weight="700" font-size="13">later</text><text x="1000" y="104" text-anchor="middle" font-size="10.5" fill="#6b7280">web share · export · brands</text>
+        </g>
+      </svg>
+      <figcaption>v1 proves the personal-shelf loop on-device; community library (v2) layers the network effect on top once the capture quality bar is met. Phase boundaries are negotiable at the gates.</figcaption>
+    </div>
+  </section>
+
+  <footer>
+    Diecast Vault · PRD v0.9 (draft) · authored by the Coordinator from the PM’s locked decisions on 2026-06-17. §9 and §10 are pending the in-flight kickoff research and will be finalized before Gate&nbsp;1. Next pipeline step after PRD: Design Document → <strong>Gate&nbsp;1</strong>.
+  </footer>
+</div>
+</body>
+</html>
