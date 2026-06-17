@@ -1,0 +1,2062 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Diecast Vault — Interactive Mockup · Vitrine (Lit Display Cabinet)</title>
+<style>
+  /* ============================================================
+     LOCKED DESIGN TOKENS — "Vitrine / The Lit Display Cabinet"
+     ============================================================ */
+  :root{
+    /* surfaces */
+    --paper:#F7F4EC;        /* app canvas / gallery wall */
+    --cell-surface:#FFFFFF; /* lit niche face / sheets / rows */
+    --cell-recess:#EAE4D6;  /* unlit empty niche */
+    /* ink */
+    --ink:#16181D; --ink-soft:#3F434D; --muted:#7C828E; --line:#E4DECF;
+    /* accent = warm display-light amber (lit/present/action) */
+    --tungsten:#F26B1F; --tungsten-deep:#D8540F; --tungsten-glow:#FFE6CE;
+    /* steel = system/community/metadata */
+    --steel:#2B3A55; --steel-soft:#EAF0F8;
+    /* drive */
+    --lhd:#1F7A8C; --rhd:#9A4B17;
+    /* status */
+    --ok:#1F9D62; --warn:#B8860B;
+    /* dark stage (3D viewer ONLY) */
+    --stage-0:#101319; --stage-1:#1B2029; --stage-rim:#F26B1F;
+    /* type */
+    --serif:ui-serif,"New York",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    /* radii / shadow */
+    --r-phone:46px; --r-cell:16px;
+    --shadow-cell:0 1px 1px rgba(22,24,29,.04),0 10px 24px rgba(22,24,29,.07);
+    --shadow-recess:inset 0 2px 5px rgba(22,24,29,.10),inset 0 -1px 0 rgba(255,255,255,.45);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #FBF9F3 0%, transparent 60%),
+      var(--paper);
+    color:var(--ink);font-family:var(--sans);line-height:1.5;
+    -webkit-font-smoothing:antialiased;font-size:16px;
+  }
+  /* faint gallery-wall grain texture */
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+    background-image:radial-gradient(rgba(22,24,29,.018) 1px,transparent 1px);
+    background-size:4px 4px;mix-blend-mode:multiply}
+
+  /* ---------- GALLERY SHELL (desktop review surface) ---------- */
+  .wrap{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:clamp(20px,3vw,46px)}
+  header.masthead{display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px;justify-content:space-between;
+    border-bottom:2px solid var(--ink);padding-bottom:18px}
+  .brandblock{display:flex;align-items:center;gap:16px}
+  .applogo{width:58px;height:58px;border-radius:15px;flex:0 0 auto;position:relative;overflow:hidden;
+    background:linear-gradient(155deg,#1d212a,#0e1116);box-shadow:0 6px 18px rgba(22,24,29,.22)}
+  .applogo .bar{position:absolute;left:9px;right:9px;top:10px;height:8px;border-radius:4px;
+    background:linear-gradient(90deg,#F26B1F,#FFE6CE);box-shadow:0 0 10px rgba(242,107,31,.8)}
+  .applogo .niche{position:absolute;left:9px;bottom:9px;display:flex;gap:4px}
+  .applogo .niche i{width:11px;height:14px;border-radius:3px;background:#2a2f3a;display:block}
+  .applogo .niche i.lit{background:radial-gradient(circle at 50% 120%,#FFE6CE,#F26B1F 70%)}
+  h1.title{font-family:var(--serif);font-weight:600;font-size:clamp(1.7rem,1.1rem+1.9vw,2.5rem);
+    line-height:1.02;margin:0;letter-spacing:-.02em}
+  .masthead .sub{color:var(--muted);font-size:.92rem;margin-top:2px;max-width:60ch}
+  .meta-pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+  .pill{font-family:var(--mono);font-size:.7rem;letter-spacing:.02em;padding:5px 10px;border-radius:999px;
+    background:var(--cell-surface);border:1px solid var(--line);color:var(--ink-soft);white-space:nowrap}
+  .pill.amber{background:var(--tungsten);border-color:var(--tungsten);color:#fff}
+  .pill.steel{background:var(--steel-soft);border-color:#cfdcf0;color:var(--steel)}
+
+  .legend{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:20px 0 4px;
+    font-size:.8rem;color:var(--ink-soft)}
+  .legend .swatch{display:inline-flex;align-items:center;gap:7px}
+  .legend .dot{width:13px;height:13px;border-radius:4px;flex:0 0 auto;border:1px solid rgba(0,0,0,.08)}
+  .hint{margin:14px 0 0;font-size:.85rem;color:var(--muted)}
+  .hint b{color:var(--ink-soft)}
+
+  /* flow group headings (editorial, ruled) */
+  .flow{margin-top:46px}
+  .flow > h2{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:0 0 4px;
+    font-family:var(--sans);font-size:1.18rem;letter-spacing:-.01em;font-weight:700}
+  .flow > h2 .num{font-family:var(--mono);font-size:.78rem;color:var(--tungsten);font-weight:700;
+    letter-spacing:.05em}
+  .flow > .flowsub{color:var(--muted);font-size:.86rem;margin:0 0 14px;max-width:80ch}
+  .flow .rule{height:1px;background:linear-gradient(90deg,var(--ink) 0 110px,var(--line) 110px);margin:6px 0 22px}
+
+  /* phone gallery rail */
+  .rail{display:flex;flex-wrap:wrap;gap:clamp(20px,2.4vw,40px);align-items:flex-start}
+  .device{flex:0 0 auto;max-width:100%}
+  .cap{max-width:300px;margin:0 auto 10px}
+  .cap .ttl{font-size:.92rem;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+  .cap .st{font-size:.78rem;color:var(--muted);margin-top:1px;font-family:var(--mono)}
+  .cap .badge{display:inline-block;font-family:var(--mono);font-size:.62rem;font-weight:700;
+    padding:2px 7px;border-radius:6px;letter-spacing:.04em;margin-top:6px;text-transform:uppercase;
+    background:var(--steel-soft);color:var(--steel)}
+  .cap .badge.amber{background:var(--tungsten-glow);color:var(--tungsten-deep)}
+  .cap .badge.warn{background:#FBF1D8;color:#7a5a00}
+  .cap .badge.stage{background:#15181f;color:#FFE6CE}
+
+  /* ===========================================================
+     iPHONE FRAME — ~390pt logical width
+     =========================================================== */
+  .phone{
+    width:300px;height:650px;border-radius:var(--r-phone);position:relative;
+    background:#0c0e12;padding:11px;
+    box-shadow:0 0 0 2px #2a2d34, 0 1px 0 3px #45494f, 0 22px 50px rgba(22,24,29,.30);
+  }
+  .phone .screen{
+    position:relative;width:100%;height:100%;border-radius:36px;overflow:hidden;
+    background:var(--paper);display:flex;flex-direction:column;
+    font-size:13px; /* base in-app */
+  }
+  /* dynamic island */
+  .phone .island{position:absolute;top:9px;left:50%;transform:translateX(-50%);
+    width:84px;height:23px;background:#06070a;border-radius:14px;z-index:60}
+  /* status bar */
+  .statusbar{height:40px;flex:0 0 auto;display:flex;align-items:flex-end;justify-content:space-between;
+    padding:0 20px 6px;font-size:11.5px;font-weight:700;color:var(--ink);position:relative;z-index:40}
+  .statusbar.onstage{color:#F2EFE8}
+  .statusbar .glyphs{display:flex;align-items:center;gap:5px}
+  .statusbar .glyphs svg{display:block}
+  /* home indicator */
+  .homebar{position:absolute;left:50%;bottom:7px;transform:translateX(-50%);
+    width:118px;height:5px;border-radius:3px;background:rgba(22,24,29,.32);z-index:55}
+  .homebar.light{background:rgba(255,255,255,.55)}
+
+  /* scrollable content body */
+  .body{flex:1 1 auto;overflow:hidden;position:relative;display:flex;flex-direction:column}
+  .scroll{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+  .scroll::-webkit-scrollbar{width:0}
+  .pad{padding:0 14px 18px}
+
+  /* ---------- in-app type helpers ---------- */
+  .lg-title{font-family:var(--serif);font-weight:600;font-size:27px;letter-spacing:-.02em;line-height:1.02;color:var(--ink)}
+  .nav-title{font-size:15px;font-weight:700;letter-spacing:-.01em}
+  .car-name{font-family:var(--serif);font-weight:600;letter-spacing:-.015em;color:var(--ink)}
+  .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .uplabel{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+  /* ---------- nav bar (light chrome) ---------- */
+  .navbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
+    padding:2px 14px 8px;gap:8px}
+  .navbar .left,.navbar .right{display:flex;align-items:center;gap:14px;min-width:46px}
+  .navbar .right{justify-content:flex-end}
+  .navbtn{color:var(--tungsten);font-size:14px;font-weight:600;background:none;border:0;padding:0;cursor:pointer;
+    display:inline-flex;align-items:center;gap:3px}
+  .navbtn.back{font-weight:600}
+  .iconbtn{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;cursor:pointer;
+    background:rgba(43,58,85,.06);color:var(--steel)}
+  .iconbtn.amber{background:var(--tungsten-glow);color:var(--tungsten-deep)}
+
+  /* ---------- the LIGHTBAR header ---------- */
+  .lightbar{flex:0 0 auto;margin:0 14px 12px;border-radius:14px;position:relative;overflow:hidden;
+    background:linear-gradient(180deg,#15181f,#0e1116);
+    padding:13px 15px 14px;color:#F2EFE8;box-shadow:0 8px 22px rgba(22,24,29,.20)}
+  .lightbar .glowstrip{position:absolute;left:0;right:0;top:0;height:6px;
+    background:linear-gradient(90deg,#D8540F,#F26B1F 35%,#FFE6CE 55%,#F26B1F 75%,#D8540F);
+    box-shadow:0 0 16px rgba(242,107,31,.85)}
+  .lightbar .lb-name{font-family:var(--serif);font-weight:600;font-size:18px;letter-spacing:-.01em}
+  .lightbar .lb-tele{margin-top:9px;display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);
+    font-size:11px;font-variant-numeric:tabular-nums;color:#cfd4dd}
+  .lightbar .lb-tele b{color:#FFE6CE;font-weight:700}
+  .lightbar .lb-tele .sep{color:#454b57}
+
+  /* segmented control */
+  .seg{flex:0 0 auto;display:flex;margin:0 14px 12px;background:rgba(43,58,85,.07);border-radius:10px;padding:3px}
+  .seg button{flex:1;border:0;background:none;font-size:12px;font-weight:600;color:var(--ink-soft);
+    padding:6px 4px;border-radius:8px;cursor:pointer}
+  .seg button.on{background:var(--cell-surface);color:var(--ink);
+    box-shadow:0 1px 3px rgba(22,24,29,.12)}
+
+  /* search field */
+  .searchfield{flex:0 0 auto;margin:0 14px 12px;display:flex;align-items:center;gap:8px;
+    background:rgba(43,58,85,.07);border-radius:11px;padding:9px 12px;color:var(--muted);font-size:13px}
+  .searchfield svg{flex:0 0 auto}
+
+  /* ===========================================================
+     THE CABINET — bento niche grid
+     =========================================================== */
+  .shelf-label{display:flex;align-items:center;gap:8px;margin:4px 2px 8px}
+  .shelf-label .uplabel{color:var(--steel)}
+  .shelf-label .rule{flex:1;height:1px;background:var(--line)}
+  .cabinet{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:16px}
+
+  .niche{position:relative;border-radius:var(--r-cell);overflow:hidden;cursor:pointer;
+    aspect-ratio:1/1.12;display:flex;flex-direction:column;justify-content:flex-end;
+    isolation:isolate}
+  .niche.wide{grid-column:1 / -1;aspect-ratio:2.05/1}
+  /* LIT niche = owned/present scan */
+  .niche.lit{background:
+      radial-gradient(120% 80% at 50% 118%, var(--tungsten-glow) 0%, #FFF6EE 34%, var(--cell-surface) 66%);
+    box-shadow:var(--shadow-cell);border:1px solid #F3ECDD}
+  .niche.lit::before{content:"";position:absolute;left:0;right:0;bottom:0;height:46%;z-index:0;
+    background:radial-gradient(80% 130% at 50% 130%, rgba(242,107,31,.30), transparent 70%);
+    filter:blur(2px)}
+  /* DARK-MATTE recessed niche = known release, no scan yet */
+  .niche.empty{background:var(--cell-recess);box-shadow:var(--shadow-recess);
+    border:1px solid #DED7C7;justify-content:center;align-items:center}
+  /* selected/active */
+  .niche.sel{outline:2.5px solid var(--tungsten);outline-offset:-2.5px}
+
+  /* the car poster (CSS placeholder) */
+  .poster{position:relative;z-index:1;flex:1 1 auto;display:flex;align-items:center;justify-content:center;
+    padding:14px 12px 4px}
+  .carfig{width:84%;max-width:150px;filter:drop-shadow(0 7px 7px rgba(22,24,29,.18))}
+  .carfig svg{display:block;width:100%;height:auto}
+  /* elliptical contact shadow handled in svg */
+
+  .niche .placard{position:relative;z-index:2;padding:8px 10px 10px;background:transparent}
+  .niche .pl-name{font-family:var(--serif);font-weight:600;font-size:13.5px;letter-spacing:-.01em;
+    color:var(--ink);line-height:1.1}
+  .niche .pl-meta{display:flex;align-items:center;gap:6px;margin-top:5px;flex-wrap:wrap}
+  .catcode{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.02em;
+    color:var(--steel);background:var(--steel-soft);padding:2px 5px;border-radius:4px;
+    font-variant-numeric:tabular-nums}
+
+  /* drive decal chip — hard-edged livery decal, color+glyph redundant */
+  .decal{font-family:var(--mono);font-weight:800;font-size:10px;width:18px;height:18px;border-radius:4px;
+    display:inline-grid;place-items:center;color:#fff;flex:0 0 auto;letter-spacing:0;
+    box-shadow:0 1px 2px rgba(0,0,0,.2)}
+  .decal.l{background:var(--lhd)}
+  .decal.r{background:var(--rhd)}
+  .decal.big{width:30px;height:30px;font-size:15px;border-radius:7px}
+
+  /* provenance tag */
+  .prov{position:absolute;top:8px;left:8px;z-index:3;font-family:var(--mono);font-size:8.5px;
+    font-weight:700;letter-spacing:.06em;padding:3px 6px;border-radius:5px;text-transform:uppercase}
+  .prov.yours{background:#222730;color:#FFE6CE}
+  .prov.comm{background:var(--steel);color:#dfe8f7}
+
+  /* empty niche hint */
+  .emptyhint{text-align:center;color:var(--muted);padding:0 8px}
+  .emptyhint .ecode{font-family:var(--mono);font-size:10px;color:var(--ink-soft);font-weight:600}
+  .emptyhint .etxt{font-size:10px;margin-top:5px;line-height:1.25}
+  .emptyhint .plus{width:24px;height:24px;border-radius:50%;border:1.5px dashed var(--muted);
+    display:grid;place-items:center;margin:0 auto 7px;color:var(--muted);font-size:15px;font-weight:300}
+
+  /* tab bar */
+  .tabbar{flex:0 0 auto;display:flex;justify-content:space-around;align-items:center;
+    padding:7px 6px 22px;background:rgba(247,244,236,.86);backdrop-filter:blur(14px);
+    border-top:1px solid var(--line)}
+  .tab{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--muted);
+    font-size:9.5px;font-weight:600;flex:1}
+  .tab.on{color:var(--tungsten)}
+  .tab svg{display:block}
+
+  /* ---------- index list mode ---------- */
+  .idxrow{display:flex;align-items:center;gap:11px;padding:11px 4px;border-bottom:1px solid var(--line);cursor:pointer}
+  .idxrow:last-child{border-bottom:0}
+  .idxrow .ic{font-family:var(--mono);font-size:11px;color:var(--steel);font-weight:600;width:62px;flex:0 0 auto;
+    font-variant-numeric:tabular-nums}
+  .idxrow .iname{flex:1 1 auto;min-width:0}
+  .idxrow .iname .nm{font-family:var(--serif);font-weight:600;font-size:14px;color:var(--ink);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .idxrow .iname .lv{font-size:10.5px;color:var(--muted)}
+  .idxrow .istate{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+  .idxrow .istate.lit{background:var(--tungsten);box-shadow:0 0 6px rgba(242,107,31,.7)}
+  .idxrow .istate.empty{background:var(--cell-recess);border:1px solid #d3ccbb}
+
+  /* ---------- generic cards / sheets / wells ---------- */
+  .surface{background:var(--cell-surface);border:1px solid var(--line);border-radius:14px;
+    box-shadow:var(--shadow-cell)}
+  .well{background:var(--steel-soft);border:1px solid #d7e1f1;border-radius:12px;padding:11px 12px;
+    color:var(--steel);font-size:11.5px;line-height:1.4}
+  .well .wt{display:flex;align-items:center;gap:7px;font-weight:700;margin-bottom:4px;font-size:11.5px}
+  .specnote{background:var(--steel-soft);border:1px solid #d7e1f1;border-radius:12px;padding:12px;
+    color:var(--steel);font-size:11.5px;line-height:1.45}
+
+  /* big amber CTA */
+  .cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;cursor:pointer;
+    background:var(--tungsten);color:#fff;font-size:14.5px;font-weight:700;padding:14px;border-radius:13px;
+    box-shadow:0 6px 16px rgba(242,107,31,.30);letter-spacing:-.01em}
+  .cta:active{background:var(--tungsten-deep)}
+  .cta.steel{background:var(--steel);box-shadow:0 6px 16px rgba(43,58,85,.22)}
+  .cta.ghost{background:var(--cell-surface);color:var(--ink);border:1.5px solid var(--line);box-shadow:none}
+  .cta.outline-steel{background:var(--cell-surface);color:var(--steel);border:1.5px solid var(--steel);box-shadow:none}
+  .cta.disabled{background:var(--cell-recess);color:var(--muted);box-shadow:none}
+
+  /* drive toggle (designed twin-state) */
+  .drivetoggle{display:flex;gap:9px}
+  .drivebtn{flex:1;border:1.5px solid var(--line);background:var(--cell-surface);border-radius:12px;
+    padding:11px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;
+    transition:transform .12s ease}
+  .drivebtn .dg{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;color:#fff;
+    font-family:var(--mono);font-weight:800;font-size:17px}
+  .drivebtn .dl{font-size:11px;font-weight:700;color:var(--ink-soft)}
+  .drivebtn.l .dg{background:var(--lhd)}
+  .drivebtn.r .dg{background:var(--rhd)}
+  .drivebtn.on.l{border-color:var(--lhd);background:#EAF6F8;box-shadow:0 0 0 1px var(--lhd) inset}
+  .drivebtn.on.r{border-color:var(--rhd);background:#FBF0E8;box-shadow:0 0 0 1px var(--rhd) inset}
+
+  /* meta rows */
+  .metarow{display:flex;justify-content:space-between;align-items:center;padding:9px 0;
+    border-bottom:1px solid var(--line);font-size:12.5px}
+  .metarow:last-child{border-bottom:0}
+  .metarow .k{color:var(--muted)}
+  .metarow .v{color:var(--ink);font-weight:600}
+  .metarow .v.mono{font-family:var(--mono);font-weight:600}
+
+  /* status chips */
+  .chip{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;
+    padding:3px 9px;border-radius:999px;font-family:var(--mono);letter-spacing:.02em}
+  .chip.ok{background:#E4F5EC;color:#0d6b3f}
+  .chip.warn{background:#FBF1D8;color:#7a5a00}
+  .chip.steel{background:var(--steel-soft);color:var(--steel)}
+  .chip.amber{background:var(--tungsten-glow);color:var(--tungsten-deep)}
+
+  /* ===========================================================
+     DARK STAGE — 3D VIEWER ONLY
+     =========================================================== */
+  .phone .screen.stage{background:radial-gradient(120% 80% at 50% 64%, var(--stage-1) 0%, var(--stage-0) 62%);
+    color:#EDEFF3}
+  .stage .rim{position:absolute;left:0;right:0;top:50%;height:1px;
+    background:linear-gradient(90deg,transparent,var(--stage-rim),transparent);opacity:.55}
+  .stagewrap{flex:1 1 auto;position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center}
+  .turntable{position:relative;width:74%;display:flex;align-items:center;justify-content:center}
+  .turntable .plinth{position:absolute;bottom:-6%;left:50%;transform:translateX(-50%);
+    width:84%;height:30px;border-radius:50%;
+    background:radial-gradient(closest-side,rgba(242,107,31,.30),rgba(27,32,41,0) 75%)}
+  .stage-anno{position:absolute;bottom:30px;left:0;right:0;text-align:center;font-family:var(--mono);
+    font-size:9.5px;color:#8a93a3;letter-spacing:.03em;padding:0 18px}
+  .stage-controlbar{position:absolute;left:12px;right:12px;bottom:14px;border-radius:15px;
+    background:rgba(28,33,42,.72);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08);
+    padding:11px 13px;display:flex;align-items:center;gap:10px}
+  .stage-tele{flex:1 1 auto;font-family:var(--mono);font-size:10px;color:#aeb6c4;line-height:1.5;
+    font-variant-numeric:tabular-nums}
+  .stage-tele b{color:#FFE6CE}
+  .stage .arbtn{flex:0 0 auto;background:var(--tungsten);color:#fff;border:0;border-radius:11px;
+    padding:9px 13px;font-size:12.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;
+    box-shadow:0 4px 14px rgba(242,107,31,.4)}
+
+  /* AR preview */
+  .arscene{flex:1 1 auto;position:relative;overflow:hidden;
+    background:linear-gradient(180deg,#cfd8df 0%,#aeb8c0 46%,#8b7d6a 46%,#6f6353 100%)}
+  .arscene .room{position:absolute;inset:0;
+    background:radial-gradient(120% 70% at 50% 30%,rgba(255,255,255,.4),transparent 60%)}
+  .ar-table-car{position:absolute;left:50%;top:58%;transform:translateX(-50%);width:54%}
+  .ar-coach{position:absolute;left:18px;right:18px;top:60px;text-align:center}
+  .ar-coach .ring{width:46px;height:46px;border-radius:50%;border:2px dashed rgba(22,24,29,.5);
+    margin:0 auto 10px;display:grid;place-items:center;font-size:20px}
+  .ar-coach .ct{display:inline-block;background:rgba(16,19,25,.78);color:#fff;font-size:12px;font-weight:600;
+    padding:8px 14px;border-radius:11px}
+  .ar-success{position:absolute;left:16px;right:16px;bottom:26px;background:rgba(255,255,255,.94);
+    border-radius:15px;padding:13px 14px;display:flex;align-items:center;gap:11px;
+    box-shadow:0 10px 30px rgba(22,24,29,.25)}
+
+  /* scan flow gauges */
+  .gaugewrap{display:flex;flex-direction:column;align-items:center;gap:14px;padding:14px 0}
+  .orbit{position:relative;width:170px;height:170px}
+  .orbit svg{display:block}
+  .coverbadge{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;text-align:center}
+  .coverbadge .pct{font-family:var(--mono);font-size:30px;font-weight:700;color:#FFE6CE;
+    font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .coverbadge .lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--muted);
+    text-transform:uppercase;margin-top:2px}
+  .progbar{height:9px;border-radius:6px;background:var(--cell-recess);overflow:hidden}
+  .progbar > i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--tungsten),var(--tungsten-deep))}
+
+  /* verdict card */
+  .verdict{padding:16px}
+  .verdict .vtop{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+  .verdict .preview{width:84px;height:84px;border-radius:13px;flex:0 0 auto;position:relative;overflow:hidden;
+    background:radial-gradient(120% 80% at 50% 120%,var(--tungsten-glow),var(--cell-surface));
+    box-shadow:var(--shadow-cell);display:grid;place-items:center}
+
+  /* capability gate */
+  .gate{flex:1 1 auto;display:flex;flex-direction:column;padding:18px 18px 10px;position:relative;overflow:hidden}
+  .gate .cabicon{align-self:center;margin:8px 0 14px}
+  .gate h2.gh{font-family:var(--serif);font-weight:600;font-size:25px;letter-spacing:-.02em;
+    line-height:1.05;margin:0 0 8px}
+  .gate p.gp{color:var(--ink-soft);font-size:13px;line-height:1.45;margin:0 0 14px}
+  .gate .capcard{border-radius:14px;padding:13px 14px;margin-bottom:11px;border:1px solid var(--line)}
+  .gate .capcard.pro{background:linear-gradient(180deg,#FFF7EF,var(--cell-surface));border-color:#F3D9C2}
+  .gate .capcard.any{background:var(--steel-soft);border-color:#d7e1f1}
+  .gate .capcard .ch{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;margin-bottom:4px}
+  .gate .capcard .cd{font-size:11.5px;color:var(--ink-soft);line-height:1.4}
+  .applebtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:#000;color:#fff;
+    border:0;border-radius:12px;padding:13px;font-size:14px;font-weight:600;cursor:pointer}
+
+  /* error / offline overlays */
+  .midmsg{flex:1 1 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:24px;gap:8px}
+  .midmsg .mi{width:62px;height:62px;border-radius:16px;display:grid;place-items:center;margin-bottom:6px}
+  .midmsg .mt{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.01em}
+  .midmsg .mp{font-size:12.5px;color:var(--muted);max-width:30ch;line-height:1.45}
+
+  /* offline dimmed library strip */
+  .dimmed{opacity:.42;filter:grayscale(.5)}
+  .offlinebanner{margin:0 14px 12px;background:#FBF1D8;border:1px solid #ecd9a8;border-radius:11px;
+    padding:9px 12px;font-size:11.5px;color:#7a5a00;display:flex;align-items:center;gap:8px}
+
+  /* small util */
+  .row{display:flex;gap:9px}
+  .between{display:flex;align-items:center;justify-content:space-between}
+  .mt6{margin-top:6px}.mt8{margin-top:8px}.mt10{margin-top:10px}.mt12{margin-top:12px}.mt14{margin-top:14px}.mt16{margin-top:16px}
+  .mb6{margin-bottom:6px}.mb8{margin-bottom:8px}.mb10{margin-bottom:10px}.mb12{margin-bottom:12px}
+  .small{font-size:11px;color:var(--muted);line-height:1.4}
+  .center{text-align:center}
+
+  /* the toggle/expand interaction inside catalog search */
+  .resultrow{border:1px solid var(--line);border-radius:13px;margin-bottom:10px;overflow:hidden;background:var(--cell-surface)}
+  .resultrow .rhead{display:flex;align-items:center;gap:10px;padding:11px 12px;cursor:pointer}
+  .resultrow .rexpand{padding:0 12px 13px;border-top:1px solid var(--line)}
+
+  /* responsive: keep phones, no horizontal overflow */
+  @media(max-width:360px){
+    .wrap{padding:14px}
+    .phone{transform:scale(.92);transform-origin:top center}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ MASTHEAD ============ -->
+  <header class="masthead">
+    <div class="brandblock">
+      <div class="applogo" aria-hidden="true">
+        <span class="bar"></span>
+        <span class="niche"><i class="lit"></i><i class="lit"></i><i></i><i class="lit"></i></span>
+      </div>
+      <div>
+        <h1 class="title">Diecast Vault</h1>
+        <div class="sub">Interactive mockup · Gate-1 review surface · design direction <b style="color:var(--tungsten-deep)">“Vitrine — The Lit Display Cabinet”</b></div>
+      </div>
+    </div>
+    <div class="meta-pills">
+      <span class="pill amber">MOCKUP v1</span>
+      <span class="pill steel">light-as-state</span>
+      <span class="pill">iOS 17+ · SwiftUI</span>
+      <span class="pill">2026-06-17</span>
+    </div>
+  </header>
+
+  <div class="legend">
+    <span class="swatch"><i class="dot" style="background:radial-gradient(circle at 50% 130%,#FFE6CE,#F26B1F)"></i> Lit niche = owned / scan present</span>
+    <span class="swatch"><i class="dot" style="background:var(--cell-recess)"></i> Matte recess = known release, no scan yet</span>
+    <span class="swatch"><i class="dot" style="background:var(--lhd)"></i> LHD drive decal</span>
+    <span class="swatch"><i class="dot" style="background:var(--rhd)"></i> RHD drive decal</span>
+    <span class="swatch"><i class="dot" style="background:var(--steel)"></i> Steel = system / community / metadata</span>
+  </div>
+  <p class="hint"><b>How to use:</b> every screen is rendered in a live iPhone frame, grouped by flow so you can scan them all on one page. Core screens are <b>wired for click-through</b> — tapping a lit niche on Home lifts the car onto the dark 3D stage, “View in AR” opens the AR preview, the tab bar and back chevrons move between screens, and the drive decals / segmented controls toggle in place. Look for the <span style="color:var(--tungsten-deep);font-weight:700">amber</span> tappable affordances.</p>
+
+<!-- =====================================================================
+     FLOW A — ENTRY: capability gate + sign in
+     ===================================================================== -->
+<section class="flow">
+  <h2><span class="num">FLOW A</span> First run &amp; entry</h2>
+  <div class="rule"></div>
+  <p class="flowsub">Capability is communicated as an <em>invitation to contribute</em>, never a denial. Light-as-state begins here: the Pro path is a warm-lit card, the universal path is a calm steel card — both are doors, neither is greyed out.</p>
+  <div class="rail">
+
+    <!-- A1: capability gate — PRO -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Capability gate — Pro iPhone</div>
+        <div class="st">first-run / supported</div>
+        <span class="badge amber">scan + pick</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-gate-pro">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="gate scroll">
+            <div class="cabicon" aria-hidden="true">
+              <!-- mini lit cabinet emblem -->
+              <svg width="120" height="84" viewBox="0 0 120 84">
+                <rect x="6" y="6" width="108" height="72" rx="10" fill="#15181f"/>
+                <rect x="14" y="13" width="92" height="6" rx="3" fill="url(#lbg)"/>
+                <defs>
+                  <linearGradient id="lbg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#D8540F"/><stop offset=".5" stop-color="#FFE6CE"/><stop offset="1" stop-color="#D8540F"/></linearGradient>
+                  <radialGradient id="litg" cx="50%" cy="120%" r="90%"><stop offset="0" stop-color="#FFE6CE"/><stop offset=".7" stop-color="#F26B1F"/><stop offset="1" stop-color="#7a330b"/></radialGradient>
+                </defs>
+                <rect x="16" y="26" width="26" height="20" rx="3" fill="url(#litg)"/>
+                <rect x="47" y="26" width="26" height="20" rx="3" fill="#2a2f3a"/>
+                <rect x="78" y="26" width="26" height="20" rx="3" fill="url(#litg)"/>
+                <rect x="16" y="50" width="26" height="20" rx="3" fill="#2a2f3a"/>
+                <rect x="47" y="50" width="26" height="20" rx="3" fill="url(#litg)"/>
+                <rect x="78" y="50" width="26" height="20" rx="3" fill="#2a2f3a"/>
+              </svg>
+            </div>
+            <h2 class="gh">Your shelf, lit up and in your pocket.</h2>
+            <p class="gp">We checked this iPhone — it can do <b style="color:var(--tungsten-deep)">both</b>.</p>
+            <div class="capcard pro">
+              <div class="ch">🔦 You can scan <span class="chip ok">Pro detected</span></div>
+              <div class="cd">LiDAR + Object Capture supported. Scan your own cars to seed the shared library — each release captured once, for everyone.</div>
+            </div>
+            <div class="capcard any">
+              <div class="ch">🗂️ You can browse &amp; pick</div>
+              <div class="cd">Find any Mini GT release, pick a community scan, spin it in 3D and drop it into AR to show a friend.</div>
+            </div>
+            <div style="flex:1"></div>
+            <button class="applebtn" onclick="go('s-home')">  Sign in with Apple</button>
+            <button class="navbtn" style="align-self:center;margin:12px 0 6px" onclick="go('s-home')">Maybe later — just browse</button>
+          </div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- A2: capability gate — NOT SUPPORTED -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Capability gate — non-Pro iPhone</div>
+        <div class="st">first-run / not-supported</div>
+        <span class="badge">browse &amp; pick · contribution invite</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="gate scroll">
+            <div class="cabicon" aria-hidden="true">
+              <svg width="120" height="84" viewBox="0 0 120 84">
+                <rect x="6" y="6" width="108" height="72" rx="10" fill="#15181f"/>
+                <rect x="14" y="13" width="92" height="6" rx="3" fill="url(#lbg)"/>
+                <rect x="16" y="26" width="26" height="20" rx="3" fill="url(#litg)"/>
+                <rect x="47" y="26" width="26" height="20" rx="3" fill="url(#litg)"/>
+                <rect x="78" y="26" width="26" height="20" rx="3" fill="#2a2f3a"/>
+                <rect x="16" y="50" width="26" height="20" rx="3" fill="#2a2f3a"/>
+                <rect x="47" y="50" width="26" height="20" rx="3" fill="url(#litg)"/>
+                <rect x="78" y="50" width="26" height="20" rx="3" fill="#2a2f3a"/>
+              </svg>
+            </div>
+            <h2 class="gh">Browsing &amp; picking are fully yours.</h2>
+            <p class="gp">Find releases, pick community scans, rotate in 3D and drop into AR — all of it works right here.</p>
+            <div class="capcard any">
+              <div class="ch">🗂️ Browse &amp; pick — ready</div>
+              <div class="cd">No scanner needed. The shared library is open to you.</div>
+            </div>
+            <div class="specnote">
+              <div style="display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:5px">
+                <span class="decal r" style="background:var(--steel)">i</span> A note on scanning
+              </div>
+              Capturing new cars needs a <b>Pro iPhone (12 Pro – 17 Pro)</b> with LiDAR. When you upgrade, you can help seed releases no one has scanned yet. Until then, everything else is yours.
+            </div>
+            <div style="flex:1"></div>
+            <button class="applebtn" onclick="go('s-home')">  Sign in with Apple</button>
+            <button class="navbtn" style="align-self:center;margin:12px 0 6px" onclick="go('s-home')">Maybe later — just browse</button>
+          </div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =====================================================================
+     FLOW B — HOME: The Lit Display Cabinet
+     ===================================================================== -->
+<section class="flow">
+  <h2><span class="num">FLOW B</span> Home — The Cabinet</h2>
+  <div class="rule"></div>
+  <p class="flowsub">The signature screen. A backlit-vitrine bento grid under a glowing lightbar: lit niches (owned scans, tungsten glow, YOURS/COMMUNITY tag, mono catalog placard, colored drive decal) interleaved with one wide feature niche, plus dark-matte recessed niches for known-but-unscanned releases. Tap any lit niche to lift the car onto the dark 3D stage.</p>
+  <div class="rail">
+
+    <!-- B1: HOME — the lit cabinet (default, Shelves) -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Home — The Cabinet</div>
+        <div class="st">populated / Shelves view</div>
+        <span class="badge amber">tap a lit niche → 3D stage</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-home">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+
+          <!-- nav -->
+          <div class="navbar">
+            <div class="left"><span class="iconbtn" title="Index list mode" onclick="go('s-index')">
+              <svg width="15" height="15" viewBox="0 0 15 15"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 3.5h11M2 7.5h11M2 11.5h11"/></g></svg></span></div>
+            <div class="right">
+              <span class="iconbtn amber" title="Scan (Pro)" onclick="go('s-scan-tip')">
+                <svg width="16" height="16" viewBox="0 0 16 16"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5V3.5A1.5 1.5 0 0 1 3.5 2H5M11 2h1.5A1.5 1.5 0 0 1 14 3.5V5M14 11v1.5a1.5 1.5 0 0 1-1.5 1.5H11M5 14H3.5A1.5 1.5 0 0 1 2 12.5V11"/><circle cx="8" cy="8" r="2.4"/></g></svg></span>
+              <span class="iconbtn" title="Settings" onclick="go('s-settings')">
+                <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M12.6 3.4l-1.4 1.4M4.8 11.2l-1.4 1.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+            </div>
+          </div>
+
+          <div class="scroll">
+            <div style="padding:0 16px 10px"><div class="lg-title">The Vault</div></div>
+
+            <!-- LIGHTBAR header -->
+            <div class="lightbar">
+              <span class="glowstrip"></span>
+              <div class="lb-name">Erik’s Cabinet</div>
+              <div class="lb-tele">
+                <span><b id="cnt-lit">14</b> LIT</span><span class="sep">·</span>
+                <span><b>3</b> EMPTY</span><span class="sep">·</span>
+                <span><b>9</b> BY YOU</span><span class="sep">·</span>
+                <span>R2 SYNC <b style="color:#7CE0A6">✓</b></span>
+              </div>
+            </div>
+
+            <!-- segmented -->
+            <div class="seg" id="home-seg">
+              <button class="on" onclick="seg(this,'s-home')">Shelves</button>
+              <button onclick="seg(this,'s-home')">All</button>
+              <button onclick="seg(this,'s-home-empty')">Empty</button>
+            </div>
+
+            <!-- search -->
+            <div class="searchfield" onclick="go('s-catalog')">
+              <svg width="14" height="14" viewBox="0 0 14 14"><circle cx="6" cy="6" r="4.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9.2 9.2 12.5 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Search number, name or livery
+            </div>
+
+            <div class="pad">
+              <!-- Shelf 1 -->
+              <div class="shelf-label"><span class="uplabel">Shelf · Porsche</span><span class="rule"></span></div>
+              <div class="cabinet">
+                <!-- WIDE feature niche -->
+                <div class="niche wide lit sel" onclick="go('s-stage')">
+                  <span class="prov yours">Yours</span>
+                  <div class="poster"><div class="carfig" style="max-width:188px"><svg viewBox="0 0 220 120" role="img" aria-label="diecast car">
+<defs>
+<linearGradient id="g4381562416" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#D9DCE1"/><stop offset="1" stop-color="#9AA0A8"/></linearGradient>
+</defs>
+<ellipse cx="110" cy="104" rx="86" ry="9" fill="rgba(22,24,29,.16)"/>
+<!-- body -->
+<path d="M18 78
+ C 24 64 40 60 56 58
+ C 70 44 96 40 120 42
+ C 150 44 168 52 182 62
+ C 196 64 204 70 204 80
+ L 204 86 C 204 90 200 92 196 92
+ L 24 92 C 20 92 16 90 16 84 Z"
+ fill="url(#g4381562416)" stroke="#9AA0A8" stroke-width="1"/>
+<!-- greenhouse / glass -->
+<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#2E3742" opacity="0.92"/>
+<!-- accent stripe -->
+<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#F26B1F" opacity="0.9"/>
+<!-- wheels -->
+<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
+<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/>
+<!-- highlight -->
+<path d="M30 70 C 60 60 150 60 188 72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+</svg></div></div>
+                  <div class="placard">
+                    <div class="pl-name">Porsche 911 GT3 RS</div>
+                    <div class="pl-meta"><span class="catcode">MGT00612</span><span class="decal l">L</span><span class="small" style="margin-left:auto">Weissach · ’23</span></div>
+                  </div>
+                </div>
+                <!-- lit -->
+                <div class="niche lit" onclick="go('s-stage')">
+                  <span class="prov comm">Comm</span>
+                  <div class="poster"><div class="carfig"><svg viewBox="0 0 220 120" role="img" aria-label="diecast car">
+<defs>
+<linearGradient id="g4381563120" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#2F6FB0"/><stop offset="1" stop-color="#1C4B7E"/></linearGradient>
+</defs>
+<ellipse cx="110" cy="104" rx="86" ry="9" fill="rgba(22,24,29,.16)"/>
+<!-- body -->
+<path d="M18 78
+ C 24 64 40 60 56 58
+ C 70 44 96 40 120 42
+ C 150 44 168 52 182 62
+ C 196 64 204 70 204 80
+ L 204 86 C 204 90 200 92 196 92
+ L 24 92 C 20 92 16 90 16 84 Z"
+ fill="url(#g4381563120)" stroke="#1C4B7E" stroke-width="1"/>
+<!-- greenhouse / glass -->
+<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#16324A" opacity="0.92"/>
+<!-- accent stripe -->
+<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#FFE6CE" opacity="0.9"/>
+<!-- wheels -->
+<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
+<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/>
+<!-- highlight -->
+<path d="M30 70 C 60 60 150 60 188 72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+</svg></div></div>
+                  <div class="placard"><div class="pl-name">911 Turbo</div>
+                    <div class="pl-meta"><span class="catcode">MGT00489</span><span class="decal r">R</span></div></div>
+                </div>
+                <!-- lit -->
+                <div class="niche lit" onclick="go('s-stage')">
+                  <span class="prov yours">Yours</span>
+                  <div class="poster"><div class="carfig"><svg viewBox="0 0 220 120" role="img" aria-label="diecast car">
+<defs>
+<linearGradient id="g4381564016" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#E7B638"/><stop offset="1" stop-color="#B8860B"/></linearGradient>
+</defs>
+<ellipse cx="110" cy="104" rx="86" ry="9" fill="rgba(22,24,29,.16)"/>
+<!-- body -->
+<path d="M18 78
+ C 24 64 40 60 56 58
+ C 70 44 96 40 120 42
+ C 150 44 168 52 182 62
+ C 196 64 204 70 204 80
+ L 204 86 C 204 90 200 92 196 92
+ L 24 92 C 20 92 16 90 16 84 Z"
+ fill="url(#g4381564016)" stroke="#B8860B" stroke-width="1"/>
+<!-- greenhouse / glass -->
+<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#2E2A1A" opacity="0.92"/>
+<!-- accent stripe -->
+<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#2B3A55" opacity="0.9"/>
+<!-- wheels -->
+<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
+<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/>
+<!-- highlight -->
+<path d="M30 70 C 60 60 150 60 188 72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+</svg></div></div>
+                  <div class="placard"><div class="pl-name">Cayman GT4</div>
+                    <div class="pl-meta"><span class="catcode">MGT00521</span><span class="decal l">L</span></div></div>
+                </div>
+              </div>
+
+              <!-- Shelf 2 -->
+              <div class="shelf-label"><span class="uplabel">Shelf · JDM Legends</span><span class="rule"></span></div>
+              <div class="cabinet">
+                <div class="niche lit" onclick="go('s-stage')">
+                  <span class="prov yours">Yours</span>
+                  <div class="poster"><div class="carfig"><svg viewBox="0 0 220 120" role="img" aria-label="diecast car">
+<defs>
+<linearGradient id="g4381563440" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#C8362B"/><stop offset="1" stop-color="#8E2018"/></linearGradient>
+</defs>
+<ellipse cx="110" cy="104" rx="86" ry="9" fill="rgba(22,24,29,.16)"/>
+<!-- body -->
+<path d="M18 78
+ C 24 64 40 60 56 58
+ C 70 44 96 40 120 42
+ C 150 44 168 52 182 62
+ C 196 64 204 70 204 80
+ L 204 86 C 204 90 200 92 196 92
+ L 24 92 C 20 92 16 90 16 84 Z"
+ fill="url(#g4381563440)" stroke="#8E2018" stroke-width="1"/>
+<!-- greenhouse / glass -->
+<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#2A1614" opacity="0.92"/>
+<!-- accent stripe -->
+<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#F2D9A6" opacity="0.9"/>
+<!-- wheels -->
+<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
+<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/>
+<!-- highlight -->
+<path d="M30 70 C 60 60 150 60 188 72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+</svg></div></div>
+                  <div class="placard"><div class="pl-name">Nissan Skyline GT-R</div>
+                    <div class="pl-meta"><span class="catcode">MGT00748</span><span class="decal r">R</span></div></div>
+                </div>
+                <!-- EMPTY recess -->
+                <div class="niche empty" onclick="go('s-release')">
+                  <div class="emptyhint">
+                    <div class="plus">+</div>
+                    <div class="ecode">MGT00802 · <span class="decal r" style="width:14px;height:14px;font-size:8px;display:inline-grid;vertical-align:middle">R</span></div>
+                    <div class="etxt">Toyota Supra A90<br>no scan yet</div>
+                  </div>
+                </div>
+                <div class="niche lit" onclick="go('s-stage')">
+                  <span class="prov comm">Comm</span>
+                  <div class="poster"><div class="carfig"><svg viewBox="0 0 220 120" role="img" aria-label="diecast car">
+<defs>
+<linearGradient id="g4381564400" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#F1EFEA"/><stop offset="1" stop-color="#C9C4B8"/></linearGradient>
+</defs>
+<ellipse cx="110" cy="104" rx="86" ry="9" fill="rgba(22,24,29,.16)"/>
+<!-- body -->
+<path d="M18 78
+ C 24 64 40 60 56 58
+ C 70 44 96 40 120 42
+ C 150 44 168 52 182 62
+ C 196 64 204 70 204 80
+ L 204 86 C 204 90 200 92 196 92
+ L 24 92 C 20 92 16 90 16 84 Z"
+ fill="url(#g4381564400)" stroke="#C9C4B8" stroke-width="1"/>
+<!-- greenhouse / glass -->
+<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#2E3742" opacity="0.92"/>
+<!-- accent stripe -->
+<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#9A4B17" opacity="0.9"/>
+<!-- wheels -->
+<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
+<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/>
+<!-- highlight -->
+<path d="M30 70 C 60 60 150 60 188 72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+</svg></div></div>
+                  <div class="placard"><div class="pl-name">Mazda RX-7</div>
+                    <div class="pl-meta"><span class="catcode">MGT00377</span><span class="decal r">R</span></div></div>
+                </div>
+                <div class="niche lit" onclick="go('s-stage')">
+                  <span class="prov yours">Yours</span>
+                  <div class="poster"><div class="carfig"><svg viewBox="0 0 220 120" role="img" aria-label="diecast car">
+<defs>
+<linearGradient id="g4381564720" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#3E7D4F"/><stop offset="1" stop-color="#27583A"/></linearGradient>
+</defs>
+<ellipse cx="110" cy="104" rx="86" ry="9" fill="rgba(22,24,29,.16)"/>
+<!-- body -->
+<path d="M18 78
+ C 24 64 40 60 56 58
+ C 70 44 96 40 120 42
+ C 150 44 168 52 182 62
+ C 196 64 204 70 204 80
+ L 204 86 C 204 90 200 92 196 92
+ L 24 92 C 20 92 16 90 16 84 Z"
+ fill="url(#g4381564720)" stroke="#27583A" stroke-width="1"/>
+<!-- greenhouse / glass -->
+<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#16261C" opacity="0.92"/>
+<!-- accent stripe -->
+<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#E7B638" opacity="0.9"/>
+<!-- wheels -->
+<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
+<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/>
+<!-- highlight -->
+<path d="M30 70 C 60 60 150 60 188 72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+</svg></div></div>
+                  <div class="placard"><div class="pl-name">Honda NSX</div>
+                    <div class="pl-meta"><span class="catcode">MGT00256</span><span class="decal l">L</span></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- tab bar -->
+          <div class="tabbar">
+            <div class="tab on"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="3" y="3" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="11" y="3" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="3" y="11" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="11" y="11" width="6" height="6" rx="1.5" fill="currentColor"/></svg>Cabinet</div>
+            <div class="tab" onclick="go('s-catalog')"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="9" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M13 13l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Catalog</div>
+            <div class="tab" onclick="go('s-community')"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 2.5 17 6v8l-7 3.5L3 14V6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 2.5v15M3 6l7 3.5L17 6" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>Library</div>
+            <div class="tab" onclick="go('s-settings')"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4 17c0-3.3 2.7-5 6-5s6 1.7 6 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Me</div>
+          </div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- B2: HOME — Empty segment (known-but-unscanned) -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Home — Empty niches</div>
+        <div class="st">“Empty” segment</div>
+        <span class="badge">known releases · no scan yet</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-home-empty">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar">
+            <div class="left"><span class="iconbtn" onclick="go('s-index')"><svg width="15" height="15" viewBox="0 0 15 15"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 3.5h11M2 7.5h11M2 11.5h11"/></g></svg></span></div>
+            <div class="right"><span class="iconbtn amber" onclick="go('s-scan-tip')"><svg width="16" height="16" viewBox="0 0 16 16"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5V3.5A1.5 1.5 0 0 1 3.5 2H5M11 2h1.5A1.5 1.5 0 0 1 14 3.5V5M14 11v1.5a1.5 1.5 0 0 1-1.5 1.5H11M5 14H3.5A1.5 1.5 0 0 1 2 12.5V11"/><circle cx="8" cy="8" r="2.4"/></g></svg></span></div>
+          </div>
+          <div class="scroll">
+            <div style="padding:0 16px 10px"><div class="lg-title">The Vault</div></div>
+            <div class="lightbar"><span class="glowstrip"></span>
+              <div class="lb-name">Erik’s Cabinet</div>
+              <div class="lb-tele"><span><b>3</b> EMPTY SLOTS</span><span class="sep">·</span><span>waiting for a pick or scan</span></div>
+            </div>
+            <div class="seg">
+              <button onclick="go('s-home')">Shelves</button>
+              <button onclick="go('s-home')">All</button>
+              <button class="on">Empty</button>
+            </div>
+            <div class="pad">
+              <div class="specnote mb12">These releases are in your wishlist but have <b>no community scan yet</b>. Pick one if someone uploads it — or, on a Pro iPhone, be the one who seeds it.</div>
+              <div class="cabinet">
+                <div class="niche empty" onclick="go('s-release')"><div class="emptyhint"><div class="plus">+</div><div class="ecode">MGT00802</div><div class="etxt">Toyota Supra A90 · <span class="decal r" style="width:13px;height:13px;font-size:7px;display:inline-grid;vertical-align:middle">R</span></div></div></div>
+                <div class="niche empty" onclick="go('s-release')"><div class="emptyhint"><div class="plus">+</div><div class="ecode">MGT00910</div><div class="etxt">Lambo Huracán · <span class="decal l" style="width:13px;height:13px;font-size:7px;display:inline-grid;vertical-align:middle">L</span></div></div></div>
+                <div class="niche empty" onclick="go('s-release')"><div class="emptyhint"><div class="plus">+</div><div class="ecode">MGT00188</div><div class="etxt">BMW M3 E30 · <span class="decal l" style="width:13px;height:13px;font-size:7px;display:inline-grid;vertical-align:middle">L</span></div></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="tabbar">
+            <div class="tab on"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="3" y="3" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="11" y="3" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="3" y="11" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="11" y="11" width="6" height="6" rx="1.5" fill="currentColor"/></svg>Cabinet</div>
+            <div class="tab" onclick="go('s-catalog')"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="9" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M13 13l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Catalog</div>
+            <div class="tab" onclick="go('s-community')"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 2.5 17 6v8l-7 3.5L3 14V6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Library</div>
+            <div class="tab" onclick="go('s-settings')"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4 17c0-3.3 2.7-5 6-5s6 1.7 6 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Me</div>
+          </div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- B3: HOME — Index list mode -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Home — Index list mode</div>
+        <div class="st">alternate ruled reading</div>
+        <span class="badge">catalog-order · for collectors</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-index">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar">
+            <div class="left"><span class="iconbtn amber" title="Cabinet view" onclick="go('s-home')"><svg width="15" height="15" viewBox="0 0 15 15"><rect x="1.5" y="1.5" width="5" height="5" rx="1" fill="currentColor"/><rect x="8.5" y="1.5" width="5" height="5" rx="1" fill="currentColor"/><rect x="1.5" y="8.5" width="5" height="5" rx="1" fill="currentColor"/><rect x="8.5" y="8.5" width="5" height="5" rx="1" fill="currentColor"/></svg></span></div>
+            <div class="right"><span class="iconbtn" onclick="go('s-settings')"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span></div>
+          </div>
+          <div class="scroll">
+            <div style="padding:0 16px 8px"><div class="lg-title">Index</div>
+              <div class="small mt6" style="font-family:var(--mono)">sorted by catalog number · 17 releases</div></div>
+            <div class="pad">
+              <div class="idxrow" onclick="go('s-stage')"><span class="ic">MGT00188</span><span class="istate empty"></span><span class="iname"><span class="nm">BMW M3 E30</span><span class="lv">Alpine White · 1990</span></span><span class="decal l">L</span></div>
+              <div class="idxrow" onclick="go('s-stage')"><span class="ic">MGT00256</span><span class="istate lit"></span><span class="iname"><span class="nm">Honda NSX</span><span class="lv">Berlina Black · 2002</span></span><span class="decal l">L</span></div>
+              <div class="idxrow" onclick="go('s-stage')"><span class="ic">MGT00377</span><span class="istate lit"></span><span class="iname"><span class="nm">Mazda RX-7 FD</span><span class="lv">Vintage Red · 1999</span></span><span class="decal r">R</span></div>
+              <div class="idxrow" onclick="go('s-stage')"><span class="ic">MGT00489</span><span class="istate lit"></span><span class="iname"><span class="nm">Porsche 911 Turbo</span><span class="lv">Gentian Blue · 2021</span></span><span class="decal r">R</span></div>
+              <div class="idxrow" onclick="go('s-stage')"><span class="ic">MGT00521</span><span class="istate lit"></span><span class="iname"><span class="nm">Porsche Cayman GT4</span><span class="lv">Racing Yellow · 2020</span></span><span class="decal l">L</span></div>
+              <div class="idxrow" onclick="go('s-stage')"><span class="ic">MGT00612</span><span class="istate lit"></span><span class="iname"><span class="nm">911 GT3 RS</span><span class="lv">GT Silver / Weissach · 2023</span></span><span class="decal l">L</span></div>
+              <div class="idxrow" onclick="go('s-stage')"><span class="ic">MGT00748</span><span class="istate lit"></span><span class="iname"><span class="nm">Nissan Skyline GT-R R34</span><span class="lv">Bayside Blue · 1999</span></span><span class="decal r">R</span></div>
+              <div class="idxrow" onclick="go('s-release')"><span class="ic">MGT00802</span><span class="istate empty"></span><span class="iname"><span class="nm">Toyota GR Supra A90</span><span class="lv">Renaissance Red · 2020</span></span><span class="decal r">R</span></div>
+              <div class="idxrow" onclick="go('s-release')"><span class="ic">MGT00910</span><span class="istate empty"></span><span class="iname"><span class="nm">Lamborghini Huracán</span><span class="lv">Verde Mantis · 2019</span></span><span class="decal l">L</span></div>
+            </div>
+          </div>
+          <div class="tabbar">
+            <div class="tab on"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="3" y="3" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="11" y="3" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="3" y="11" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="11" y="11" width="6" height="6" rx="1.5" fill="currentColor"/></svg>Cabinet</div>
+            <div class="tab" onclick="go('s-catalog')"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="9" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M13 13l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Catalog</div>
+            <div class="tab" onclick="go('s-community')"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 2.5 17 6v8l-7 3.5L3 14V6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Library</div>
+            <div class="tab" onclick="go('s-settings')"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4 17c0-3.3 2.7-5 6-5s6 1.7 6 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Me</div>
+          </div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =====================================================================
+     FLOW C — CATALOG + RELEASE (pick path)
+     ===================================================================== -->
+<section class="flow">
+  <h2><span class="num">FLOW C</span> Catalog search &amp; release</h2>
+  <div class="rule"></div>
+  <p class="flowsub">Drive (LHD/RHD) is required as part of the key — it’s a designed twin-state decal toggle that expands inline <em>before</em> picking, never a hidden subtitle. The release card shows all three scan states: a community scan to pick, a Pro guided-scan invite, or a steel “no scan yet” contribution note.</p>
+  <div class="rail">
+
+    <!-- C1: Catalog search + drive selection -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Catalog search + drive</div>
+        <div class="st">result expanded · drive toggle</div>
+        <span class="badge amber">tap L / R to choose drive</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-catalog">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar">
+            <div class="left"><span class="navbtn back" onclick="go('s-home')">‹ Cabinet</span></div>
+            <div class="right"></div>
+          </div>
+          <div class="scroll">
+            <div style="padding:0 16px 8px"><div class="lg-title">Catalog</div></div>
+            <div class="searchfield" style="background:var(--cell-surface);border:1.5px solid var(--tungsten);color:var(--ink)">
+              <svg width="14" height="14" viewBox="0 0 14 14"><circle cx="6" cy="6" r="4.2" fill="none" stroke="var(--tungsten)" stroke-width="1.5"/><path d="M9.2 9.2 12.5 12.5" stroke="var(--tungsten)" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <span class="mono" style="color:var(--ink)">supra</span>
+            </div>
+            <div class="pad">
+              <div class="small mb8" style="font-family:var(--mono)">2 RELEASES · pick a drive to continue</div>
+
+              <!-- expanded result -->
+              <div class="resultrow">
+                <div class="rhead">
+                  <div class="carfig" style="width:64px;flex:0 0 auto"><svg viewBox="0 0 220 120" role="img" aria-label="diecast car">
+<defs>
+<linearGradient id="g4381563440" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#C8362B"/><stop offset="1" stop-color="#8E2018"/></linearGradient>
+</defs>
+<ellipse cx="110" cy="104" rx="86" ry="9" fill="rgba(22,24,29,.16)"/>
+<!-- body -->
+<path d="M18 78
+ C 24 64 40 60 56 58
+ C 70 44 96 40 120 42
+ C 150 44 168 52 182 62
+ C 196 64 204 70 204 80
+ L 204 86 C 204 90 200 92 196 92
+ L 24 92 C 20 92 16 90 16 84 Z"
+ fill="url(#g4381563440)" stroke="#8E2018" stroke-width="1"/>
+<!-- greenhouse / glass -->
+<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#2A1614" opacity="0.92"/>
+<!-- accent stripe -->
+<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#F2D9A6" opacity="0.9"/>
+<!-- wheels -->
+<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
+<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/>
+<!-- highlight -->
+<path d="M30 70 C 60 60 150 60 188 72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+</svg></div>
+                  <div style="flex:1;min-width:0">
+                    <div class="car-name" style="font-size:14.5px">Toyota GR Supra A90</div>
+                    <div class="small mt6"><span class="catcode">MGT00802</span> &nbsp;Renaissance Red · 2020</div>
+                  </div>
+                </div>
+                <div class="rexpand">
+                  <div class="uplabel mt12 mb8" style="letter-spacing:.1em">Choose drive — part of the key</div>
+                  <div class="drivetoggle" id="dt-supra">
+                    <button class="drivebtn l" onclick="pickDrive(this,'dt-supra')"><span class="dg">L</span><span class="dl">LHD</span></button>
+                    <button class="drivebtn r on" onclick="pickDrive(this,'dt-supra')"><span class="dg">R</span><span class="dl">RHD</span></button>
+                  </div>
+                  <button class="cta mt14" onclick="go('s-release')">Continue → Release</button>
+                </div>
+              </div>
+
+              <!-- collapsed result -->
+              <div class="resultrow">
+                <div class="rhead" onclick="go('s-release')">
+                  <div class="carfig" style="width:64px;flex:0 0 auto"><svg viewBox="0 0 220 120" role="img" aria-label="diecast car">
+<defs>
+<linearGradient id="g4381564400" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#F1EFEA"/><stop offset="1" stop-color="#C9C4B8"/></linearGradient>
+</defs>
+<ellipse cx="110" cy="104" rx="86" ry="9" fill="rgba(22,24,29,.16)"/>
+<!-- body -->
+<path d="M18 78
+ C 24 64 40 60 56 58
+ C 70 44 96 40 120 42
+ C 150 44 168 52 182 62
+ C 196 64 204 70 204 80
+ L 204 86 C 204 90 200 92 196 92
+ L 24 92 C 20 92 16 90 16 84 Z"
+ fill="url(#g4381564400)" stroke="#C9C4B8" stroke-width="1"/>
+<!-- greenhouse / glass -->
+<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#2E3742" opacity="0.92"/>
+<!-- accent stripe -->
+<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#9A4B17" opacity="0.9"/>
+<!-- wheels -->
+<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
+<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/>
+<!-- highlight -->
+<path d="M30 70 C 60 60 150 60 188 72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+</svg></div>
+                  <div style="flex:1;min-width:0">
+                    <div class="car-name" style="font-size:14.5px">Toyota Supra Mk4</div>
+                    <div class="small mt6"><span class="catcode">MGT00415</span> &nbsp;Super White · 1997</div>
+                  </div>
+                  <svg width="9" height="14" viewBox="0 0 9 14" style="flex:0 0 auto"><path d="M2 2l5 5-5 5" fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tabbar">
+            <div class="tab" onclick="go('s-home')"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="3" y="3" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="11" y="3" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="3" y="11" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="11" y="11" width="6" height="6" rx="1.5" fill="currentColor"/></svg>Cabinet</div>
+            <div class="tab on"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="9" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M13 13l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Catalog</div>
+            <div class="tab" onclick="go('s-community')"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 2.5 17 6v8l-7 3.5L3 14V6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Library</div>
+            <div class="tab" onclick="go('s-settings')"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4 17c0-3.3 2.7-5 6-5s6 1.7 6 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Me</div>
+          </div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- C2: Release detail — community scan present (PICK) -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Release detail — scan present</div>
+        <div class="st">community model → Pick to shelf</div>
+        <span class="badge amber">Pick · View in 3D</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-release">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar">
+            <div class="left"><span class="navbtn back" onclick="go('s-catalog')">‹ Catalog</span></div>
+            <div class="right"><span class="iconbtn" title="Report" onclick="go('s-share')"><svg width="15" height="15" viewBox="0 0 15 15"><path d="M3 13V2l8 1.5L3 5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span></div>
+          </div>
+          <div class="scroll"><div class="pad">
+            <!-- poster hero on a lit niche-face -->
+            <div class="niche lit" style="aspect-ratio:1.4/1;cursor:default;margin-bottom:14px">
+              <span class="prov comm">Community</span>
+              <div class="poster" style="padding-top:24px"><div class="carfig" style="max-width:190px"><svg viewBox="0 0 220 120" role="img" aria-label="diecast car">
+<defs>
+<linearGradient id="g4381563440" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#C8362B"/><stop offset="1" stop-color="#8E2018"/></linearGradient>
+</defs>
+<ellipse cx="110" cy="104" rx="86" ry="9" fill="rgba(22,24,29,.16)"/>
+<!-- body -->
+<path d="M18 78
+ C 24 64 40 60 56 58
+ C 70 44 96 40 120 42
+ C 150 44 168 52 182 62
+ C 196 64 204 70 204 80
+ L 204 86 C 204 90 200 92 196 92
+ L 24 92 C 20 92 16 90 16 84 Z"
+ fill="url(#g4381563440)" stroke="#8E2018" stroke-width="1"/>
+<!-- greenhouse / glass -->
+<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#2A1614" opacity="0.92"/>
+<!-- accent stripe -->
+<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#F2D9A6" opacity="0.9"/>
+<!-- wheels -->
+<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
+<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/>
+<!-- highlight -->
+<path d="M30 70 C 60 60 150 60 188 72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+</svg></div></div>
+            </div>
+            <div class="between" style="align-items:flex-start">
+              <div><div class="car-name" style="font-size:22px;line-height:1.05">Toyota GR<br>Supra A90</div></div>
+              <span class="decal big r">R</span>
+            </div>
+            <div class="row mt10" style="flex-wrap:wrap;gap:6px">
+              <span class="catcode" style="font-size:11px;padding:4px 8px">MGT00802</span>
+              <span class="chip steel">RHD</span>
+              <span class="chip ok">scan ✓ canonical</span>
+            </div>
+
+            <div class="surface mt14" style="padding:4px 14px">
+              <div class="metarow"><span class="k">Maker</span><span class="v">Mini GT · TSM</span></div>
+              <div class="metarow"><span class="k">Livery</span><span class="v">Renaissance Red 3.0</span></div>
+              <div class="metarow"><span class="k">Year</span><span class="v">2020</span></div>
+              <div class="metarow"><span class="k">Edition cap</span><span class="v mono">— open run</span></div>
+              <div class="metarow"><span class="k">Scan by</span><span class="v">@kenji_64 · ↓ 312</span></div>
+            </div>
+
+            <button class="cta mt16" onclick="go('s-stage')">＋ Pick to my shelf</button>
+            <button class="cta ghost mt10" onclick="go('s-stage')">
+              <svg width="15" height="15" viewBox="0 0 15 15"><path d="M7.5 1.5 13 4.5v6l-5.5 3L2 10.5v-6z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+              View in 3D
+            </button>
+            <p class="small center mt10">Picking copies the canonical scan to your shelf via a presigned R2 fetch. Adds the (MGT00802 · R) slot — lit.</p>
+          </div></div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- C3: Release detail — no scan, NON-PRO (steel contribution note) -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Release detail — no scan yet</div>
+        <div class="st">non-Pro viewer · contribution note</div>
+        <span class="badge">light-as-state, not a dead button</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-release-noscan">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar">
+            <div class="left"><span class="navbtn back" onclick="go('s-catalog')">‹ Catalog</span></div>
+            <div class="right"></div>
+          </div>
+          <div class="scroll"><div class="pad">
+            <!-- recessed (unlit) hero -->
+            <div class="niche empty" style="aspect-ratio:1.4/1;cursor:default;margin-bottom:14px">
+              <div class="emptyhint"><div class="ecode" style="font-size:12px">No scan in the library yet</div></div>
+            </div>
+            <div class="between" style="align-items:flex-start">
+              <div><div class="car-name" style="font-size:22px;line-height:1.05">Lamborghini<br>Huracán EVO</div></div>
+              <span class="decal big l">L</span>
+            </div>
+            <div class="row mt10" style="flex-wrap:wrap;gap:6px">
+              <span class="catcode" style="font-size:11px;padding:4px 8px">MGT00910</span>
+              <span class="chip steel">LHD</span>
+              <span class="chip steel">no scan</span>
+            </div>
+            <div class="surface mt14" style="padding:4px 14px">
+              <div class="metarow"><span class="k">Maker</span><span class="v">Mini GT</span></div>
+              <div class="metarow"><span class="k">Livery</span><span class="v">Verde Mantis</span></div>
+              <div class="metarow"><span class="k">Year</span><span class="v">2019</span></div>
+            </div>
+            <div class="specnote mt16">
+              <div style="display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:5px">
+                <span class="decal" style="background:var(--steel);width:18px;height:18px">i</span> No community scan yet
+              </div>
+              No one has scanned this release + drive. Seeding it needs a <b>Pro iPhone (12 Pro – 17 Pro)</b>. We’ll light this niche the moment a scan lands.
+            </div>
+            <button class="cta outline-steel mt12" onclick="go('s-community')">Notify me when it’s scanned</button>
+          </div></div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =====================================================================
+     FLOW D — 3D VIEWER (dark stage) + AR
+     ===================================================================== -->
+<section class="flow">
+  <h2><span class="num">FLOW D</span> 3D viewer &amp; AR — the dark stage</h2>
+  <div class="rule"></div>
+  <p class="flowsub">The single sanctioned dark surface, reached via the lift-from-the-case transition: the poster rises out of its niche, warm chrome cross-dims to <span class="mono" style="color:var(--tungsten-deep)">--stage-0</span>, and the car settles on a spotlit turntable. Live model rotates here via RealityView; one-tap tungsten “View in AR” hands off to AR Quick Look.</p>
+  <div class="rail">
+
+    <!-- D1: 3D viewer dark stage -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">3D viewer — dark stage</div>
+        <div class="st">spotlit turntable · RealityView</div>
+        <span class="badge stage">the ONE dark surface</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen stage" id="s-stage">
+          <div class="rim"></div>
+          <div class="statusbar onstage"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <!-- nav over stage -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:2px 14px 4px;position:relative;z-index:30">
+            <span class="navbtn" style="color:#FFE6CE" onclick="go('s-home')">‹ Cabinet</span>
+            <div style="text-align:center"><div class="car-name" style="color:#F2EFE8;font-size:15px">911 GT3 RS</div></div>
+            <span class="iconbtn" style="background:rgba(255,255,255,.1);color:#cdd3dd" onclick="go('s-share')">
+              <svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 9V2M4 4.5 7 1.5l3 3M2.5 8.5V12h9V8.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+
+          <div class="stagewrap">
+            <div class="turntable">
+              <div class="carfig" style="width:80%;max-width:230px"><svg viewBox="0 0 220 120" role="img" aria-label="diecast car">
+<defs>
+<linearGradient id="g4381562736" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#E4E7EC"/><stop offset="1" stop-color="#A7ADB6"/></linearGradient>
+</defs>
+<ellipse cx="110" cy="104" rx="86" ry="9" fill="rgba(0,0,0,0)"/>
+<!-- body -->
+<path d="M18 78
+ C 24 64 40 60 56 58
+ C 70 44 96 40 120 42
+ C 150 44 168 52 182 62
+ C 196 64 204 70 204 80
+ L 204 86 C 204 90 200 92 196 92
+ L 24 92 C 20 92 16 90 16 84 Z"
+ fill="url(#g4381562736)" stroke="#A7ADB6" stroke-width="1"/>
+<!-- greenhouse / glass -->
+<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#3A4654" opacity="0.92"/>
+<!-- accent stripe -->
+<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#F26B1F" opacity="0.9"/>
+<!-- wheels -->
+<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#FFE6CE"/>
+<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#FFE6CE"/>
+<!-- highlight -->
+<path d="M30 70 C 60 60 150 60 188 72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.7" stroke-linecap="round"/>
+</svg></div>
+              <div class="plinth"></div>
+            </div>
+            <div class="stage-anno">↻ live model rotates here via RealityView · drag to orbit, pinch to zoom · idle auto-orbit</div>
+          </div>
+
+          <div class="stage-controlbar">
+            <div class="stage-tele">
+              <div><b>MGT00612</b> · DRIVE <b>L</b> · DETAIL <b>REDUCED</b></div>
+              <div>USDZ 2.8 MB · serial <b>1510/2022</b></div>
+            </div>
+            <button class="arbtn" onclick="go('s-ar')">
+              <svg width="15" height="15" viewBox="0 0 15 15"><path d="M7.5 1.5 13 4.5v6l-5.5 3L2 10.5v-6z" fill="none" stroke="#fff" stroke-width="1.3" stroke-linejoin="round"/><path d="M2 4.5 7.5 7.5 13 4.5M7.5 7.5v6" fill="none" stroke="#fff" stroke-width="1.1"/></svg>
+              View in AR
+            </button>
+          </div>
+          <div class="homebar light"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- D2: AR placement preview -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">AR placement preview</div>
+        <div class="st">AR Quick Look handoff · on a table</div>
+        <span class="badge amber">“show a friend” moment</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-ar">
+          <div class="statusbar"><span style="color:#16181D">9:41</span><span class="glyphs" style="color:#16181D">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:2px 14px 6px;position:relative;z-index:30">
+            <span class="iconbtn" style="background:rgba(255,255,255,.7)" onclick="go('s-stage')">
+              <svg width="13" height="13" viewBox="0 0 13 13"><path d="M9 2 4 6.5 9 11" fill="none" stroke="#16181D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="chip steel" style="background:rgba(255,255,255,.78)">AR QUICK LOOK</span>
+            <span class="iconbtn" style="background:rgba(255,255,255,.7)" onclick="go('s-stage')">✕</span>
+          </div>
+          <div class="arscene">
+            <div class="room"></div>
+            <!-- coaching state -->
+            <div class="ar-coach">
+              <div class="ring">⌖</div>
+              <span class="ct">Move your phone to find a table</span>
+            </div>
+            <!-- placed car -->
+            <div class="ar-table-car"><div class="carfig" style="filter:drop-shadow(0 12px 10px rgba(0,0,0,.35))"><svg viewBox="0 0 220 120" role="img" aria-label="diecast car">
+<defs>
+<linearGradient id="g4381562416" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#D9DCE1"/><stop offset="1" stop-color="#9AA0A8"/></linearGradient>
+</defs>
+<ellipse cx="110" cy="104" rx="86" ry="9" fill="rgba(22,24,29,.16)"/>
+<!-- body -->
+<path d="M18 78
+ C 24 64 40 60 56 58
+ C 70 44 96 40 120 42
+ C 150 44 168 52 182 62
+ C 196 64 204 70 204 80
+ L 204 86 C 204 90 200 92 196 92
+ L 24 92 C 20 92 16 90 16 84 Z"
+ fill="url(#g4381562416)" stroke="#9AA0A8" stroke-width="1"/>
+<!-- greenhouse / glass -->
+<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#2E3742" opacity="0.92"/>
+<!-- accent stripe -->
+<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#F26B1F" opacity="0.9"/>
+<!-- wheels -->
+<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
+<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/>
+<!-- highlight -->
+<path d="M30 70 C 60 60 150 60 188 72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+</svg></div></div>
+            <!-- success moment -->
+            <div class="ar-success">
+              <span class="iconbtn" style="background:var(--tungsten-glow);color:var(--tungsten-deep);width:38px;height:38px;flex:0 0 auto">
+                <svg width="18" height="18" viewBox="0 0 18 18"><path d="M4 9.5 7.5 13 14 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <div style="flex:1">
+                <div style="font-weight:700;font-size:13px">Placed on the table</div>
+                <div class="small" style="color:var(--ink-soft)">Hand the phone over — pinch to resize, drag to spin.</div>
+              </div>
+            </div>
+          </div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =====================================================================
+     FLOW E — SCAN + BOND (Pro only)
+     ===================================================================== -->
+<section class="flow">
+  <h2><span class="num">FLOW E</span> Guided scan &amp; bond <span style="font-family:var(--mono);font-size:.62rem;color:var(--steel);background:var(--steel-soft);padding:3px 8px;border-radius:6px;letter-spacing:.05em">PRO ONLY</span></h2>
+  <div class="rule"></div>
+  <p class="flowsub">Honest about Spike-0 quality: coverage telemetry during capture, a determinate reconstruct, and a keep/re-scan verdict with a <span style="color:#7a5a00;font-weight:600">--warn “reduced detail”</span> note — never a triumphant success-only toast. Bonding (number + drive + optional edition serial) is a separate step, so identity never depends on scan success.</p>
+  <div class="rail">
+
+    <!-- E1: remove-from-case tip -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Guided scan — step 1</div>
+        <div class="st">remove-from-case tip</div>
+        <span class="badge">diffuse-light guidance</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-scan-tip">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar"><div class="left"><span class="navbtn" onclick="go('s-home')">Cancel</span></div>
+            <div class="right"><span class="chip steel">Step 1 / 4</span></div></div>
+          <div class="scroll"><div class="pad">
+            <div class="lg-title mb12">Before you scan</div>
+            <div class="surface" style="padding:18px;text-align:center;margin-bottom:12px">
+              <svg width="150" height="110" viewBox="0 0 150 110" style="display:block;margin:0 auto">
+                <rect x="20" y="14" width="110" height="74" rx="8" fill="none" stroke="var(--line)" stroke-width="2"/>
+                <rect x="28" y="22" width="94" height="58" rx="4" fill="#F4F0E7"/>
+                <g transform="translate(48,46)"><ellipse cx="28" cy="30" rx="30" ry="6" fill="rgba(22,24,29,.12)"/><path d="M2 30 C6 22 16 20 24 19 C32 12 48 10 60 12 C74 14 84 19 92 24 C100 25 104 29 104 34 L104 37 L4 37 C2 37 0 35 0 32 Z" fill="#C8362B" stroke="#8E2018" stroke-width="0.8"/>
+<path d="M26 19 C34 13 48 11 58 13 C68 15 76 19 82 24 L34 24 C30 21 28 20 26 19 Z" fill="#cfe3ee" opacity="0.9"/>
+<circle cx="28" cy="37" r="8" fill="#1b1d22"/><circle cx="28" cy="37" r="3.6" fill="#e8eaee"/>
+<circle cx="82" cy="37" r="8" fill="#1b1d22"/><circle cx="82" cy="37" r="3.6" fill="#e8eaee"/></g>
+                <path d="M132 24 L146 12" stroke="var(--tungsten)" stroke-width="2.4" stroke-linecap="round"/>
+                <path d="M138 12 L146 12 L146 20" fill="none" stroke="var(--tungsten)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div class="car-name mt12" style="font-size:17px">Take it out of the case</div>
+              <p class="small mt6" style="max-width:30ch;margin:6px auto 0">Clear acrylic confuses photogrammetry. Place the loose car on a matte, evenly-lit surface — no harsh window light.</p>
+            </div>
+            <div class="well mb12"><div class="wt">💡 Lighting</div>Soft, diffuse light from several sides. Glossy diecast loves to reflect — kill the hotspots.</div>
+            <button class="cta" onclick="go('s-scan-capture')">Start capture orbit</button>
+          </div></div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- E2: capture orbit gauge -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Guided scan — step 2</div>
+        <div class="st">capture orbit · coverage telemetry</div>
+        <span class="badge amber">live mono telemetry</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen stage" id="s-scan-capture">
+          <div class="statusbar onstage"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:2px 14px 4px;position:relative;z-index:30">
+            <span class="navbtn" style="color:#FFE6CE" onclick="go('s-scan-tip')">‹ Back</span>
+            <span class="chip" style="background:rgba(255,255,255,.1);color:#cdd3dd">Step 2 / 4</span>
+          </div>
+          <div class="stagewrap" style="justify-content:flex-start;padding-top:18px">
+            <div class="gaugewrap">
+              <div class="orbit">
+                <svg width="170" height="170" viewBox="0 0 170 170">
+                  <circle cx="85" cy="85" r="74" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="8"/>
+                  <!-- captured arc 72% -->
+                  <circle cx="85" cy="85" r="74" fill="none" stroke="url(#orbg)" stroke-width="8" stroke-linecap="round"
+                    stroke-dasharray="334.6 465" transform="rotate(-90 85 85)"/>
+                  <defs><linearGradient id="orbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE6CE"/><stop offset="1" stop-color="#F26B1F"/></linearGradient></defs>
+                  <!-- tick markers -->
+                  <g stroke="rgba(255,255,255,.25)" stroke-width="2"><line x1="85" y1="4" x2="85" y2="12"/><line x1="166" y1="85" x2="158" y2="85"/><line x1="85" y1="166" x2="85" y2="158"/><line x1="4" y1="85" x2="12" y2="85"/></g>
+                </svg>
+                <div class="coverbadge"><span class="pct">72%</span><span class="lbl">coverage</span></div>
+              </div>
+              <div class="stage-tele" style="text-align:center;font-size:11px">
+                <div><b>COVERAGE 72%</b> · <b>41 SHOTS</b></div>
+                <div style="color:#8a93a3;margin-top:4px">keep orbiting — capture the roof &amp; underside</div>
+              </div>
+            </div>
+          </div>
+          <div class="stage-controlbar" style="justify-content:center">
+            <button class="arbtn" style="background:#fff;color:var(--stage-0)" onclick="go('s-scan-recon')">Finish &amp; reconstruct</button>
+          </div>
+          <div class="homebar light"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- E3: reconstructing -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Guided scan — step 3</div>
+        <div class="st">on-device reconstruct → USDZ</div>
+        <span class="badge">determinate progress</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-scan-recon">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar"><div class="left"></div><div class="right"><span class="chip steel">Step 3 / 4</span></div></div>
+          <div class="midmsg" style="justify-content:flex-start;padding-top:40px">
+            <div class="niche lit" style="width:140px;height:140px;aspect-ratio:auto;cursor:default">
+              <div class="poster"><div class="carfig" style="width:78%"><svg viewBox="0 0 220 120" role="img" aria-label="diecast car">
+<defs>
+<linearGradient id="g4381563440" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#C8362B"/><stop offset="1" stop-color="#8E2018"/></linearGradient>
+</defs>
+<ellipse cx="110" cy="104" rx="86" ry="9" fill="rgba(22,24,29,.16)"/>
+<!-- body -->
+<path d="M18 78
+ C 24 64 40 60 56 58
+ C 70 44 96 40 120 42
+ C 150 44 168 52 182 62
+ C 196 64 204 70 204 80
+ L 204 86 C 204 90 200 92 196 92
+ L 24 92 C 20 92 16 90 16 84 Z"
+ fill="url(#g4381563440)" stroke="#8E2018" stroke-width="1"/>
+<!-- greenhouse / glass -->
+<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#2A1614" opacity="0.92"/>
+<!-- accent stripe -->
+<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#F2D9A6" opacity="0.9"/>
+<!-- wheels -->
+<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
+<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/>
+<!-- highlight -->
+<path d="M30 70 C 60 60 150 60 188 72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+</svg></div></div>
+            </div>
+            <div class="mt16" style="width:100%;padding:0 22px">
+              <div class="between mb8"><span class="uplabel">Reconstructing on-device</span><span class="mono" style="font-size:11px;color:var(--ink-soft)">64%</span></div>
+              <div class="progbar"><i style="width:64%"></i></div>
+              <p class="small center mt12">Meshing 41 frames into a reduced-detail USDZ. This runs entirely on your iPhone — nothing leaves the device yet.</p>
+            </div>
+          </div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- E4: keep / re-scan verdict -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Guided scan — step 4</div>
+        <div class="st">keep / re-scan verdict (Spike-0 honesty)</div>
+        <span class="badge warn">reduced-detail caveat</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-scan-verdict">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar"><div class="left"></div><div class="right"><span class="chip steel">Step 4 / 4</span></div></div>
+          <div class="scroll"><div class="verdict">
+            <div class="lg-title mb12">Good enough to<br>show a friend?</div>
+            <div class="surface" style="padding:14px">
+              <div class="vtop">
+                <div class="preview"><div class="carfig" style="width:78%"><svg viewBox="0 0 220 120" role="img" aria-label="diecast car">
+<defs>
+<linearGradient id="g4381563440" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#C8362B"/><stop offset="1" stop-color="#8E2018"/></linearGradient>
+</defs>
+<ellipse cx="110" cy="104" rx="86" ry="9" fill="rgba(22,24,29,.16)"/>
+<!-- body -->
+<path d="M18 78
+ C 24 64 40 60 56 58
+ C 70 44 96 40 120 42
+ C 150 44 168 52 182 62
+ C 196 64 204 70 204 80
+ L 204 86 C 204 90 200 92 196 92
+ L 24 92 C 20 92 16 90 16 84 Z"
+ fill="url(#g4381563440)" stroke="#8E2018" stroke-width="1"/>
+<!-- greenhouse / glass -->
+<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#2A1614" opacity="0.92"/>
+<!-- accent stripe -->
+<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#F2D9A6" opacity="0.9"/>
+<!-- wheels -->
+<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
+<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/>
+<!-- highlight -->
+<path d="M30 70 C 60 60 150 60 188 72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+</svg></div></div>
+                <div style="flex:1">
+                  <div class="chip ok mb6">scan complete</div>
+                  <div class="small" style="color:var(--ink-soft)">Body &amp; livery captured well. Spin it below to judge.</div>
+                </div>
+              </div>
+              <div class="metarow"><span class="k">Detail level</span><span class="v mono">REDUCED</span></div>
+              <div class="metarow"><span class="k">Size</span><span class="v mono">2.8 MB</span></div>
+              <div class="metarow"><span class="k">Coverage</span><span class="v mono">72%</span></div>
+            </div>
+            <div class="well mt12" style="background:#FBF1D8;border-color:#ecd9a8;color:#7a5a00">
+              <div class="wt" style="color:#7a5a00">⚠ Reduced detail</div>
+              Thin spoilers and clear windows came out soft — normal for small glossy diecast. Fine for showing off; re-scan if you want the canonical community model.
+            </div>
+            <button class="cta mt14" onclick="go('s-bond')">Keep it → Bond</button>
+            <button class="cta ghost mt10" onclick="go('s-scan-capture')">↻ Re-scan</button>
+          </div></div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- E5: bond flow -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Bond flow</div>
+        <div class="st">number + drive + optional serial</div>
+        <span class="badge amber">separate from scanning</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-bond">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar"><div class="left"><span class="navbtn back" onclick="go('s-scan-verdict')">‹ Verdict</span></div>
+            <div class="right"><span class="navbtn" onclick="go('s-share')">Save</span></div></div>
+          <div class="scroll"><div class="pad">
+            <div class="lg-title mb6">Bond the model</div>
+            <p class="small mb12">Attach the catalog identity. The scan is already saved — bonding just gives it a name.</p>
+
+            <div class="uplabel mb6">Mini GT number</div>
+            <div class="searchfield" style="background:var(--cell-surface);border:1.5px solid var(--line);color:var(--ink);justify-content:space-between">
+              <span class="mono" style="color:var(--ink)">MGT00802</span>
+              <span class="chip ok">matched · Supra A90</span>
+            </div>
+
+            <div class="uplabel mt14 mb6">Drive — required (half the key)</div>
+            <div class="drivetoggle" id="dt-bond">
+              <button class="drivebtn l" onclick="pickDrive(this,'dt-bond')"><span class="dg">L</span><span class="dl">LHD</span></button>
+              <button class="drivebtn r on" onclick="pickDrive(this,'dt-bond')"><span class="dg">R</span><span class="dl">RHD</span></button>
+            </div>
+
+            <div class="uplabel mt14 mb6">Edition serial — optional (per copy)</div>
+            <div class="searchfield" style="background:var(--cell-surface);border:1.5px solid var(--line);color:var(--ink)">
+              <span class="mono" style="color:var(--ink)">1510</span><span style="color:var(--muted)">/</span><span class="mono" style="color:var(--ink)">2022</span>
+            </div>
+            <p class="small mt8">Stamped on this copy only — never part of the shared dedup key.</p>
+
+            <button class="cta mt16" onclick="go('s-share')">Stamp &amp; bond</button>
+          </div></div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =====================================================================
+     FLOW F — COMMUNITY, SHARE, SETTINGS
+     ===================================================================== -->
+<section class="flow">
+  <h2><span class="num">FLOW F</span> Community library · share · settings</h2>
+  <div class="rule"></div>
+  <p class="flowsub">The shared library is deduped by (number, drive) — one canonical scan per release. Uploading is per-model opt-in with attribution and a non-commercial license note. Settings keeps iCloud opt-in (off by default) and exposes the DMCA / takedown contact required for launch.</p>
+  <div class="rail">
+
+    <!-- F1: community library browse -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Community library</div>
+        <div class="st">deduped by (number, drive)</div>
+        <span class="badge">provenance + downloads</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-community">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar"><div class="left"></div><div class="right"><span class="iconbtn" onclick="go('s-catalog')"><svg width="15" height="15" viewBox="0 0 15 15"><circle cx="6.5" cy="6.5" r="4.4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></div></div>
+          <div class="scroll">
+            <div style="padding:0 16px 8px"><div class="lg-title">Library</div></div>
+            <div class="lightbar" style="background:linear-gradient(180deg,#26344d,#1a2436)">
+              <span class="glowstrip" style="background:linear-gradient(90deg,#2B3A55,#5b7bb0 50%,#2B3A55)"></span>
+              <div class="lb-name">Community Vault</div>
+              <div class="lb-tele"><span><b style="color:#bcd0ee">1,284</b> SCANS</span><span class="sep">·</span><span><b style="color:#bcd0ee">812</b> RELEASES</span><span class="sep">·</span><span>1 canonical / (no.,drive)</span></div>
+            </div>
+            <div class="searchfield" onclick="go('s-catalog')"><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="6" cy="6" r="4.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9.2 9.2 12.5 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Search shared scans</div>
+            <div class="pad">
+              <div class="shelf-label"><span class="uplabel">Recently added</span><span class="rule"></span></div>
+              <div class="cabinet">
+                <div class="niche lit" onclick="go('s-release')"><span class="prov comm">Comm</span><div class="poster"><div class="carfig"><svg viewBox="0 0 220 120" role="img" aria-label="diecast car">
+<defs>
+<linearGradient id="g4381563120" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#2F6FB0"/><stop offset="1" stop-color="#1C4B7E"/></linearGradient>
+</defs>
+<ellipse cx="110" cy="104" rx="86" ry="9" fill="rgba(22,24,29,.16)"/>
+<!-- body -->
+<path d="M18 78
+ C 24 64 40 60 56 58
+ C 70 44 96 40 120 42
+ C 150 44 168 52 182 62
+ C 196 64 204 70 204 80
+ L 204 86 C 204 90 200 92 196 92
+ L 24 92 C 20 92 16 90 16 84 Z"
+ fill="url(#g4381563120)" stroke="#1C4B7E" stroke-width="1"/>
+<!-- greenhouse / glass -->
+<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#16324A" opacity="0.92"/>
+<!-- accent stripe -->
+<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#FFE6CE" opacity="0.9"/>
+<!-- wheels -->
+<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
+<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/>
+<!-- highlight -->
+<path d="M30 70 C 60 60 150 60 188 72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+</svg></div></div>
+                  <div class="placard"><div class="pl-name">911 Turbo</div><div class="pl-meta"><span class="catcode">MGT00489</span><span class="decal r">R</span><span class="small" style="margin-left:auto">↓ 142</span></div></div></div>
+                <div class="niche lit" onclick="go('s-release')"><span class="prov comm">Comm</span><div class="poster"><div class="carfig"><svg viewBox="0 0 220 120" role="img" aria-label="diecast car">
+<defs>
+<linearGradient id="g4381564400" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#F1EFEA"/><stop offset="1" stop-color="#C9C4B8"/></linearGradient>
+</defs>
+<ellipse cx="110" cy="104" rx="86" ry="9" fill="rgba(22,24,29,.16)"/>
+<!-- body -->
+<path d="M18 78
+ C 24 64 40 60 56 58
+ C 70 44 96 40 120 42
+ C 150 44 168 52 182 62
+ C 196 64 204 70 204 80
+ L 204 86 C 204 90 200 92 196 92
+ L 24 92 C 20 92 16 90 16 84 Z"
+ fill="url(#g4381564400)" stroke="#C9C4B8" stroke-width="1"/>
+<!-- greenhouse / glass -->
+<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#2E3742" opacity="0.92"/>
+<!-- accent stripe -->
+<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#9A4B17" opacity="0.9"/>
+<!-- wheels -->
+<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
+<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/>
+<!-- highlight -->
+<path d="M30 70 C 60 60 150 60 188 72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+</svg></div></div>
+                  <div class="placard"><div class="pl-name">Mazda RX-7</div><div class="pl-meta"><span class="catcode">MGT00377</span><span class="decal r">R</span><span class="small" style="margin-left:auto">↓ 98</span></div></div></div>
+                <div class="niche lit" onclick="go('s-release')"><span class="prov comm">Comm</span><div class="poster"><div class="carfig"><svg viewBox="0 0 220 120" role="img" aria-label="diecast car">
+<defs>
+<linearGradient id="g4381564720" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#3E7D4F"/><stop offset="1" stop-color="#27583A"/></linearGradient>
+</defs>
+<ellipse cx="110" cy="104" rx="86" ry="9" fill="rgba(22,24,29,.16)"/>
+<!-- body -->
+<path d="M18 78
+ C 24 64 40 60 56 58
+ C 70 44 96 40 120 42
+ C 150 44 168 52 182 62
+ C 196 64 204 70 204 80
+ L 204 86 C 204 90 200 92 196 92
+ L 24 92 C 20 92 16 90 16 84 Z"
+ fill="url(#g4381564720)" stroke="#27583A" stroke-width="1"/>
+<!-- greenhouse / glass -->
+<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#16261C" opacity="0.92"/>
+<!-- accent stripe -->
+<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#E7B638" opacity="0.9"/>
+<!-- wheels -->
+<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
+<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/>
+<!-- highlight -->
+<path d="M30 70 C 60 60 150 60 188 72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+</svg></div></div>
+                  <div class="placard"><div class="pl-name">Honda NSX</div><div class="pl-meta"><span class="catcode">MGT00256</span><span class="decal l">L</span><span class="small" style="margin-left:auto">↓ 211</span></div></div></div>
+                <div class="niche lit" onclick="go('s-release')"><span class="prov comm">Comm</span><div class="poster"><div class="carfig"><svg viewBox="0 0 220 120" role="img" aria-label="diecast car">
+<defs>
+<linearGradient id="g4381564016" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#E7B638"/><stop offset="1" stop-color="#B8860B"/></linearGradient>
+</defs>
+<ellipse cx="110" cy="104" rx="86" ry="9" fill="rgba(22,24,29,.16)"/>
+<!-- body -->
+<path d="M18 78
+ C 24 64 40 60 56 58
+ C 70 44 96 40 120 42
+ C 150 44 168 52 182 62
+ C 196 64 204 70 204 80
+ L 204 86 C 204 90 200 92 196 92
+ L 24 92 C 20 92 16 90 16 84 Z"
+ fill="url(#g4381564016)" stroke="#B8860B" stroke-width="1"/>
+<!-- greenhouse / glass -->
+<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#2E2A1A" opacity="0.92"/>
+<!-- accent stripe -->
+<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#2B3A55" opacity="0.9"/>
+<!-- wheels -->
+<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
+<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/>
+<!-- highlight -->
+<path d="M30 70 C 60 60 150 60 188 72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+</svg></div></div>
+                  <div class="placard"><div class="pl-name">Cayman GT4</div><div class="pl-meta"><span class="catcode">MGT00521</span><span class="decal l">L</span><span class="small" style="margin-left:auto">↓ 73</span></div></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="tabbar">
+            <div class="tab" onclick="go('s-home')"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="3" y="3" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="11" y="3" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="3" y="11" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="11" y="11" width="6" height="6" rx="1.5" fill="currentColor"/></svg>Cabinet</div>
+            <div class="tab" onclick="go('s-catalog')"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="9" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M13 13l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Catalog</div>
+            <div class="tab on"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 2.5 17 6v8l-7 3.5L3 14V6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Library</div>
+            <div class="tab" onclick="go('s-settings')"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4 17c0-3.3 2.7-5 6-5s6 1.7 6 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Me</div>
+          </div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- F2: share / opt-in upload -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Share — opt-in upload</div>
+        <div class="st">consent · attribution · license</div>
+        <span class="badge">per-model · revocable</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-share">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <!-- sheet grabber -->
+          <div style="text-align:center;padding:6px 0 2px"><span style="display:inline-block;width:36px;height:5px;border-radius:3px;background:var(--line)"></span></div>
+          <div class="navbar"><div class="left"><span class="navbtn" onclick="go('s-bond')">Cancel</span></div>
+            <div class="right"></div></div>
+          <div class="scroll"><div class="pad">
+            <div class="lg-title mb6">Share to the library?</div>
+            <p class="small mb12">This becomes the canonical scan for <span class="catcode">MGT00802</span> · <span class="decal r" style="width:14px;height:14px;font-size:8px;display:inline-grid;vertical-align:middle">R</span> if none exists yet. One canonical per (number, drive).</p>
+
+            <div class="surface" style="padding:4px 14px">
+              <div class="metarow"><span class="k">Attribution</span><span class="v">@erik_64</span></div>
+              <div class="metarow"><span class="k">License</span><span class="v">Non-commercial</span></div>
+              <div class="metarow"><span class="k">Visibility</span><span class="v">Community · revocable</span></div>
+            </div>
+
+            <div class="well mt12">
+              <div class="wt">📝 Uploader attestation</div>
+              I scanned a car I physically own and agree to the non-commercial terms. I can revoke this upload anytime.
+            </div>
+
+            <!-- upload progress -->
+            <div class="mt14">
+              <div class="between mb8"><span class="uplabel">Presigned upload → R2</span><span class="mono" style="font-size:11px;color:var(--ink-soft)">38%</span></div>
+              <div class="progbar"><i style="width:38%"></i></div>
+              <p class="small mt8">Bytes go straight to Cloudflare R2 — they never touch the server.</p>
+            </div>
+
+            <button class="cta mt14" onclick="go('s-home')">Agree &amp; upload</button>
+            <button class="cta ghost mt10" onclick="go('s-home')">Keep private on my shelf</button>
+          </div></div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- F3: settings -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Settings</div>
+        <div class="st">iCloud opt-in · capability · DMCA</div>
+        <span class="badge">iCloud off by default</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-settings">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar"><div class="left"><span class="navbtn back" onclick="go('s-home')">‹ Cabinet</span></div><div class="right"></div></div>
+          <div class="scroll"><div class="pad">
+            <div class="lg-title mb12">Me</div>
+            <!-- account -->
+            <div class="surface" style="padding:12px 14px;display:flex;align-items:center;gap:11px;margin-bottom:14px">
+              <div style="width:42px;height:42px;border-radius:50%;background:#000;display:grid;place-items:center;color:#fff;font-weight:700"></div>
+              <div style="flex:1"><div style="font-weight:700;font-size:14px">@erik_64</div><div class="small">Signed in with Apple</div></div>
+              <span class="chip ok">Pro</span>
+            </div>
+
+            <div class="uplabel mb6" style="color:var(--steel)">Storage</div>
+            <div class="surface mb14" style="padding:4px 14px">
+              <div class="metarow"><span class="k">iCloud sync</span><span style="display:inline-flex;align-items:center;gap:7px"><span class="small">off</span><span style="width:40px;height:24px;border-radius:14px;background:var(--cell-recess);position:relative;display:inline-block"><i style="position:absolute;left:2px;top:2px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2)"></i></span></span></div>
+              <div class="metarow" style="display:block"><span class="small" style="color:var(--muted)">Off by default — turning it on stores your USDZ models in your own iCloud and counts against your iCloud quota.</span></div>
+              <div class="metarow"><span class="k">On this iPhone</span><span class="v mono">23 cars · 0.9 GB</span></div>
+            </div>
+
+            <div class="uplabel mb6" style="color:var(--steel)">Device</div>
+            <div class="surface mb14" style="padding:4px 14px">
+              <div class="metarow"><span class="k">Scanning</span><span class="chip ok">supported · LiDAR</span></div>
+              <div class="metarow"><span class="k">Model</span><span class="v mono">iPhone 16 Pro</span></div>
+            </div>
+
+            <div class="uplabel mb6" style="color:var(--steel)">Safety &amp; legal</div>
+            <div class="surface" style="padding:4px 14px">
+              <div class="metarow" onclick="go('s-community')" style="cursor:pointer"><span class="k" style="color:var(--ink)">Report a model</span><span class="v" style="color:var(--muted)">›</span></div>
+              <div class="metarow" style="cursor:pointer"><span class="k" style="color:var(--ink)">DMCA / takedown contact</span><span class="v" style="color:var(--muted)">›</span></div>
+              <div class="metarow" style="cursor:pointer"><span class="k" style="color:var(--ink)">Non-commercial license</span><span class="v" style="color:var(--muted)">›</span></div>
+            </div>
+            <p class="small center mt14">Diecast Vault · v1.0 · catalog numbers are descriptive metadata only.</p>
+          </div></div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =====================================================================
+     FLOW G — CROSS-CUTTING STATES
+     ===================================================================== -->
+<section class="flow">
+  <h2><span class="num">FLOW G</span> Cross-cutting states</h2>
+  <div class="rule"></div>
+  <p class="flowsub">Empty, error, and offline are designed surfaces, not afterthoughts. The empty cabinet is an authored vitrine of dark niches inviting a first pick; offline keeps the cached shelf working while the library dims; nothing reads as a dead-greyed control.</p>
+  <div class="rail">
+
+    <!-- G1: empty cabinet -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Empty cabinet</div>
+        <div class="st">no cars yet · first-pick invite</div>
+        <span class="badge">authored empty state</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-empty">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar"><div class="left"></div><div class="right"><span class="iconbtn" onclick="go('s-settings')"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span></div></div>
+          <div class="scroll">
+            <div style="padding:0 16px 10px"><div class="lg-title">The Vault</div></div>
+            <div class="lightbar"><span class="glowstrip" style="opacity:.45"></span>
+              <div class="lb-name">Your cabinet is dark</div>
+              <div class="lb-tele"><span><b>0</b> LIT</span><span class="sep">·</span><span>pick your first release to light it up</span></div>
+            </div>
+            <div class="pad">
+              <div class="cabinet">
+                <div class="niche empty" onclick="go('s-catalog')"><div class="emptyhint"><div class="plus">+</div><div class="etxt">Pick a scan</div></div></div>
+                <div class="niche empty" onclick="go('s-catalog')"><div class="emptyhint"><div class="plus">+</div><div class="etxt">from the library</div></div></div>
+                <div class="niche empty" style="opacity:.7"></div>
+                <div class="niche empty" style="opacity:.55"></div>
+                <div class="niche empty" style="opacity:.4"></div>
+                <div class="niche empty" style="opacity:.3"></div>
+              </div>
+              <div class="center mt14">
+                <div class="car-name" style="font-size:18px">Light the first niche</div>
+                <p class="small mt6" style="max-width:30ch;margin:6px auto 14px">Browse the Mini GT catalog and pick a community scan — it lands lit in your cabinet.</p>
+                <button class="cta" onclick="go('s-catalog')">Browse the catalog</button>
+                <button class="navbtn mt12" onclick="go('s-scan-tip')">Or scan your own car ›</button>
+              </div>
+            </div>
+          </div>
+          <div class="tabbar">
+            <div class="tab on"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="3" y="3" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="11" y="3" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="3" y="11" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="11" y="11" width="6" height="6" rx="1.5" fill="currentColor"/></svg>Cabinet</div>
+            <div class="tab" onclick="go('s-catalog')"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="9" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M13 13l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Catalog</div>
+            <div class="tab" onclick="go('s-community')"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 2.5 17 6v8l-7 3.5L3 14V6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Library</div>
+            <div class="tab" onclick="go('s-settings')"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4 17c0-3.3 2.7-5 6-5s6 1.7 6 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Me</div>
+          </div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- G2: error -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Error — fetch / reconstruct failed</div>
+        <div class="st">with retry</div>
+        <span class="badge warn">error 4012</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-error">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar"><div class="left"><span class="navbtn back" onclick="go('s-home')">‹ Cabinet</span></div><div class="right"></div></div>
+          <div class="midmsg">
+            <div class="mi" style="background:#FBF1D8;color:#7a5a00">
+              <svg width="30" height="30" viewBox="0 0 30 30"><path d="M15 4 27 25H3z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M15 12v6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="15" cy="21.5" r="1.4" fill="currentColor"/></svg>
+            </div>
+            <div class="mt">Couldn’t reconstruct</div>
+            <p class="mp">The on-device reconstruction failed <span class="mono">(error 4012)</span> — usually too few angles or harsh reflections. Your captured frames are still saved.</p>
+            <button class="cta mt14" style="max-width:220px" onclick="go('s-scan-capture')">↻ Retry reconstruct</button>
+            <button class="cta ghost mt10" style="max-width:220px" onclick="go('s-scan-tip')">Re-scan with more light</button>
+          </div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- G3: offline -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Offline</div>
+        <div class="st">cached shelf works · library dimmed</div>
+        <span class="badge">graceful degrade</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-offline">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><path d="M1 9 L15 2" stroke="currentColor" stroke-width="1.4"/><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor" opacity=".4"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor" opacity=".4"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar"><div class="left"></div><div class="right"><span class="iconbtn" onclick="go('s-settings')"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span></div></div>
+          <div class="scroll">
+            <div style="padding:0 16px 10px"><div class="lg-title">The Vault</div></div>
+            <div class="offlinebanner">
+              <svg width="14" height="14" viewBox="0 0 14 14"><path d="M1 9 L13 2" stroke="currentColor" stroke-width="1.4"/></svg>
+              You’re offline — your shelf works from cache. The library is unavailable.
+            </div>
+            <div class="pad">
+              <div class="shelf-label"><span class="uplabel">Cached on this iPhone</span><span class="rule"></span></div>
+              <div class="cabinet">
+                <div class="niche lit" onclick="go('s-stage')"><span class="prov yours">Yours</span><div class="poster"><div class="carfig"><svg viewBox="0 0 220 120" role="img" aria-label="diecast car">
+<defs>
+<linearGradient id="g4381562416" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#D9DCE1"/><stop offset="1" stop-color="#9AA0A8"/></linearGradient>
+</defs>
+<ellipse cx="110" cy="104" rx="86" ry="9" fill="rgba(22,24,29,.16)"/>
+<!-- body -->
+<path d="M18 78
+ C 24 64 40 60 56 58
+ C 70 44 96 40 120 42
+ C 150 44 168 52 182 62
+ C 196 64 204 70 204 80
+ L 204 86 C 204 90 200 92 196 92
+ L 24 92 C 20 92 16 90 16 84 Z"
+ fill="url(#g4381562416)" stroke="#9AA0A8" stroke-width="1"/>
+<!-- greenhouse / glass -->
+<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#2E3742" opacity="0.92"/>
+<!-- accent stripe -->
+<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#F26B1F" opacity="0.9"/>
+<!-- wheels -->
+<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
+<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/>
+<!-- highlight -->
+<path d="M30 70 C 60 60 150 60 188 72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+</svg></div></div>
+                  <div class="placard"><div class="pl-name">911 GT3 RS</div><div class="pl-meta"><span class="catcode">MGT00612</span><span class="decal l">L</span></div></div></div>
+                <div class="niche lit" onclick="go('s-stage')"><span class="prov yours">Yours</span><div class="poster"><div class="carfig"><svg viewBox="0 0 220 120" role="img" aria-label="diecast car">
+<defs>
+<linearGradient id="g4381564720" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#3E7D4F"/><stop offset="1" stop-color="#27583A"/></linearGradient>
+</defs>
+<ellipse cx="110" cy="104" rx="86" ry="9" fill="rgba(22,24,29,.16)"/>
+<!-- body -->
+<path d="M18 78
+ C 24 64 40 60 56 58
+ C 70 44 96 40 120 42
+ C 150 44 168 52 182 62
+ C 196 64 204 70 204 80
+ L 204 86 C 204 90 200 92 196 92
+ L 24 92 C 20 92 16 90 16 84 Z"
+ fill="url(#g4381564720)" stroke="#27583A" stroke-width="1"/>
+<!-- greenhouse / glass -->
+<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#16261C" opacity="0.92"/>
+<!-- accent stripe -->
+<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#E7B638" opacity="0.9"/>
+<!-- wheels -->
+<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
+<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/>
+<!-- highlight -->
+<path d="M30 70 C 60 60 150 60 188 72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+</svg></div></div>
+                  <div class="placard"><div class="pl-name">Honda NSX</div><div class="pl-meta"><span class="catcode">MGT00256</span><span class="decal l">L</span></div></div></div>
+              </div>
+              <div class="shelf-label mt14"><span class="uplabel" style="color:var(--muted)">Library · unavailable offline</span><span class="rule"></span></div>
+              <div class="cabinet dimmed">
+                <div class="niche empty"><div class="emptyhint"><div class="etxt">—</div></div></div>
+                <div class="niche empty"><div class="emptyhint"><div class="etxt">—</div></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="tabbar">
+            <div class="tab on"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="3" y="3" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="11" y="3" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="3" y="11" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="11" y="11" width="6" height="6" rx="1.5" fill="currentColor"/></svg>Cabinet</div>
+            <div class="tab" style="opacity:.4"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="9" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M13 13l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Catalog</div>
+            <div class="tab" style="opacity:.4"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 2.5 17 6v8l-7 3.5L3 14V6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Library</div>
+            <div class="tab" onclick="go('s-settings')"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4 17c0-3.3 2.7-5 6-5s6 1.7 6 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Me</div>
+          </div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+  <footer style="margin-top:54px;border-top:1px solid var(--line);padding-top:18px;color:var(--muted);font-size:.82rem">
+    Diecast Vault · interactive mockup · design direction <b style="color:var(--tungsten-deep)">Vitrine — The Lit Display Cabinet</b> · Gate-1 review surface · 2026-06-17.
+    Live 3D models rotate on the dark stage via RealityView / AR Quick Look in the shipped app; here they are tasteful CSS placeholders.
+  </footer>
+</div>
+
+<script>
+/* ---------- click-through navigation: scroll a screen into view + flash ---------- */
+function go(id){
+  var el=document.getElementById(id);
+  if(!el){return;}
+  var phone=el.closest('.phone');
+  (phone||el).scrollIntoView({behavior:'smooth',block:'center',inline:'center'});
+  if(phone){
+    phone.animate(
+      [{boxShadow:'0 0 0 2px #2a2d34,0 1px 0 3px #45494f,0 22px 50px rgba(22,24,29,.30)'},
+       {boxShadow:'0 0 0 3px #F26B1F,0 0 0 7px rgba(242,107,31,.28),0 22px 50px rgba(22,24,29,.30)'},
+       {boxShadow:'0 0 0 2px #2a2d34,0 1px 0 3px #45494f,0 22px 50px rgba(22,24,29,.30)'}],
+      {duration:900,easing:'ease-out'}
+    );
+  }
+}
+
+/* ---------- drive decal toggle (designed twin-state) ---------- */
+function pickDrive(btn,group){
+  var wrap=document.getElementById(group);
+  wrap.querySelectorAll('.drivebtn').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  btn.animate([{transform:'rotateY(0deg) scale(1)'},{transform:'rotateY(18deg) scale(1.05)'},{transform:'rotateY(0deg) scale(1)'}],{duration:280,easing:'ease-out'});
+}
+
+/* ---------- segmented control (in-place where target equals self) ---------- */
+function seg(btn,selfId){
+  var bar=btn.parentNode;
+  bar.querySelectorAll('button').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+}
+</script>
+</body>
+</html>

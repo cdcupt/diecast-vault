@@ -1,0 +1,1287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Diecast Vault — Design Document · Vitrine</title>
+<style>
+  :root{
+    /* ===== LOCKED PALETTE (from the chosen direction) ===== */
+    --paper:#F7F4EC;        /* app canvas / gallery wall */
+    --cell-surface:#FFFFFF; /* lit niche face, sheets, rows */
+    --cell-recess:#EAE4D6;  /* unlit / empty niche fill */
+    --ink:#16181D;          /* primary text, names, titles */
+    --ink-soft:#3F434D;     /* secondary text, body */
+    --muted:#7C828E;        /* tertiary labels, captions */
+    --line:#E4DECF;         /* hairline mullions, dividers, frame */
+    --tungsten:#F26B1F;     /* PRIMARY ACCENT — lit/present/action */
+    --tungsten-deep:#D8540F;/* pressed/active accent */
+    --tungsten-glow:#FFE6CE;/* inner-glow halo pooled in a lit niche */
+    --steel:#2B3A55;        /* system/community/metadata identity */
+    --steel-soft:#EAF0F8;   /* steel chip fills, info wells */
+    --lhd:#1F7A8C;          /* DRIVE = LHD decal (teal-steel) */
+    --rhd:#9A4B17;          /* DRIVE = RHD decal (burnt amber) */
+    --ok:#1F9D62;           /* canonical/approved, success */
+    --warn:#B8860B;         /* reduced-detail caveat, pending */
+    --stage-0:#101319;      /* 3D viewer deepest backdrop (ONLY dark) */
+    --stage-1:#1B2029;      /* 3D viewer plinth / control material */
+    --stage-rim:#F26B1F;    /* 3D viewer rim-light / horizon */
+    /* ===== TYPE ===== */
+    --serif:"New York","Iowan Old Style",ui-serif,Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --shadow-cell:0 1px 0 rgba(255,255,255,.6) inset, 0 10px 28px rgba(22,24,29,.07);
+    --shadow-soft:0 1px 2px rgba(22,24,29,.05),0 10px 30px rgba(22,24,29,.06);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;max-width:100%;overflow-x:hidden}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.55;
+    -webkit-font-smoothing:antialiased;font-size:16px}
+  .wrap{max-width:1140px;margin:0 auto;padding:clamp(20px,3vw,48px)}
+  ::selection{background:var(--tungsten-glow);color:var(--ink)}
+
+  /* ---------- masthead ---------- */
+  header.masthead{position:relative;border-radius:18px;overflow:hidden;
+    background:
+      radial-gradient(120% 90% at 50% 118%, var(--tungsten-glow) 0%, rgba(255,230,206,0) 55%),
+      linear-gradient(180deg,#fffdf8,var(--cell-surface));
+    border:1px solid var(--line);box-shadow:var(--shadow-cell);
+    padding:clamp(20px,3vw,38px)}
+  .lightbar{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:.72rem;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--steel);margin-bottom:14px}
+  .lightbar .bulb{width:9px;height:9px;border-radius:50%;background:var(--tungsten);
+    box-shadow:0 0 0 4px var(--tungsten-glow)}
+  .lightbar .seg{flex:1;height:2px;border-radius:2px;
+    background:linear-gradient(90deg,var(--tungsten),var(--tungsten-glow) 70%,transparent)}
+  .mast-row{display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px;justify-content:space-between}
+  .brand{display:flex;align-items:center;gap:16px}
+  .logo{width:54px;height:54px;border-radius:14px;flex:0 0 auto;display:grid;place-items:center;
+    background:var(--cell-recess);position:relative;box-shadow:inset 0 -10px 14px rgba(242,107,31,.18),inset 0 2px 3px rgba(22,24,29,.18)}
+  .logo b{font-family:var(--mono);font-weight:800;font-size:13px;color:var(--tungsten-deep)}
+  h1{font-family:var(--serif);font-weight:700;font-size:clamp(2rem,1.2rem+3vw,3.4rem);line-height:1;
+    margin:0;letter-spacing:-.02em}
+  .sub{color:var(--muted);font-size:.95rem;margin-top:6px;max-width:60ch}
+  .meta-pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+  .pill{font-family:var(--mono);font-size:.7rem;letter-spacing:.03em;padding:5px 11px;border-radius:999px;
+    background:var(--cell-surface);border:1px solid var(--line);color:var(--ink-soft);white-space:nowrap}
+  .pill.accent{background:var(--tungsten);border-color:var(--tungsten);color:#fff}
+  .pill.steel{background:var(--steel-soft);border-color:#cfdcf0;color:var(--steel)}
+
+  /* ---------- nav / toc ---------- */
+  .toc{display:flex;flex-wrap:wrap;gap:6px;margin:22px 0 6px;font-size:.8rem}
+  .toc a{color:var(--steel);text-decoration:none;font-family:var(--mono);padding:5px 10px;border:1px solid var(--line);
+    border-radius:8px;background:var(--cell-surface)}
+  .toc a:hover{border-color:var(--tungsten);color:var(--tungsten-deep)}
+
+  /* ---------- sections ---------- */
+  section{margin-top:46px;scroll-margin-top:18px}
+  h2{font-size:clamp(1.2rem,.95rem+1vw,1.7rem);letter-spacing:-.01em;margin:0 0 4px;
+    display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  h2 .n{font-family:var(--mono);color:var(--tungsten-deep);font-size:.78em}
+  h3{font-size:1.05rem;margin:24px 0 8px;letter-spacing:-.01em}
+  h3.serif{font-family:var(--serif);font-weight:700;font-size:1.3rem}
+  p{margin:10px 0;color:var(--ink-soft);max-width:76ch}
+  .lead{font-size:1.07rem;color:var(--ink)}
+  .eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--muted);margin:0 0 4px}
+  .card{background:var(--cell-surface);border:1px solid var(--line);border-radius:16px;
+    padding:clamp(16px,2vw,26px);box-shadow:var(--shadow-soft)}
+  .fig{margin:18px 0;max-width:100%}
+  .fig svg{display:block;width:100%;max-width:100%;height:auto}
+  figcaption{font-size:.82rem;color:var(--muted);margin-top:10px;font-style:italic}
+  .grid{display:grid;gap:16px}
+  @media(min-width:720px){.grid.c2{grid-template-columns:1fr 1fr}.grid.c3{grid-template-columns:repeat(3,1fr)}}
+  .tile{background:var(--cell-surface);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .tile h4{margin:0 0 6px;font-size:.95rem}
+  .tile p{margin:0;font-size:.9rem}
+
+  /* ---------- palette swatches ---------- */
+  .swatches{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));margin:16px 0}
+  .sw{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--cell-surface)}
+  .sw .chip{height:54px}
+  .sw .lab{padding:8px 10px}
+  .sw .tok{font-family:var(--mono);font-size:.74rem;color:var(--ink);font-weight:600}
+  .sw .hex{font-family:var(--mono);font-size:.68rem;color:var(--muted)}
+  .sw .use{font-size:.72rem;color:var(--ink-soft);margin-top:3px;line-height:1.35}
+
+  /* ---------- type scale ---------- */
+  .typerow{display:flex;flex-wrap:wrap;gap:16px;align-items:baseline;padding:14px 0;border-bottom:1px dashed var(--line)}
+  .typerow:last-child{border-bottom:none}
+  .typerow .spec{flex:0 0 168px;font-family:var(--mono);font-size:.72rem;color:var(--muted);line-height:1.5}
+  .typerow .spec b{color:var(--steel)}
+  .ty-display{font-family:var(--serif);font-weight:700;letter-spacing:-.02em}
+  .ty-mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+  /* ---------- tables ---------- */
+  .tbl{overflow-x:auto;border:1px solid var(--line);border-radius:14px;margin:16px 0}
+  table{border-collapse:collapse;width:100%;font-size:.88rem}
+  @media(min-width:680px){table{min-width:600px}}
+  th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#F1ECE1;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft)}
+  tr:last-child td{border-bottom:none}
+  td .y{color:var(--ok);font-weight:700}
+  td .n{color:var(--muted)}
+  code{font-family:var(--mono);font-size:.86em;background:#F1ECE1;padding:1px 6px;border-radius:5px;color:var(--steel)}
+
+  /* ---------- lists ---------- */
+  ul.clean{margin:10px 0;padding-left:20px}ul.clean li{margin:6px 0;color:var(--ink-soft)}
+  ul.clean li strong{color:var(--ink)}
+
+  /* ---------- callouts ---------- */
+  .callout{border-left:4px solid var(--tungsten);background:#FFF3EA;border-radius:0 12px 12px 0;padding:14px 18px;margin:16px 0;color:var(--ink-soft)}
+  .callout.steel{border-left-color:var(--steel);background:var(--steel-soft)}
+  .callout.warn{border-left-color:var(--warn);background:#FBF3DD}
+  .callout b{color:var(--tungsten-deep)}
+  .callout.steel b{color:var(--steel)}
+  .callout.warn b{color:#7a5a00}
+
+  /* ---------- chips / decals shown inline ---------- */
+  .decal{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:5px;
+    font-family:var(--mono);font-weight:800;font-size:13px;color:#fff;vertical-align:middle;
+    box-shadow:0 1px 1px rgba(22,24,29,.25)}
+  .decal.l{background:var(--lhd)}
+  .decal.r{background:var(--rhd)}
+  .mtag{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.66rem;font-weight:700;
+    letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:6px;vertical-align:middle}
+  .mtag.yours{background:#ECECEF;color:var(--ink)}
+  .mtag.comm{background:var(--steel-soft);color:var(--steel)}
+  .mtag.placard{background:#F1ECE1;color:var(--steel);text-transform:none;letter-spacing:.02em}
+
+  /* ---------- design-system live examples ---------- */
+  .ds-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin:16px 0}
+  .ds{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--cell-surface)}
+  .ds .eyebrow{margin-bottom:12px}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-weight:600;font-size:.92rem;
+    border-radius:11px;padding:11px 18px;border:1px solid transparent;cursor:default;min-height:44px}
+  .btn.primary{background:var(--tungsten);color:#fff;box-shadow:0 6px 16px rgba(242,107,31,.28)}
+  .btn.primary:active{background:var(--tungsten-deep)}
+  .btn.secondary{background:var(--cell-surface);color:var(--steel);border-color:#cfdcf0}
+  .btn.ghost{background:transparent;color:var(--tungsten-deep);border-color:transparent}
+  .btn.steel-outline{background:transparent;color:var(--steel);border:1.5px solid var(--steel);opacity:.85}
+  .btn-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+  /* cabinet cell example */
+  .cell{position:relative;border-radius:12px;aspect-ratio:1/1;overflow:hidden;border:1px solid var(--line)}
+  .cell.lit{background:
+      radial-gradient(120% 80% at 50% 116%, var(--tungsten-glow) 0%, rgba(255,230,206,0) 60%),
+      var(--cell-surface);
+    box-shadow:var(--shadow-cell)}
+  .cell.empty{background:var(--cell-recess);
+    box-shadow:inset 0 3px 8px rgba(22,24,29,.10),inset 0 -2px 4px rgba(255,255,255,.4)}
+  .cell .placard{position:absolute;top:8px;left:8px}
+  .cell .drv{position:absolute;top:8px;right:8px}
+  .cell .nm{position:absolute;left:10px;bottom:10px;right:10px;font-family:var(--serif);font-weight:700;
+    font-size:.95rem;letter-spacing:-.01em;color:var(--ink)}
+  .cell .car{position:absolute;inset:0;display:grid;place-items:center}
+  .cell .hint{position:absolute;inset:0;display:grid;place-items:center;text-align:center;
+    font-family:var(--mono);font-size:.66rem;color:var(--muted);letter-spacing:.04em;padding:14px}
+
+  /* drive toggle */
+  .drive-toggle{display:inline-flex;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:var(--cell-surface)}
+  .drive-toggle .opt{display:flex;align-items:center;gap:7px;padding:9px 14px;font-family:var(--sans);font-size:.85rem;
+    color:var(--muted);min-height:44px}
+  .drive-toggle .opt.sel.l{background:#E5F2F4;color:var(--lhd)}
+  .drive-toggle .opt.sel.r{background:#F6ECE2;color:var(--rhd)}
+  .drive-toggle .opt+.opt{border-left:1px solid var(--line)}
+
+  /* capability badge */
+  .capbadge{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--steel);border-radius:10px;
+    padding:8px 12px;background:var(--steel-soft);color:var(--steel);font-size:.82rem}
+  .capbadge .dot{width:8px;height:8px;border-radius:50%;background:var(--steel)}
+
+  /* viewer chrome example */
+  .viewer{position:relative;border-radius:14px;overflow:hidden;min-height:180px;
+    background:radial-gradient(110% 80% at 50% 40%, var(--stage-1) 0%, var(--stage-0) 70%);
+    border:1px solid #2a3342}
+  .viewer .rim{position:absolute;left:0;right:0;bottom:42%;height:1px;
+    background:linear-gradient(90deg,transparent,var(--stage-rim),transparent);opacity:.7}
+  .viewer .turn{position:absolute;left:50%;top:46%;transform:translateX(-50%);width:120px;height:26px;border-radius:50%;
+    background:radial-gradient(closest-side, rgba(242,107,31,.35), transparent)}
+  .viewer .car3d{position:absolute;left:50%;top:30%;transform:translateX(-50%);color:#fff;opacity:.92;font-size:30px}
+  .viewer .ctrlbar{position:absolute;left:12px;right:12px;bottom:12px;display:flex;align-items:center;gap:10px;
+    background:rgba(27,32,41,.66);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.08);
+    border-radius:12px;padding:9px 12px}
+  .viewer .ctrlbar .tel{font-family:var(--mono);font-size:.66rem;color:#c9cedb;font-variant-numeric:tabular-nums}
+  .viewer .ctrlbar .ar{margin-left:auto;background:var(--tungsten);color:#fff;font-family:var(--sans);font-weight:600;
+    font-size:.78rem;padding:7px 12px;border-radius:9px}
+
+  /* spec card */
+  .speccard{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--cell-surface)}
+  .speccard .band{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);
+    background:#F1ECE1}
+  .speccard .band .num{font-family:var(--mono);font-weight:700;font-size:.82rem;color:var(--steel)}
+  .speccard .body{padding:14px}
+  .speccard .body h5{font-family:var(--serif);font-weight:700;font-size:1.15rem;margin:0 0 8px;letter-spacing:-.01em}
+  .speccard .row{display:flex;justify-content:space-between;font-size:.8rem;padding:4px 0;border-bottom:1px dashed var(--line)}
+  .speccard .row:last-child{border-bottom:none}
+  .speccard .row .k{color:var(--muted);font-family:var(--mono);font-size:.72rem;letter-spacing:.03em}
+  .speccard .row .v{color:var(--ink-soft);font-family:var(--mono);font-size:.74rem;font-variant-numeric:tabular-nums}
+
+  /* phone frame for screen specs */
+  .screenrow{display:grid;gap:20px;align-items:start;margin:18px 0}
+  @media(min-width:860px){.screenrow{grid-template-columns:248px 1fr}}
+  .phone{justify-self:center;width:230px;border-radius:34px;border:8px solid #15171c;background:var(--paper);
+    overflow:hidden;box-shadow:var(--shadow-soft);position:relative}
+  .phone .notch{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:90px;height:18px;border-radius:12px;background:#15171c;z-index:5}
+  .phone .scr{height:436px;overflow:hidden;display:flex;flex-direction:column}
+  .phone svg{display:block;width:100%;height:auto}
+  .specbox h4{margin:0 0 6px;font-size:1.05rem}
+  .specbox .purpose{font-size:.92rem;color:var(--ink);margin:0 0 10px}
+  .specbox .lbl{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:14px 0 4px}
+  .specbox ul{margin:4px 0;padding-left:18px}
+  .specbox li{font-size:.86rem;color:var(--ink-soft);margin:4px 0}
+  .stateline{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .st{font-family:var(--mono);font-size:.66rem;padding:3px 8px;border-radius:6px;border:1px solid var(--line);background:var(--cell-surface);color:var(--ink-soft)}
+  .st.load{border-color:#cfdcf0;color:var(--steel)}
+  .st.empty{border-color:var(--line);color:var(--muted)}
+  .st.err{border-color:#e7b9af;color:#a82a17;background:#fdecea}
+  .st.off{border-color:#cfdcf0;color:var(--steel);background:var(--steel-soft)}
+  .st.ns{border-color:var(--steel);color:var(--steel)}
+
+  .sev{font-family:var(--mono);font-size:.68rem;padding:2px 8px;border-radius:6px;font-weight:700;white-space:nowrap}
+  .matrix td{font-size:.8rem}
+  .matrix .yes{color:var(--ok);font-weight:700}
+  .matrix .na{color:#cfc9bb}
+  .matrix .key{color:var(--tungsten-deep);font-weight:700}
+
+  .q .item{position:relative;padding:12px 0 12px 42px;border-bottom:1px dashed var(--line);color:var(--ink-soft)}
+  .q .item:before{counter-increment:q;content:"Q" counter(q);position:absolute;left:0;top:12px;font-family:var(--mono);color:var(--tungsten-deep);font-weight:700}
+  .q{counter-reset:q}
+  .q .item:last-child{border-bottom:none}
+
+  footer{margin-top:54px;border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:.82rem}
+  a.mocklink{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.82rem;
+    text-decoration:none;color:var(--tungsten-deep);border:1px solid var(--tungsten);border-radius:10px;
+    padding:9px 14px;background:#FFF3EA}
+  a.mocklink:hover{background:var(--tungsten);color:#fff}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============================================================= -->
+  <!-- 0 · MASTHEAD -->
+  <!-- ============================================================= -->
+  <header class="masthead">
+    <div class="lightbar">
+      <span class="bulb"></span>
+      <span>Diecast&nbsp;Vault · Design System</span>
+      <span class="seg"></span>
+      <span>Vitrine · the lit display cabinet</span>
+    </div>
+    <div class="mast-row">
+      <div class="brand">
+        <div class="logo"><b>1:64</b></div>
+        <div>
+          <h1>Diecast&nbsp;Vault</h1>
+          <div class="sub">Design Document — a warm, light-luxury iOS collection app whose home is a backlit museum vitrine. Light&nbsp;=&nbsp;state. One dark surface, reached diegetically.</div>
+        </div>
+      </div>
+      <div class="meta-pills">
+        <span class="pill accent">DESIGN v1.0</span>
+        <span class="pill steel">Pipeline Step 2</span>
+        <span class="pill">SwiftUI · RealityKit</span>
+        <span class="pill">2026-06-17</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="Document sections">
+    <a href="#glance">★ At a glance</a>
+    <a href="#principles">1 · Principles &amp; direction</a>
+    <a href="#ia">2 · IA / screen-map</a>
+    <a href="#flows">3 · Key flows</a>
+    <a href="#screens">4 · Screen specs</a>
+    <a href="#matrix">5 · State matrix</a>
+    <a href="#system">6 · Component system</a>
+    <a href="#motion">7 · Motion &amp; a11y</a>
+    <a href="#open">8 · Open questions</a>
+  </nav>
+
+  <!-- ============================================================= -->
+  <!-- ★ AT A GLANCE — MASTER DIAGRAM -->
+  <!-- ============================================================= -->
+  <section id="glance">
+    <h2><span class="n">★</span> At a glance</h2>
+    <p class="lead">One screen fusing the whole design: the <strong>information architecture</strong> (tabs → screens), the <strong>light-as-state</strong> spine that does the messaging, the <strong>locked palette &amp; type voices</strong>, and the single sanctioned dark surface — the 3D stage you <em>lift a car onto</em>.</p>
+    <div class="card fig">
+      <svg viewBox="0 0 1140 720" role="img" aria-label="Master diagram: information architecture, light-as-state spine, palette and typography, and the dark stage">
+        <defs>
+          <marker id="m-ink" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#16181D"/></marker>
+          <marker id="m-tun" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#F26B1F"/></marker>
+          <marker id="m-stl" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#2B3A55"/></marker>
+          <radialGradient id="glow" cx="50%" cy="118%" r="80%"><stop offset="0%" stop-color="#FFE6CE"/><stop offset="60%" stop-color="#FFE6CE" stop-opacity="0"/></radialGradient>
+          <radialGradient id="stage" cx="50%" cy="38%" r="75%"><stop offset="0%" stop-color="#1B2029"/><stop offset="75%" stop-color="#101319"/></radialGradient>
+        </defs>
+
+        <!-- ===== TOP-LEFT: IA map ===== -->
+        <text x="24" y="30" font-family="var(--mono)" font-size="12" font-weight="700" fill="#7C828E" style="letter-spacing:.1em">INFORMATION ARCHITECTURE · 4-TAB NATIVE SHELL</text>
+        <!-- tab bar -->
+        <rect x="24" y="44" width="540" height="40" rx="10" fill="#fff" stroke="#E4DECF"/>
+        <g font-family="var(--sans)" font-size="11" text-anchor="middle">
+          <text x="92" y="62" font-weight="700" fill="#F26B1F">▦ Cabinet</text><text x="92" y="76" font-size="9" fill="#7C828E">Home</text>
+          <text x="226" y="62" font-weight="700" fill="#16181D">⌕ Catalog</text><text x="226" y="76" font-size="9" fill="#7C828E">browse · pick</text>
+          <text x="360" y="62" font-weight="700" fill="#16181D">☁ Library</text><text x="360" y="76" font-size="9" fill="#7C828E">community</text>
+          <text x="494" y="62" font-weight="700" fill="#16181D">⚙ Settings</text><text x="494" y="76" font-size="9" fill="#7C828E">account</text>
+          <line x1="159" y1="50" x2="159" y2="78" stroke="#E4DECF"/><line x1="293" y1="50" x2="293" y2="78" stroke="#E4DECF"/><line x1="427" y1="50" x2="427" y2="78" stroke="#E4DECF"/>
+        </g>
+        <!-- screens under tabs -->
+        <g font-family="var(--sans)" font-size="10">
+          <!-- Cabinet branch -->
+          <rect x="24" y="108" width="136" height="34" rx="8" fill="#FFF3EA" stroke="#F26B1F"/><text x="92" y="129" text-anchor="middle" font-weight="700" fill="#16181D">The Cabinet</text>
+          <rect x="24" y="152" width="136" height="30" rx="8" fill="#fff" stroke="#E4DECF"/><text x="92" y="171" text-anchor="middle" fill="#3F434D">Index list mode</text>
+          <rect x="24" y="192" width="136" height="30" rx="8" fill="#fff" stroke="#E4DECF"/><text x="92" y="211" text-anchor="middle" fill="#3F434D">Release detail</text>
+          <line x1="92" y1="84" x2="92" y2="106" stroke="#F26B1F" stroke-width="1.5" marker-end="url(#m-tun)"/>
+          <line x1="92" y1="142" x2="92" y2="150" stroke="#16181D" stroke-width="1.2" marker-end="url(#m-ink)"/>
+          <line x1="92" y1="182" x2="92" y2="190" stroke="#16181D" stroke-width="1.2" marker-end="url(#m-ink)"/>
+          <!-- Catalog branch -->
+          <rect x="172" y="108" width="142" height="34" rx="8" fill="#fff" stroke="#E4DECF"/><text x="243" y="129" text-anchor="middle" font-weight="700" fill="#16181D">Catalog search</text>
+          <rect x="172" y="152" width="142" height="30" rx="8" fill="#fff" stroke="#E4DECF"/><text x="243" y="171" text-anchor="middle" fill="#3F434D">Drive (L/R) select</text>
+          <line x1="243" y1="84" x2="243" y2="106" stroke="#2B3A55" stroke-width="1.3" marker-end="url(#m-stl)"/>
+          <line x1="243" y1="142" x2="243" y2="150" stroke="#16181D" stroke-width="1.2" marker-end="url(#m-ink)"/>
+          <!-- Library branch -->
+          <rect x="326" y="108" width="120" height="34" rx="8" fill="#fff" stroke="#E4DECF"/><text x="386" y="129" text-anchor="middle" font-weight="700" fill="#16181D">Library browse</text>
+          <rect x="326" y="152" width="120" height="30" rx="8" fill="#fff" stroke="#E4DECF"/><text x="386" y="171" text-anchor="middle" fill="#3F434D">Share / upload</text>
+          <line x1="386" y1="84" x2="386" y2="106" stroke="#2B3A55" stroke-width="1.3" marker-end="url(#m-stl)"/>
+          <line x1="386" y1="142" x2="386" y2="150" stroke="#16181D" stroke-width="1.2" marker-end="url(#m-ink)"/>
+          <!-- Settings branch -->
+          <rect x="458" y="108" width="106" height="34" rx="8" fill="#fff" stroke="#E4DECF"/><text x="511" y="129" text-anchor="middle" font-weight="700" fill="#16181D">Settings</text>
+          <rect x="458" y="152" width="106" height="30" rx="8" fill="#fff" stroke="#E4DECF"/><text x="511" y="171" text-anchor="middle" fill="#3F434D">Capability</text>
+          <line x1="511" y1="84" x2="511" y2="106" stroke="#2B3A55" stroke-width="1.3" marker-end="url(#m-stl)"/>
+          <line x1="511" y1="142" x2="511" y2="150" stroke="#16181D" stroke-width="1.2" marker-end="url(#m-ink)"/>
+        </g>
+        <!-- first-run gate floats above -->
+        <rect x="172" y="192" width="266" height="30" rx="8" fill="#EAF0F8" stroke="#2B3A55" stroke-dasharray="4 3"/><text x="305" y="211" text-anchor="middle" font-family="var(--sans)" font-size="10" fill="#2B3A55">First-run capability gate (pre-tab) · Sign in with Apple</text>
+
+        <!-- ===== TOP-RIGHT: PALETTE + TYPE ===== -->
+        <text x="600" y="30" font-family="var(--mono)" font-size="12" font-weight="700" fill="#7C828E" style="letter-spacing:.1em">VISUAL DIRECTION · LOCKED TOKENS</text>
+        <!-- swatch row 1 -->
+        <g font-family="var(--mono)" font-size="9">
+          <rect x="600" y="44" width="86" height="40" rx="7" fill="#F7F4EC" stroke="#E4DECF"/><text x="643" y="69" text-anchor="middle" fill="#16181D">paper</text>
+          <rect x="692" y="44" width="86" height="40" rx="7" fill="#FFFFFF" stroke="#E4DECF"/><text x="735" y="69" text-anchor="middle" fill="#16181D">cell-surface</text>
+          <rect x="784" y="44" width="86" height="40" rx="7" fill="#EAE4D6" stroke="#E4DECF"/><text x="827" y="69" text-anchor="middle" fill="#16181D">cell-recess</text>
+          <rect x="876" y="44" width="100" height="40" rx="7" fill="#F26B1F"/><text x="926" y="69" text-anchor="middle" fill="#fff">tungsten</text>
+          <rect x="982" y="44" width="134" height="40" rx="7" fill="#2B3A55"/><text x="1049" y="69" text-anchor="middle" fill="#fff">steel</text>
+        </g>
+        <!-- swatch row 2 -->
+        <g font-family="var(--mono)" font-size="9">
+          <rect x="600" y="92" width="92" height="40" rx="7" fill="#1F7A8C"/><text x="646" y="117" text-anchor="middle" fill="#fff">lhd (L)</text>
+          <rect x="698" y="92" width="92" height="40" rx="7" fill="#9A4B17"/><text x="744" y="117" text-anchor="middle" fill="#fff">rhd (R)</text>
+          <rect x="796" y="92" width="80" height="40" rx="7" fill="#1F9D62"/><text x="836" y="117" text-anchor="middle" fill="#fff">ok</text>
+          <rect x="882" y="92" width="80" height="40" rx="7" fill="#B8860B"/><text x="922" y="117" text-anchor="middle" fill="#fff">warn</text>
+          <rect x="968" y="92" width="148" height="40" rx="7" fill="#101319"/><text x="1042" y="111" text-anchor="middle" fill="#fff">stage-0</text><text x="1042" y="124" text-anchor="middle" fill="#F26B1F" font-size="8">3D viewer only</text>
+        </g>
+        <!-- type voices -->
+        <rect x="600" y="142" width="516" height="80" rx="10" fill="#fff" stroke="#E4DECF"/>
+        <text x="616" y="166" font-family="var(--serif)" font-weight="700" font-size="22" fill="#16181D">Toyota GR Supra</text>
+        <text x="616" y="184" font-family="var(--sans)" font-size="11" fill="#3F434D">New York serif — car names &amp; large titles only</text>
+        <text x="852" y="166" font-family="var(--mono)" font-size="15" fill="#2B3A55">MGT00748 · 1510/2022</text>
+        <text x="852" y="184" font-family="var(--sans)" font-size="11" fill="#3F434D">SF Mono — catalog / telemetry IDs</text>
+        <text x="616" y="208" font-family="var(--sans)" font-size="12" fill="#16181D">SF Pro — all native chrome, lists, controls, labels</text>
+
+        <!-- ===== MIDDLE: LIGHT-AS-STATE SPINE ===== -->
+        <text x="24" y="262" font-family="var(--mono)" font-size="12" font-weight="700" fill="#7C828E" style="letter-spacing:.1em">THE SPINE · LIGHT = STATE (no banners, no greyed buttons)</text>
+        <!-- lit niche -->
+        <rect x="24" y="278" width="150" height="150" rx="12" fill="url(#glow)"/>
+        <rect x="24" y="278" width="150" height="150" rx="12" fill="none" stroke="#E4DECF"/>
+        <rect x="24" y="278" width="150" height="150" rx="12" fill="#FFFFFF" fill-opacity="0"/>
+        <rect x="32" y="290" width="20" height="13" rx="3" fill="#F1ECE1"/><text x="42" y="300" text-anchor="middle" font-family="var(--mono)" font-size="7.5" fill="#2B3A55">748</text>
+        <rect x="146" y="290" width="20" height="20" rx="4" fill="#1F7A8C"/><text x="156" y="304" text-anchor="middle" font-family="var(--mono)" font-size="11" font-weight="800" fill="#fff">L</text>
+        <ellipse cx="99" cy="368" rx="44" ry="9" fill="#16181D" opacity=".08"/>
+        <text x="99" y="362" text-anchor="middle" font-size="26">🏎️</text>
+        <text x="34" y="416" font-family="var(--serif)" font-weight="700" font-size="13" fill="#16181D">GR Supra</text>
+        <text x="99" y="446" text-anchor="middle" font-family="var(--mono)" font-size="9" font-weight="700" fill="#F26B1F">LIT = owned / scan present</text>
+
+        <!-- empty niche -->
+        <rect x="196" y="278" width="150" height="150" rx="12" fill="#EAE4D6" stroke="#E4DECF"/>
+        <rect x="196" y="278" width="150" height="150" rx="12" fill="#16181D" opacity=".05"/>
+        <rect x="204" y="290" width="20" height="13" rx="3" fill="#E0D8C7"/><text x="214" y="300" text-anchor="middle" font-family="var(--mono)" font-size="7.5" fill="#7C828E">219</text>
+        <text x="271" y="356" text-anchor="middle" font-family="var(--mono)" font-size="9" fill="#7C828E">no scan yet</text>
+        <text x="271" y="372" text-anchor="middle" font-family="var(--sans)" font-size="9" fill="#7C828E">pick · or scan it</text>
+        <text x="271" y="446" text-anchor="middle" font-family="var(--mono)" font-size="9" font-weight="700" fill="#2B3A55">MATTE = known, unscanned</text>
+
+        <!-- legend / meaning -->
+        <g font-family="var(--sans)" font-size="11" fill="#3F434D">
+          <text x="372" y="296" font-weight="700" fill="#16181D">Luminance carries the message:</text>
+          <circle cx="380" cy="318" r="5" fill="#F26B1F"/><text x="392" y="322">LIT niche → an owned / present community scan (tungsten glow).</text>
+          <circle cx="380" cy="342" r="5" fill="#EAE4D6" stroke="#7C828E"/><text x="392" y="346">MATTE recess → a known release with no scan (an open slot).</text>
+          <rect x="375" y="360" width="10" height="10" rx="2" fill="#1F7A8C"/><text x="392" y="369">Drive decal (teal L / amber R) — the other half of the key.</text>
+          <rect x="375" y="384" width="10" height="10" rx="2" fill="#2B3A55"/><text x="392" y="393">Steel = community / capability — a designed note, never a modal.</text>
+          <text x="372" y="420" font-style="italic" fill="#7C828E">Capability &amp; ownership are shown, not announced. Pick-first by construction.</text>
+        </g>
+
+        <!-- ===== BOTTOM: lift-from-case → dark stage ===== -->
+        <text x="24" y="482" font-family="var(--mono)" font-size="12" font-weight="700" fill="#7C828E" style="letter-spacing:.1em">THE ONE DARK SURFACE · LIFT-FROM-THE-CASE → 3D STAGE</text>
+        <!-- niche -->
+        <rect x="24" y="498" width="150" height="170" rx="12" fill="url(#glow)"/>
+        <rect x="24" y="498" width="150" height="170" rx="12" fill="none" stroke="#E4DECF"/>
+        <text x="99" y="592" text-anchor="middle" font-size="30">🏎️</text>
+        <text x="99" y="652" text-anchor="middle" font-family="var(--sans)" font-size="10" fill="#7C828E">tap a lit niche</text>
+        <!-- transition arrow -->
+        <line x1="180" y1="583" x2="240" y2="583" stroke="#F26B1F" stroke-width="2.5" marker-end="url(#m-tun)"/>
+        <text x="210" y="572" text-anchor="middle" font-family="var(--sans)" font-size="10" fill="#D8540F">matched-geometry zoom</text>
+        <text x="210" y="600" text-anchor="middle" font-family="var(--sans)" font-size="9" fill="#7C828E">chrome cross-dims</text>
+        <!-- dark stage -->
+        <rect x="248" y="498" width="868" height="170" rx="14" fill="url(#stage)" stroke="#2a3342"/>
+        <line x1="270" y1="600" x2="1094" y2="600" stroke="#F26B1F" stroke-width="1" opacity=".55"/>
+        <ellipse cx="682" cy="610" rx="120" ry="16" fill="#F26B1F" opacity=".22"/>
+        <text x="682" y="582" text-anchor="middle" font-size="34">🏎️</text>
+        <text x="682" y="640" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="#c9cedb">car settles on a spotlit turntable · rotate / pinch / auto-orbit</text>
+        <!-- control bar -->
+        <rect x="640" y="494" width="0" height="0"/>
+        <rect x="272" y="646" width="824" height="0" />
+        <rect x="270" y="630" width="350" height="26" rx="8" fill="#1B2029" stroke="#2a3342"/>
+        <text x="284" y="647" font-family="var(--mono)" font-size="9" fill="#c9cedb">MGT00748 · </text>
+        <rect x="358" y="635" width="15" height="15" rx="3" fill="#1F7A8C"/><text x="365.5" y="646" text-anchor="middle" font-family="var(--mono)" font-size="9" font-weight="800" fill="#fff">L</text>
+        <text x="382" y="647" font-family="var(--mono)" font-size="9" fill="#c9cedb">· reduced · 2.4 MB</text>
+        <rect x="1010" y="630" width="84" height="26" rx="8" fill="#F26B1F"/><text x="1052" y="647" text-anchor="middle" font-family="var(--sans)" font-size="9.5" font-weight="700" fill="#fff">View in AR</text>
+        <text x="682" y="498" text-anchor="middle" font-family="var(--mono)" font-size="9" fill="#7C828E" dy="-3"></text>
+      </svg>
+      <figcaption>Master view. <strong>Top-left:</strong> the four-tab native shell and the screens under each. <strong>Top-right:</strong> the locked palette and the three type voices. <strong>Middle:</strong> the light-as-state spine — a LIT niche means owned/present, a MATTE recess means a known-but-unscanned slot, so capability and ownership are read as luminance, not banners. <strong>Bottom:</strong> the lift-from-the-case transition that justifies the single dark surface — tap a lit niche and the car is taken out of the cabinet onto a spotlit turntable.</figcaption>
+    </div>
+    <p style="margin-top:6px"><a class="mocklink" href="./mockup/index.html">▦ Open the interactive mockup → ./mockup/index.html</a></p>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- 1 · PRINCIPLES & DIRECTION -->
+  <!-- ============================================================= -->
+  <section id="principles">
+    <h2><span class="n">1</span> Design principles &amp; the chosen direction</h2>
+    <p class="eyebrow">Vitrine — the lit display cabinet (light-as-state)</p>
+    <p class="lead">The PM's physical collection <em>is</em> a wall-mounted cabinet of lit cells under a glowing lightbar. We translate that 1:1 rather than invent a metaphor. The one idea that earns the direction: <strong>light is state</strong>. A lit niche is an owned/present scan; a dark-matte recess is a known release with no scan yet. Capability (Pro vs non-Pro), ownership, and empty slots are all communicated by luminance — never by banners or greyed-out buttons. That is the PRD's pick-first / scan-as-contribution ethos made visual.</p>
+
+    <h3 class="serif">The ownable metaphor, explained</h3>
+    <div class="grid c3">
+      <div class="tile"><h4>Recess, not card</h4><p>Cells are <em>carved into</em> the warm bone paper (inverse of an elevated Material card), sitting in a faint shadow well. Depth comes from a value-gap — pure-white faces lifting off <code>--paper</code> — plus a single soft contact shadow under each car.</p></div>
+      <div class="tile"><h4>Light spills downward</h4><p>A lit niche pools <code>--tungsten-glow</code> at its base — the display-light the car catches. The glow is <strong>pre-baked into the cell background</strong> so long scrolls never pay a per-cell blur cost.</p></div>
+      <div class="tile"><h4>Travel to the dark</h4><p>Dark is a <em>place you go</em>, not a theme. You lift a car out of its niche onto the 3D stage; the warm chrome cross-dims. Dismiss re-cabinets it. The rest of the app is always warm light.</p></div>
+    </div>
+
+    <h3>Anti-template proof — the direction demonstrates (well past the required four)</h3>
+    <ul class="clean">
+      <li><strong>Scale-contrast hierarchy:</strong> serif car names + a big lightbar count tower over mono metadata.</li>
+      <li><strong>Intentional rhythm:</strong> an enforced bento — one wide feature niche every ~5–6 cells, grouped by shelf-edge hairlines — not uniform padding.</li>
+      <li><strong>Depth / layering:</strong> recessed niches, value-gap, contact shadows, the lift-from-case zoom.</li>
+      <li><strong>Typography with character:</strong> a real three-voice pairing (serif / SF Pro / mono) each with a job.</li>
+      <li><strong>Semantic color:</strong> tungsten=lit/action, steel=system/community, teal/amber=drive — color always means something.</li>
+      <li><strong>Designed states:</strong> drive decals snap with rotateY + haptic; accent presses to <code>--tungsten-deep</code>; a tungsten selection ring.</li>
+      <li><strong>Editorial composition:</strong> the alternate ruled Index list, mono catalog numbers flush-left.</li>
+      <li><strong>Atmosphere:</strong> restrained warm light spill; the dark stage's tungsten horizon rim.</li>
+    </ul>
+
+    <h3>Palette — rendered swatches (locked tokens)</h3>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#F7F4EC"></div><div class="lab"><div class="tok">--paper</div><div class="hex">#F7F4EC</div><div class="use">Gallery-wall canvas. Warm bone, never pure white.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#FFFFFF;border-bottom:1px solid var(--line)"></div><div class="lab"><div class="tok">--cell-surface</div><div class="hex">#FFFFFF</div><div class="use">Lit niche face, sheets, list rows.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#EAE4D6"></div><div class="lab"><div class="tok">--cell-recess</div><div class="hex">#EAE4D6</div><div class="use">Unlit / empty niche — known, unscanned.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#16181D"></div><div class="lab"><div class="tok">--ink</div><div class="hex">#16181D</div><div class="use">Primary text, names, titles.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#3F434D"></div><div class="lab"><div class="tok">--ink-soft</div><div class="hex">#3F434D</div><div class="use">Secondary text, body, metadata.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#7C828E"></div><div class="lab"><div class="tok">--muted</div><div class="hex">#7C828E</div><div class="use">Tertiary labels, captions, hints.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#E4DECF"></div><div class="lab"><div class="tok">--line</div><div class="hex">#E4DECF</div><div class="use">Hairline mullions, dividers, frame.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#F26B1F"></div><div class="lab"><div class="tok">--tungsten</div><div class="hex">#F26B1F</div><div class="use">PRIMARY ACCENT — lit / present / action.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#D8540F"></div><div class="lab"><div class="tok">--tungsten-deep</div><div class="hex">#D8540F</div><div class="use">Pressed/active accent, glow core.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#FFE6CE"></div><div class="lab"><div class="tok">--tungsten-glow</div><div class="hex">#FFE6CE</div><div class="use">Pre-baked inner-glow halo.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#2B3A55"></div><div class="lab"><div class="tok">--steel</div><div class="hex">#2B3A55</div><div class="use">System / community / metadata.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#EAF0F8;border-bottom:1px solid var(--line)"></div><div class="lab"><div class="tok">--steel-soft</div><div class="hex">#EAF0F8</div><div class="use">Steel chip fills, info wells.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#1F7A8C"></div><div class="lab"><div class="tok">--lhd</div><div class="hex">#1F7A8C</div><div class="use">DRIVE = LHD decal (teal). Glyph "L".</div></div></div>
+      <div class="sw"><div class="chip" style="background:#9A4B17"></div><div class="lab"><div class="tok">--rhd</div><div class="hex">#9A4B17</div><div class="use">DRIVE = RHD decal (amber). Glyph "R".</div></div></div>
+      <div class="sw"><div class="chip" style="background:#1F9D62"></div><div class="lab"><div class="tok">--ok</div><div class="hex">#1F9D62</div><div class="use">Canonical / approved, success.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#B8860B"></div><div class="lab"><div class="tok">--warn</div><div class="hex">#B8860B</div><div class="use">Reduced-detail caveat, pending.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#101319"></div><div class="lab"><div class="tok">--stage-0</div><div class="hex">#101319</div><div class="use">3D viewer backdrop — ONLY dark surface.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#1B2029"></div><div class="lab"><div class="tok">--stage-1</div><div class="hex">#1B2029</div><div class="use">Viewer plinth + control material.</div></div></div>
+      <div class="sw"><div class="chip" style="background:linear-gradient(90deg,#101319,#F26B1F,#101319)"></div><div class="lab"><div class="tok">--stage-rim</div><div class="hex">#F26B1F</div><div class="use">Viewer rim-light / horizon line.</div></div></div>
+    </div>
+    <div class="callout"><b>Accent discipline.</b> Amber means <em>lit / present / action</em> only. Steel means <em>system / community / metadata</em>. Teal/amber decals mean <em>drive</em>. If a color isn't carrying one of those meanings, it isn't used.</div>
+
+    <h3>Type scale — three voices, each with a job</h3>
+    <div class="card">
+      <div class="typerow">
+        <div class="spec"><b>Display · New York serif</b><br/>car names + large titles ONLY<br/>tracked −0.02em · falls to SF Pro at A11Y-XL</div>
+        <div class="ty-display" style="font-size:2.4rem">Toyota GR Supra</div>
+      </div>
+      <div class="typerow">
+        <div class="spec"><b>Title · New York</b><br/>large nav titles · 28pt</div>
+        <div class="ty-display" style="font-size:1.7rem">The Cabinet</div>
+      </div>
+      <div class="typerow">
+        <div class="spec"><b>Body / chrome · SF Pro Text</b><br/>17pt · all running UI</div>
+        <div style="font-family:var(--sans);font-size:1.06rem">Pick this community scan to add it to your shelf, then spin it in 3D.</div>
+      </div>
+      <div class="typerow">
+        <div class="spec"><b>Section label · SF Pro</b><br/>uppercase 12pt · etched lightbar labels</div>
+        <div style="font-family:var(--sans);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--steel)">Shelf · GR Series</div>
+      </div>
+      <div class="typerow">
+        <div class="spec"><b>Identity · SF Mono</b><br/>tabular figures forced ON<br/>catalog no. · serial · drive · telemetry</div>
+        <div class="ty-mono" style="font-size:1.05rem;color:var(--steel)">MGT00748 · 1510/2022 · L · REDUCED · 2.41 MB</div>
+      </div>
+    </div>
+    <p>The serif is the emotional anchor for the P0 Picker — it makes each car read as a catalogued <em>objet</em>. It carries a hard minimum size and a graceful fall to SF Pro Display at accessibility-XL Dynamic Type sizes, so it never goes fragile or low-contrast. The mono-for-identifiers split is what turns the dedup key into visible <em>cataloguing</em> rather than database leakage.</p>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- 2 · IA / SCREEN-MAP -->
+  <!-- ============================================================= -->
+  <section id="ia">
+    <h2><span class="n">2</span> Information architecture / screen-map</h2>
+    <p>A standard native four-tab shell (Cabinet · Catalog · Library · Settings), preceded by a one-time capability gate. Modal sheets (drive select, share, scan, bond) and the full-screen 3D viewer overlay the tabs. Nothing fights iOS conventions — the cabinetry lives in surface and light, not in custom navigation.</p>
+    <div class="card fig">
+      <svg viewBox="0 0 1140 560" role="img" aria-label="Navigation graph: capability gate, four tabs, their screens, sheets, and the dark viewer">
+        <defs>
+          <marker id="n-ink" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#16181D"/></marker>
+          <marker id="n-tun" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#F26B1F"/></marker>
+          <marker id="n-stl" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#2B3A55"/></marker>
+        </defs>
+        <!-- capability gate -->
+        <rect x="430" y="20" width="280" height="56" rx="12" fill="#EAF0F8" stroke="#2B3A55" stroke-width="1.6"/>
+        <text x="570" y="44" text-anchor="middle" font-family="var(--sans)" font-size="13" font-weight="700" fill="#2B3A55">First-run capability gate</text>
+        <text x="570" y="62" text-anchor="middle" font-family="var(--sans)" font-size="10.5" fill="#3F434D">detect LiDAR · Sign in with Apple</text>
+        <!-- tab bar node -->
+        <rect x="380" y="110" width="380" height="40" rx="10" fill="#16181D"/>
+        <g font-family="var(--sans)" font-size="11.5" fill="#fff" text-anchor="middle" font-weight="700">
+          <text x="438" y="135">▦ Cabinet</text><text x="535" y="135">⌕ Catalog</text><text x="632" y="135" fill="#fff">☁ Library</text><text x="724" y="135">⚙ Settings</text>
+        </g>
+        <line x1="570" y1="76" x2="570" y2="108" stroke="#2B3A55" stroke-width="1.6" marker-end="url(#n-stl)"/>
+
+        <!-- tab columns -->
+        <!-- Cabinet -->
+        <rect x="40" y="200" width="220" height="48" rx="11" fill="#FFF3EA" stroke="#F26B1F" stroke-width="1.8"/>
+        <text x="150" y="220" text-anchor="middle" font-family="var(--sans)" font-size="12" font-weight="700" fill="#16181D">Home · The Cabinet</text>
+        <text x="150" y="237" text-anchor="middle" font-family="var(--sans)" font-size="9.5" fill="#a8530f">backlit bento vitrine · lightbar</text>
+        <rect x="40" y="266" width="220" height="40" rx="10" fill="#fff" stroke="#E4DECF"/><text x="150" y="290" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="#3F434D">⇄ Index list mode</text>
+        <rect x="40" y="324" width="220" height="40" rx="10" fill="#fff" stroke="#E4DECF"/><text x="150" y="348" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="#3F434D">Release detail</text>
+        <line x1="438" y1="150" x2="200" y2="198" stroke="#F26B1F" stroke-width="1.5" marker-end="url(#n-tun)"/>
+        <line x1="150" y1="248" x2="150" y2="264" stroke="#16181D" stroke-width="1.2" marker-end="url(#n-ink)"/>
+        <line x1="150" y1="306" x2="150" y2="322" stroke="#16181D" stroke-width="1.2" marker-end="url(#n-ink)"/>
+
+        <!-- Catalog -->
+        <rect x="290" y="200" width="220" height="48" rx="11" fill="#fff" stroke="#E4DECF"/>
+        <text x="400" y="220" text-anchor="middle" font-family="var(--sans)" font-size="12" font-weight="700" fill="#16181D">Catalog search</text>
+        <text x="400" y="237" text-anchor="middle" font-family="var(--sans)" font-size="9.5" fill="#7C828E">number / name / livery</text>
+        <rect x="290" y="266" width="220" height="40" rx="10" fill="#EAF0F8" stroke="#2B3A55"/><text x="400" y="290" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="#2B3A55">Drive (L/R) select sheet</text>
+        <line x1="535" y1="150" x2="430" y2="198" stroke="#2B3A55" stroke-width="1.4" marker-end="url(#n-stl)"/>
+        <line x1="400" y1="248" x2="400" y2="264" stroke="#2B3A55" stroke-width="1.2" marker-end="url(#n-stl)"/>
+        <line x1="400" y1="306" x2="340" y2="322" stroke="#16181D" stroke-width="1.2" marker-end="url(#n-ink)"/>
+        <text x="338" y="320" font-family="var(--sans)" font-size="9" fill="#7C828E">→ detail</text>
+
+        <!-- Library -->
+        <rect x="540" y="200" width="220" height="48" rx="11" fill="#fff" stroke="#E4DECF"/>
+        <text x="650" y="220" text-anchor="middle" font-family="var(--sans)" font-size="12" font-weight="700" fill="#16181D">Community library browse</text>
+        <text x="650" y="237" text-anchor="middle" font-family="var(--sans)" font-size="9.5" fill="#7C828E">deduped (no., drive)</text>
+        <rect x="540" y="266" width="220" height="40" rx="10" fill="#EAF0F8" stroke="#2B3A55"/><text x="650" y="290" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="#2B3A55">Share / opt-in upload sheet</text>
+        <line x1="632" y1="150" x2="650" y2="198" stroke="#2B3A55" stroke-width="1.4" marker-end="url(#n-stl)"/>
+        <line x1="650" y1="248" x2="650" y2="264" stroke="#2B3A55" stroke-width="1.2" marker-end="url(#n-stl)"/>
+
+        <!-- Settings -->
+        <rect x="790" y="200" width="220" height="48" rx="11" fill="#fff" stroke="#E4DECF"/>
+        <text x="900" y="220" text-anchor="middle" font-family="var(--sans)" font-size="12" font-weight="700" fill="#16181D">Settings</text>
+        <text x="900" y="237" text-anchor="middle" font-family="var(--sans)" font-size="9.5" fill="#7C828E">iCloud · account · capability</text>
+        <rect x="790" y="266" width="220" height="40" rx="10" fill="#fff" stroke="#E4DECF"/><text x="900" y="290" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="#3F434D">Report / takedown · DMCA</text>
+        <line x1="724" y1="150" x2="880" y2="198" stroke="#2B3A55" stroke-width="1.4" marker-end="url(#n-stl)"/>
+        <line x1="900" y1="248" x2="900" y2="264" stroke="#16181D" stroke-width="1.2" marker-end="url(#n-ink)"/>
+
+        <!-- Pro-only scan + bond sheets -->
+        <rect x="40" y="406" width="220" height="44" rx="11" fill="#FFF3EA" stroke="#F26B1F" stroke-dasharray="5 3"/><text x="150" y="426" text-anchor="middle" font-family="var(--sans)" font-size="11" font-weight="700" fill="#a8530f">Guided scan flow [Pro]</text><text x="150" y="441" text-anchor="middle" font-family="var(--sans)" font-size="9" fill="#a8530f">capability-gated</text>
+        <rect x="290" y="406" width="220" height="44" rx="11" fill="#FFF3EA" stroke="#F26B1F" stroke-dasharray="5 3"/><text x="400" y="426" text-anchor="middle" font-family="var(--sans)" font-size="11" font-weight="700" fill="#a8530f">Bond flow [Pro]</text><text x="400" y="441" text-anchor="middle" font-family="var(--sans)" font-size="9" fill="#a8530f">separate from scan</text>
+        <line x1="150" y1="364" x2="150" y2="404" stroke="#F26B1F" stroke-width="1.3" marker-end="url(#n-tun)"/>
+        <line x1="260" y1="428" x2="288" y2="428" stroke="#F26B1F" stroke-width="1.3" marker-end="url(#n-tun)"/>
+
+        <!-- 3D viewer + AR -->
+        <rect x="560" y="396" width="240" height="64" rx="12" fill="#101319" stroke="#2a3342"/>
+        <line x1="576" y1="438" x2="784" y2="438" stroke="#F26B1F" stroke-width="1" opacity=".6"/>
+        <text x="680" y="422" text-anchor="middle" font-family="var(--sans)" font-size="12" font-weight="700" fill="#fff">3D viewer · dark stage</text>
+        <text x="680" y="452" text-anchor="middle" font-family="var(--mono)" font-size="9" fill="#F26B1F">lift-from-the-case · the ONLY dark surface</text>
+        <rect x="830" y="404" width="180" height="48" rx="11" fill="#fff" stroke="#E4DECF"/><text x="920" y="424" text-anchor="middle" font-family="var(--sans)" font-size="11" font-weight="700" fill="#16181D">AR placement preview</text><text x="920" y="440" text-anchor="middle" font-family="var(--sans)" font-size="9" fill="#7C828E">AR Quick Look handoff</text>
+        <!-- any lit niche → viewer -->
+        <line x1="150" y1="364" x2="558" y2="420" stroke="#F26B1F" stroke-width="1.2" stroke-dasharray="2 3"/>
+        <line x1="400" y1="306" x2="558" y2="416" stroke="#F26B1F" stroke-width="1.2" stroke-dasharray="2 3"/>
+        <line x1="650" y1="306" x2="616" y2="394" stroke="#F26B1F" stroke-width="1.2" stroke-dasharray="2 3"/>
+        <line x1="800" y1="430" x2="828" y2="430" stroke="#F26B1F" stroke-width="1.3" marker-end="url(#n-tun)"/>
+
+        <!-- legend -->
+        <g font-family="var(--sans)" font-size="10" fill="#3F434D">
+          <line x1="40" y1="500" x2="64" y2="500" stroke="#F26B1F" stroke-width="2" marker-end="url(#n-tun)"/><text x="70" y="504">tungsten = primary / lit destinations</text>
+          <line x1="320" y1="500" x2="344" y2="500" stroke="#2B3A55" stroke-width="2" marker-end="url(#n-stl)"/><text x="350" y="504">steel = system / community / sheets</text>
+          <line x1="620" y1="500" x2="644" y2="500" stroke="#F26B1F" stroke-width="1.2" stroke-dasharray="2 3"/><text x="650" y="504">dashed = lift into the dark viewer (any lit niche)</text>
+        </g>
+      </svg>
+      <figcaption>Navigation graph. A pre-tab capability gate routes everyone into the four-tab shell. Any LIT niche — from the Cabinet, a Release detail, or the Library — lifts into the single dark 3D viewer, which hands off to AR Quick Look. The Pro-only scan and bond flows are capability-gated sheets, never separate tabs.</figcaption>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- 3 · KEY FLOWS -->
+  <!-- ============================================================= -->
+  <section id="flows">
+    <h2><span class="n">3</span> The three key flows</h2>
+
+    <h3>(a) PICK — works on any iPhone</h3>
+    <div class="card fig">
+      <svg viewBox="0 0 1140 230" role="img" aria-label="Pick flow from catalog search to 3D and AR">
+        <defs><marker id="f-ok" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#1F9D62"/></marker>
+        <marker id="f-tun" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#F26B1F"/></marker></defs>
+        <text x="20" y="24" font-family="var(--mono)" font-size="11" font-weight="700" fill="#1F9D62" style="letter-spacing:.08em">PICK · ANY iOS 17 iPhone · drive chosen up front</text>
+        <g font-family="var(--sans)" font-size="11">
+          <rect x="20" y="44" width="172" height="62" rx="11" fill="#fff" stroke="#1F9D62" stroke-width="1.6"/><text x="106" y="70" text-anchor="middle" font-weight="700">Catalog search</text><text x="106" y="89" text-anchor="middle" font-size="9.5" fill="#7C828E">number / name / livery</text>
+          <rect x="216" y="44" width="190" height="62" rx="11" fill="#EAF0F8" stroke="#2B3A55" stroke-width="1.6"/><text x="311" y="66" text-anchor="middle" font-weight="700" fill="#2B3A55">Select drive</text><text x="311" y="84" text-anchor="middle" font-size="9.5" fill="#1F7A8C">L</text><text x="320" y="84" text-anchor="middle" font-size="9.5" fill="#9A4B17"> · R</text><text x="311" y="98" text-anchor="middle" font-size="9" fill="#7C828E">required — half the key</text>
+          <rect x="430" y="44" width="190" height="62" rx="11" fill="#fff" stroke="#E4DECF"/><text x="525" y="66" text-anchor="middle" font-weight="700">Release detail</text><text x="525" y="84" text-anchor="middle" font-size="9.5" fill="#7C828E">poster + provenance</text><text x="525" y="98" text-anchor="middle" font-size="9" fill="#0d6b3f">community scan present</text>
+          <rect x="644" y="44" width="172" height="62" rx="11" fill="#FFF3EA" stroke="#F26B1F" stroke-width="1.6"/><text x="730" y="70" text-anchor="middle" font-weight="700">Pick → shelf</text><text x="730" y="89" text-anchor="middle" font-size="9.5" fill="#a8530f">light-on bloom · niche fills</text>
+          <rect x="840" y="20" width="280" height="54" rx="11" fill="#101319" stroke="#2a3342"/><text x="980" y="42" text-anchor="middle" font-weight="700" fill="#fff">3D viewer (dark stage)</text><text x="980" y="60" text-anchor="middle" font-size="9.5" fill="#F26B1F">lift-from-case · rotate / pinch</text>
+          <rect x="840" y="86" width="280" height="48" rx="11" fill="#fff" stroke="#E4DECF"/><text x="980" y="106" text-anchor="middle" font-weight="700">AR placement preview</text><text x="980" y="122" text-anchor="middle" font-size="9.5" fill="#7C828E">"place on a table" · show a friend</text>
+          <line x1="192" y1="75" x2="214" y2="75" stroke="#1F9D62" stroke-width="1.8" marker-end="url(#f-ok)"/>
+          <line x1="406" y1="75" x2="428" y2="75" stroke="#1F9D62" stroke-width="1.8" marker-end="url(#f-ok)"/>
+          <line x1="620" y1="75" x2="642" y2="75" stroke="#1F9D62" stroke-width="1.8" marker-end="url(#f-ok)"/>
+          <line x1="816" y1="62" x2="838" y2="50" stroke="#F26B1F" stroke-width="1.8" marker-end="url(#f-tun)"/>
+          <line x1="980" y1="74" x2="980" y2="84" stroke="#F26B1F" stroke-width="1.6" marker-end="url(#f-tun)"/>
+        </g>
+        <!-- alt branch: non-Pro, no scan -->
+        <g font-family="var(--sans)" font-size="10.5">
+          <text x="20" y="158" font-family="var(--mono)" font-size="10" font-weight="700" fill="#2B3A55" style="letter-spacing:.06em">IF NO COMMUNITY SCAN EXISTS YET</text>
+          <rect x="430" y="170" width="190" height="46" rx="11" fill="#EAE4D6" stroke="#2B3A55"/><text x="525" y="190" text-anchor="middle" font-weight="700" fill="#2B3A55">Matte recess detail</text><text x="525" y="206" text-anchor="middle" font-size="9" fill="#3F434D">steel note: "needs a Pro iPhone to seed"</text>
+          <rect x="644" y="170" width="172" height="46" rx="11" fill="#fff" stroke="#F26B1F"/><text x="730" y="190" text-anchor="middle" font-weight="700" fill="#a8530f">[Pro] Scan it yourself</text><text x="730" y="206" text-anchor="middle" font-size="9" fill="#a8530f">→ contribute (flow b)</text>
+          <line x1="525" y1="106" x2="525" y2="168" stroke="#2B3A55" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#f-tun)"/>
+          <line x1="620" y1="193" x2="642" y2="193" stroke="#F26B1F" stroke-width="1.4" marker-end="url(#f-tun)"/>
+        </g>
+      </svg>
+      <figcaption>(a) The default path. Drive is required <em>before</em> picking. When a community scan exists, picking plays a light-on bloom (the niche fills) and the car can lift into the dark viewer and out to AR. When no scan exists, the same detail screen shows a matte recess with a designed steel contribution note — and, on a Pro iPhone, a path into the scan flow.</figcaption>
+    </div>
+
+    <h3>(b) SCAN + BOND [Pro] — the contribution path, honest about Spike-0 quality</h3>
+    <div class="card fig">
+      <svg viewBox="0 0 1140 250" role="img" aria-label="Scan then bond flow for Pro iPhones">
+        <defs><marker id="g-tun" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#F26B1F"/></marker>
+        <marker id="g-warn" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#B8860B"/></marker></defs>
+        <text x="20" y="24" font-family="var(--mono)" font-size="11" font-weight="700" fill="#a8530f" style="letter-spacing:.08em">SCAN + BOND · LiDAR PRO iPhone ONLY · bonding is a SEPARATE step</text>
+        <g font-family="var(--sans)" font-size="10.5">
+          <rect x="20" y="44" width="150" height="60" rx="11" fill="#fff" stroke="#F26B1F"/><text x="95" y="68" text-anchor="middle" font-weight="700">Remove-from-case tip</text><text x="95" y="86" text-anchor="middle" font-size="9" fill="#7C828E">diffuse-light guidance</text>
+          <rect x="194" y="44" width="150" height="60" rx="11" fill="#fff" stroke="#F26B1F"/><text x="269" y="64" text-anchor="middle" font-weight="700">Capture orbit</text><text x="269" y="82" text-anchor="middle" font-family="var(--mono)" font-size="9" fill="#2B3A55">COVERAGE 72% · 41 SHOTS</text><text x="269" y="97" text-anchor="middle" font-size="9" fill="#7C828E">gauge telemetry</text>
+          <rect x="368" y="44" width="150" height="60" rx="11" fill="#fff" stroke="#F26B1F"/><text x="443" y="68" text-anchor="middle" font-weight="700">Reconstruct</text><text x="443" y="86" text-anchor="middle" font-size="9" fill="#7C828E">on-device → USDZ · progress</text>
+          <rect x="542" y="44" width="170" height="60" rx="11" fill="#FBF3DD" stroke="#B8860B"/><text x="627" y="64" text-anchor="middle" font-weight="700" fill="#7a5a00">Keep / re-scan verdict</text><text x="627" y="82" text-anchor="middle" font-size="9" fill="#7a5a00">"good enough to show a friend?"</text><text x="627" y="97" text-anchor="middle" font-size="9" fill="#7a5a00">⚠ reduced-detail note</text>
+          <rect x="736" y="44" width="150" height="60" rx="11" fill="#EAF0F8" stroke="#2B3A55"/><text x="811" y="64" text-anchor="middle" font-weight="700" fill="#2B3A55">Bond flow</text><text x="811" y="82" text-anchor="middle" font-size="9" fill="#3F434D">enter no. + select drive</text><text x="811" y="97" text-anchor="middle" font-size="9" fill="#3F434D">optional serial 1510/2022</text>
+          <rect x="910" y="44" width="210" height="60" rx="11" fill="#FFF3EA" stroke="#F26B1F"/><text x="1015" y="64" text-anchor="middle" font-weight="700" fill="#a8530f">Bonded → onto shelf</text><text x="1015" y="82" text-anchor="middle" font-size="9" fill="#a8530f">mono code stamps into header band</text><text x="1015" y="97" text-anchor="middle" font-size="9" fill="#7C828E">tagged YOURS</text>
+          <line x1="170" y1="74" x2="192" y2="74" stroke="#F26B1F" stroke-width="1.8" marker-end="url(#g-tun)"/>
+          <line x1="344" y1="74" x2="366" y2="74" stroke="#F26B1F" stroke-width="1.8" marker-end="url(#g-tun)"/>
+          <line x1="518" y1="74" x2="540" y2="74" stroke="#F26B1F" stroke-width="1.8" marker-end="url(#g-tun)"/>
+          <line x1="712" y1="74" x2="734" y2="74" stroke="#B8860B" stroke-width="1.8" marker-end="url(#g-warn)"/>
+          <line x1="886" y1="74" x2="908" y2="74" stroke="#2B3A55" stroke-width="1.8" marker-end="url(#g-tun)"/>
+        </g>
+        <!-- re-scan loop -->
+        <path d="M580 104 C 540 150, 300 150, 269 106" fill="none" stroke="#B8860B" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#g-warn)"/>
+        <text x="430" y="150" text-anchor="middle" font-family="var(--sans)" font-size="10" fill="#7a5a00">re-scan (capture again)</text>
+        <!-- next: optional share -->
+        <g font-family="var(--sans)" font-size="10.5">
+          <rect x="910" y="178" width="210" height="50" rx="11" fill="#fff" stroke="#E4DECF"/><text x="1015" y="200" text-anchor="middle" font-weight="700">Offer: Share to community?</text><text x="1015" y="218" text-anchor="middle" font-size="9" fill="#7C828E">→ flow (c) · always opt-in</text>
+          <line x1="1015" y1="104" x2="1015" y2="176" stroke="#16181D" stroke-width="1.2" stroke-dasharray="3 3" marker-end="url(#g-tun)"/>
+        </g>
+      </svg>
+      <figcaption>(b) Scanning never blocks identity: bonding is a separate, deterministic step after reconstruction. Spike-0 honesty is built in — coverage telemetry during capture, a keep/re-scan verdict card with a brass <code>--warn</code> reduced-detail note, and a re-scan loop. Sharing is offered afterward and is always opt-in.</figcaption>
+    </div>
+
+    <h3>(c) SHARE / opt-in upload — per-model consent, attribution, one canonical per (number, drive)</h3>
+    <div class="card fig">
+      <svg viewBox="0 0 1140 210" role="img" aria-label="Share and opt-in upload flow">
+        <defs><marker id="s-stl" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#2B3A55"/></marker>
+        <marker id="s-ok" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#1F9D62"/></marker></defs>
+        <text x="20" y="24" font-family="var(--mono)" font-size="11" font-weight="700" fill="#2B3A55" style="letter-spacing:.08em">SHARE · explicit per-model opt-in · presigned PUT to R2 · revocable</text>
+        <g font-family="var(--sans)" font-size="10.5">
+          <rect x="20" y="48" width="166" height="64" rx="11" fill="#fff" stroke="#2B3A55"/><text x="103" y="72" text-anchor="middle" font-weight="700">Tap "Share" on a bonded model</text><text x="103" y="92" text-anchor="middle" font-size="9" fill="#7C828E">from Release detail / Library</text>
+          <rect x="210" y="48" width="176" height="64" rx="11" fill="#fff" stroke="#2B3A55"/><text x="298" y="68" text-anchor="middle" font-weight="700">Consent sheet</text><text x="298" y="86" text-anchor="middle" font-size="9" fill="#3F434D">attribution (Apple handle)</text><text x="298" y="100" text-anchor="middle" font-size="9" fill="#3F434D">non-commercial license note</text>
+          <rect x="410" y="48" width="176" height="64" rx="11" fill="#fff" stroke="#2B3A55"/><text x="498" y="68" text-anchor="middle" font-weight="700">Uploader attestation</text><text x="498" y="86" text-anchor="middle" font-size="9" fill="#3F434D">"I own this copy &amp; scanned it"</text><text x="498" y="100" text-anchor="middle" font-size="9" fill="#7C828E">revocable any time</text>
+          <rect x="610" y="48" width="190" height="64" rx="11" fill="#EAF0F8" stroke="#2B3A55"/><text x="705" y="66" text-anchor="middle" font-weight="700" fill="#2B3A55">Dedup check (no., drive)</text><text x="705" y="84" text-anchor="middle" font-size="9" fill="#3F434D">"one canonical per slot"</text><text x="705" y="99" text-anchor="middle" font-size="9" fill="#7C828E">already present? → contribute alt</text>
+          <rect x="824" y="48" width="146" height="64" rx="11" fill="#fff" stroke="#F26B1F"/><text x="897" y="72" text-anchor="middle" font-weight="700">Presigned upload</text><text x="897" y="92" text-anchor="middle" font-size="9" fill="#a8530f">progress · bytes → R2</text>
+          <rect x="994" y="48" width="126" height="64" rx="11" fill="#fff" stroke="#1F9D62"/><text x="1057" y="72" text-anchor="middle" font-weight="700" fill="#0d6b3f">In library</text><text x="1057" y="92" text-anchor="middle" font-size="9" fill="#0d6b3f">tagged COMMUNITY</text>
+          <line x1="186" y1="80" x2="208" y2="80" stroke="#2B3A55" stroke-width="1.8" marker-end="url(#s-stl)"/>
+          <line x1="386" y1="80" x2="408" y2="80" stroke="#2B3A55" stroke-width="1.8" marker-end="url(#s-stl)"/>
+          <line x1="586" y1="80" x2="608" y2="80" stroke="#2B3A55" stroke-width="1.8" marker-end="url(#s-stl)"/>
+          <line x1="800" y1="80" x2="822" y2="80" stroke="#2B3A55" stroke-width="1.8" marker-end="url(#s-stl)"/>
+          <line x1="970" y1="80" x2="992" y2="80" stroke="#1F9D62" stroke-width="1.8" marker-end="url(#s-ok)"/>
+        </g>
+        <g font-family="var(--sans)" font-size="10" fill="#3F434D">
+          <text x="20" y="160" font-style="italic" fill="#7C828E">DMCA: a report/takedown entry point lives in Settings; flagged uploads route to status(flagged) and are rapidly delisted. Repeat-infringer policy enforced.</text>
+        </g>
+      </svg>
+      <figcaption>(c) Upload is never automatic. Consent, license, and an ownership attestation precede any byte leaving the device; the dedup check enforces one canonical per (number, drive). Bytes go directly to R2 via presigned PUT (the VPS only brokers metadata). The result is tagged COMMUNITY and is revocable.</figcaption>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- 4 · SCREEN-BY-SCREEN SPECS -->
+  <!-- ============================================================= -->
+  <section id="screens">
+    <h2><span class="n">4</span> Screen-by-screen specs</h2>
+    <p>Every screen in the locked inventory, each with a styled mini-render, purpose, layout, key components, and all relevant states. State chips: <span class="st load">loading</span> <span class="st empty">empty</span> <span class="st err">error</span> <span class="st off">offline</span> <span class="st ns">not-supported</span>.</p>
+
+    <!-- 4.1 Capability gate -->
+    <div class="screenrow">
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <svg viewBox="0 0 214 436" role="img" aria-label="First-run capability gate mockup">
+          <rect width="214" height="436" fill="#F7F4EC"/>
+          <rect x="0" y="0" width="214" height="120" fill="url(#capglow)"/>
+          <defs><radialGradient id="capglow" cx="50%" cy="0%" r="90%"><stop offset="0%" stop-color="#FFE6CE"/><stop offset="70%" stop-color="#FFE6CE" stop-opacity="0"/></radialGradient></defs>
+          <rect x="20" y="36" width="9" height="9" rx="4.5" fill="#F26B1F"/><rect x="34" y="40" width="120" height="2" rx="1" fill="#F26B1F" opacity=".5"/>
+          <text x="20" y="80" font-family="serif" font-weight="700" font-size="22" fill="#16181D">Welcome to</text>
+          <text x="20" y="104" font-family="serif" font-weight="700" font-size="22" fill="#16181D">your vault.</text>
+          <rect x="20" y="140" width="174" height="78" rx="12" fill="#fff" stroke="#F26B1F"/>
+          <text x="34" y="164" font-family="sans-serif" font-size="11" font-weight="700" fill="#16181D">You can scan AND pick</text>
+          <text x="34" y="182" font-family="sans-serif" font-size="9" fill="#3F434D">This iPhone has LiDAR — you can</text>
+          <text x="34" y="194" font-family="sans-serif" font-size="9" fill="#3F434D">seed the library for everyone.</text>
+          <rect x="34" y="200" width="56" height="11" rx="3" fill="#FFF3EA"/><text x="40" y="209" font-family="monospace" font-size="7.5" fill="#a8530f">PRO PATH</text>
+          <rect x="20" y="228" width="174" height="70" rx="12" fill="#EAF0F8" stroke="#2B3A55"/>
+          <text x="34" y="250" font-family="sans-serif" font-size="11" font-weight="700" fill="#2B3A55">Browsing &amp; picking are yours</text>
+          <text x="34" y="268" font-family="sans-serif" font-size="9" fill="#3F434D">Scanning new cars needs a Pro</text>
+          <text x="34" y="280" font-family="sans-serif" font-size="9" fill="#3F434D">iPhone (12 Pro–17 Pro).</text>
+          <rect x="20" y="356" width="174" height="40" rx="11" fill="#16181D"/><text x="107" y="381" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="700" fill="#fff"> Sign in with Apple</text>
+        </svg>
+      </div></div>
+      <div class="specbox">
+        <h4>First-run capability gate</h4>
+        <p class="purpose">Detect LiDAR / Object Capture support and frame the result as a <em>contributor invitation</em>, never a denial. Plus the Sign in with Apple intro.</p>
+        <div class="lbl">Layout</div>
+        <ul><li>Warm-light hero with a soft top glow; serif welcome title.</li><li>Two designed capability cards (Pro path = tungsten-outlined; non-Pro = steel-outlined), shown by detection, not greyed.</li><li>Bottom: Sign in with Apple system button (ink), 44pt.</li></ul>
+        <div class="lbl">Capability copy</div>
+        <ul><li><strong>Pro:</strong> "You can scan AND pick — seed the library."</li><li><strong>non-Pro:</strong> "Browsing &amp; picking are fully yours; scanning new cars needs a Pro iPhone 12 Pro–17 Pro."</li></ul>
+        <div class="lbl">States</div>
+        <div class="stateline"><span class="st ns">not-supported = the framed non-Pro card (a state, not an error)</span><span class="st err">sign-in fail → inline retry</span><span class="st off">offline → continue, library tab dimmed later</span></div>
+      </div>
+    </div>
+
+    <!-- 4.2 The Cabinet -->
+    <div class="screenrow">
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <svg viewBox="0 0 214 436" role="img" aria-label="Home — The Cabinet mockup">
+          <rect width="214" height="436" fill="#F7F4EC"/>
+          <!-- lightbar header -->
+          <rect x="0" y="28" width="214" height="46" fill="#fff"/>
+          <rect x="0" y="74" width="214" height="1" fill="#E4DECF"/>
+          <text x="16" y="52" font-family="serif" font-weight="700" font-size="19" fill="#16181D">The Cabinet</text>
+          <rect x="14" y="58" width="9" height="6" rx="3" fill="#F26B1F"/><text x="28" y="64" font-family="monospace" font-size="8" fill="#2B3A55">14 LIT · 3 EMPTY · 9 BY YOU</text>
+          <!-- segmented + search -->
+          <rect x="14" y="84" width="186" height="20" rx="7" fill="#EFEAE0"/><rect x="14" y="84" width="62" height="20" rx="7" fill="#fff" stroke="#E4DECF"/><text x="45" y="98" text-anchor="middle" font-family="sans-serif" font-size="8.5" font-weight="700" fill="#16181D">Shelves</text><text x="107" y="98" text-anchor="middle" font-family="sans-serif" font-size="8.5" fill="#7C828E">All</text><text x="169" y="98" text-anchor="middle" font-family="sans-serif" font-size="8.5" fill="#7C828E">Empty</text>
+          <!-- bento niches -->
+          <defs><radialGradient id="ng" cx="50%" cy="116%" r="80%"><stop offset="0%" stop-color="#FFE6CE"/><stop offset="60%" stop-color="#FFE6CE" stop-opacity="0"/></radialGradient></defs>
+          <!-- wide feature niche -->
+          <rect x="14" y="116" width="186" height="74" rx="9" fill="url(#ng)" stroke="#E4DECF"/>
+          <rect x="20" y="122" width="18" height="11" rx="3" fill="#F1ECE1"/><text x="29" y="130.5" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#2B3A55">748</text>
+          <rect x="180" y="122" width="14" height="14" rx="3" fill="#1F7A8C"/><text x="187" y="133" text-anchor="middle" font-family="monospace" font-size="9" font-weight="800" fill="#fff">L</text>
+          <ellipse cx="107" cy="170" rx="40" ry="6" fill="#16181D" opacity=".08"/><text x="107" y="166" text-anchor="middle" font-size="22">🏎️</text>
+          <text x="20" y="184" font-family="serif" font-weight="700" font-size="11" fill="#16181D">GR Supra</text>
+          <!-- row of small niches -->
+          <g>
+            <rect x="14" y="198" width="58" height="64" rx="8" fill="url(#ng)" stroke="#E4DECF"/><rect x="60" y="203" width="9" height="9" rx="2" fill="#9A4B17"/><text x="64.5" y="210" text-anchor="middle" font-family="monospace" font-size="6" font-weight="800" fill="#fff">R</text><text x="43" y="240" text-anchor="middle" font-size="15">🚗</text>
+            <rect x="78" y="198" width="58" height="64" rx="8" fill="#EAE4D6" stroke="#E4DECF"/><text x="107" y="232" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#7C828E">no scan</text>
+            <rect x="142" y="198" width="58" height="64" rx="8" fill="url(#ng)" stroke="#E4DECF"/><text x="171" y="236" text-anchor="middle" font-size="15">🏎️</text>
+          </g>
+          <rect x="14" y="270" width="186" height="1" fill="#E4DECF"/><text x="14" y="284" font-family="sans-serif" font-size="7.5" letter-spacing="2" fill="#7C828E">SHELF · GR SERIES</text>
+          <g>
+            <rect x="14" y="292" width="58" height="64" rx="8" fill="url(#ng)" stroke="#E4DECF"/><text x="43" y="330" text-anchor="middle" font-size="15">🏎️</text>
+            <rect x="78" y="292" width="58" height="64" rx="8" fill="url(#ng)" stroke="#E4DECF"/><text x="107" y="330" text-anchor="middle" font-size="15">🚙</text>
+            <rect x="142" y="292" width="58" height="64" rx="8" fill="#EAE4D6" stroke="#E4DECF"/><text x="171" y="328" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#7C828E">no scan</text>
+          </g>
+          <!-- tab bar -->
+          <rect x="0" y="402" width="214" height="34" fill="#fff"/><rect x="0" y="402" width="214" height="1" fill="#E4DECF"/>
+          <text x="34" y="423" text-anchor="middle" font-family="sans-serif" font-size="8" font-weight="700" fill="#F26B1F">▦ Cabinet</text>
+          <text x="86" y="423" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#7C828E">⌕ Catalog</text>
+          <text x="138" y="423" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#7C828E">☁ Library</text>
+          <text x="186" y="423" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#7C828E">⚙</text>
+        </svg>
+      </div></div>
+      <div class="specbox">
+        <h4>Home · The Cabinet</h4>
+        <p class="purpose">The backlit-vitrine bento collection — the app's signature surface. Ownership and capability are read as luminance, not banners.</p>
+        <div class="lbl">Layout</div>
+        <ul><li>Lightbar header: collapsing large serif title + mono telemetry count ("14 LIT · 3 EMPTY · 9 BY YOU") with odometer roll on sync/pick.</li><li>Segmented <em>Shelves / All / Empty</em> + large-title-collapsing search.</li><li>UICollectionView compositional bento: lit niches interleaved with one wide feature niche per ~5–6, shelf-edge hairlines grouping rows. Recessed niches, NOT elevated cards.</li></ul>
+        <div class="lbl">Key components</div>
+        <ul><li>Cabinet cell (lit / empty), mono catalog placard, colored drive decal, YOURS/COMMUNITY tag, single contact shadow.</li></ul>
+        <div class="lbl">States</div>
+        <div class="stateline"><span class="st load">loading → niche skeletons (matte, faint pulse)</span><span class="st empty">empty → authored cabinet of dark niches inviting a first pick</span><span class="st err">error → inline retry banner above the grid</span><span class="st off">offline → cached shelf works; Library tab dimmed</span></div>
+      </div>
+    </div>
+
+    <!-- 4.3 Index list mode -->
+    <div class="screenrow">
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <svg viewBox="0 0 214 436" role="img" aria-label="Index list mode mockup">
+          <rect width="214" height="436" fill="#F7F4EC"/>
+          <rect x="0" y="28" width="214" height="46" fill="#fff"/><rect x="0" y="74" width="214" height="1" fill="#E4DECF"/>
+          <text x="16" y="56" font-family="serif" font-weight="700" font-size="18" fill="#16181D">Index</text>
+          <rect x="150" y="40" width="50" height="22" rx="7" fill="#EFEAE0"/><text x="175" y="55" text-anchor="middle" font-family="sans-serif" font-size="8.5" fill="#16181D">⇄ Cabinet</text>
+          <!-- ruled rows -->
+          <g font-family="monospace">
+            <rect x="0" y="84" width="214" height="40" fill="#fff"/><text x="16" y="102" font-size="9" fill="#2B3A55">MGT00748</text><rect x="78" y="92" width="12" height="12" rx="2" fill="#1F7A8C"/><text x="84" y="101" text-anchor="middle" font-size="8" font-weight="800" fill="#fff">L</text><text x="100" y="100" font-family="serif" font-weight="700" font-size="11" fill="#16181D">GR Supra</text><text x="100" y="115" font-family="sans-serif" font-size="8" fill="#7C828E">2022 · A90</text>
+            <rect x="0" y="124" width="214" height="1" fill="#E4DECF"/>
+            <rect x="0" y="125" width="214" height="40" fill="#fff"/><text x="16" y="143" font-size="9" fill="#2B3A55">MGT00219</text><rect x="78" y="133" width="12" height="12" rx="2" fill="#9A4B17"/><text x="84" y="142" text-anchor="middle" font-size="8" font-weight="800" fill="#fff">R</text><text x="100" y="141" font-family="serif" font-weight="700" font-size="11" fill="#16181D">LBWK GT-R</text><text x="100" y="156" font-family="sans-serif" font-size="8" fill="#7C828E">2021 · R35</text>
+            <rect x="0" y="165" width="214" height="1" fill="#E4DECF"/>
+            <rect x="0" y="166" width="214" height="40" fill="#F7F4EC"/><text x="16" y="184" font-size="9" fill="#7C828E">MGT00533</text><rect x="78" y="174" width="12" height="12" rx="2" fill="#9A4B17"/><text x="84" y="183" text-anchor="middle" font-size="8" font-weight="800" fill="#fff">R</text><text x="100" y="182" font-family="serif" font-weight="700" font-size="11" fill="#7C828E">Civic Type R</text><text x="100" y="197" font-family="monospace" font-size="7" fill="#7C828E">no scan yet</text>
+            <rect x="0" y="206" width="214" height="1" fill="#E4DECF"/>
+            <rect x="0" y="207" width="214" height="40" fill="#fff"/><text x="16" y="225" font-size="9" fill="#2B3A55">MGT00611</text><rect x="78" y="215" width="12" height="12" rx="2" fill="#1F7A8C"/><text x="84" y="224" text-anchor="middle" font-size="8" font-weight="800" fill="#fff">L</text><text x="100" y="223" font-family="serif" font-weight="700" font-size="11" fill="#16181D">Lancer Evo X</text><text x="100" y="238" font-family="sans-serif" font-size="8" fill="#7C828E">2020</text>
+            <rect x="0" y="247" width="214" height="1" fill="#E4DECF"/>
+          </g>
+          <rect x="0" y="402" width="214" height="34" fill="#fff"/><rect x="0" y="402" width="214" height="1" fill="#E4DECF"/><text x="34" y="423" text-anchor="middle" font-family="sans-serif" font-size="8" font-weight="700" fill="#F26B1F">▦ Cabinet</text>
+        </svg>
+      </div></div>
+      <div class="specbox">
+        <h4>Home · Index list mode</h4>
+        <p class="purpose">The alternate ruled editorial reading for collectors who think in catalog order — toggled from the Cabinet.</p>
+        <div class="lbl">Layout</div>
+        <ul><li>Dense ruled rows; SF Mono catalog numbers flush-left; New York serif names; colored drive decal per row.</li><li>Unscanned rows render in <code>--muted</code> with a "no scan yet" mono note — same light-as-state logic, list form.</li></ul>
+        <div class="lbl">Key components</div>
+        <ul><li>Index row, drive decal, mono placard, the Cabinet/Index toggle in the nav bar.</li></ul>
+        <div class="lbl">States</div>
+        <div class="stateline"><span class="st load">loading → ruled skeleton rows</span><span class="st empty">empty → "No releases on your shelf — pick one from the Catalog."</span><span class="st off">offline → cached rows; library-only rows dimmed</span></div>
+      </div>
+    </div>
+
+    <!-- 4.4 Catalog search + drive -->
+    <div class="screenrow">
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <svg viewBox="0 0 214 436" role="img" aria-label="Catalog search and drive selection mockup">
+          <rect width="214" height="436" fill="#F7F4EC"/>
+          <rect x="0" y="28" width="214" height="64" fill="#fff"/><rect x="0" y="92" width="214" height="1" fill="#E4DECF"/>
+          <text x="16" y="54" font-family="serif" font-weight="700" font-size="18" fill="#16181D">Catalog</text>
+          <rect x="16" y="64" width="182" height="22" rx="8" fill="#EFEAE0"/><text x="26" y="79" font-family="sans-serif" font-size="9" fill="#7C828E">⌕  supra</text>
+          <!-- result expanded with drive toggle -->
+          <rect x="16" y="104" width="182" height="96" rx="10" fill="#fff" stroke="#F26B1F"/>
+          <text x="28" y="124" font-family="monospace" font-size="8.5" fill="#2B3A55">MGT00748</text>
+          <text x="28" y="142" font-family="serif" font-weight="700" font-size="13" fill="#16181D">Toyota GR Supra</text>
+          <text x="28" y="156" font-family="sans-serif" font-size="8.5" fill="#7C828E">2022 · pearl white · A90</text>
+          <text x="28" y="176" font-family="sans-serif" font-size="8" letter-spacing="1" fill="#7C828E">CHOOSE DRIVE</text>
+          <rect x="28" y="180" width="70" height="14" rx="5" fill="#E5F2F4" stroke="#1F7A8C"/><rect x="32" y="183" width="9" height="9" rx="2" fill="#1F7A8C"/><text x="36.5" y="190.5" text-anchor="middle" font-family="monospace" font-size="6.5" font-weight="800" fill="#fff">L</text><text x="62" y="190" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#1F7A8C">LHD</text>
+          <rect x="104" y="180" width="70" height="14" rx="5" fill="#fff" stroke="#E4DECF"/><rect x="108" y="183" width="9" height="9" rx="2" fill="#9A4B17"/><text x="112.5" y="190.5" text-anchor="middle" font-family="monospace" font-size="6.5" font-weight="800" fill="#fff">R</text><text x="138" y="190" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#7C828E">RHD</text>
+          <!-- collapsed results -->
+          <rect x="16" y="212" width="182" height="40" rx="9" fill="#fff" stroke="#E4DECF"/><text x="28" y="230" font-family="monospace" font-size="8" fill="#2B3A55">MGT00533</text><text x="28" y="244" font-family="serif" font-weight="700" font-size="11" fill="#16181D">Honda Civic Type R</text>
+          <rect x="16" y="260" width="182" height="40" rx="9" fill="#fff" stroke="#E4DECF"/><text x="28" y="278" font-family="monospace" font-size="8" fill="#2B3A55">MGT00611</text><text x="28" y="292" font-family="serif" font-weight="700" font-size="11" fill="#16181D">Lancer Evolution X</text>
+          <rect x="16" y="356" width="182" height="40" rx="11" fill="#F26B1F"/><text x="107" y="381" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="700" fill="#fff">Continue with LHD</text>
+        </svg>
+      </div></div>
+      <div class="specbox">
+        <h4>Catalog search + drive (LHD/RHD) selection</h4>
+        <p class="purpose">Search Mini GT number/name/livery; making <strong>drive a required part of the key</strong> <em>before</em> picking.</p>
+        <div class="lbl">Layout</div>
+        <ul><li>Searchable list; the tapped result expands in place to reveal the designed twin-state drive toggle (teal L / amber R).</li><li>A primary "Continue with [drive]" CTA stays disabled until a drive is chosen.</li></ul>
+        <div class="lbl">Key components</div>
+        <ul><li>Drive toggle (rotateY + haptic snap), mono placard, primary CTA.</li></ul>
+        <div class="lbl">States</div>
+        <div class="stateline"><span class="st load">loading → result skeletons</span><span class="st empty">empty → "No match for '…' — try the number or livery."</span><span class="st err">error → "Catalog couldn't load" + retry</span><span class="st off">offline → bundled catalog only; a steel note flags it</span></div>
+      </div>
+    </div>
+
+    <!-- 4.5 Release detail -->
+    <div class="screenrow">
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <svg viewBox="0 0 214 436" role="img" aria-label="Release detail mockup, three scan states">
+          <rect width="214" height="436" fill="#F7F4EC"/>
+          <rect x="0" y="28" width="214" height="30" fill="#fff"/><text x="16" y="48" font-family="sans-serif" font-size="10" fill="#F26B1F">‹ Catalog</text>
+          <!-- poster / niche -->
+          <defs><radialGradient id="rg" cx="50%" cy="110%" r="80%"><stop offset="0%" stop-color="#FFE6CE"/><stop offset="62%" stop-color="#FFE6CE" stop-opacity="0"/></radialGradient></defs>
+          <rect x="16" y="66" width="182" height="120" rx="12" fill="url(#rg)" stroke="#E4DECF"/>
+          <rect x="24" y="74" width="20" height="12" rx="3" fill="#F1ECE1"/><text x="34" y="83" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#2B3A55">748</text>
+          <rect x="170" y="74" width="18" height="18" rx="4" fill="#1F7A8C"/><text x="179" y="87" text-anchor="middle" font-family="monospace" font-size="11" font-weight="800" fill="#fff">L</text>
+          <ellipse cx="107" cy="160" rx="48" ry="8" fill="#16181D" opacity=".08"/><text x="107" y="154" text-anchor="middle" font-size="34">🏎️</text>
+          <!-- title + meta -->
+          <text x="16" y="210" font-family="serif" font-weight="700" font-size="18" fill="#16181D">Toyota GR Supra</text>
+          <text x="16" y="226" font-family="sans-serif" font-size="9" fill="#3F434D">Mini GT · A90 · 2022 · pearl white</text>
+          <rect x="16" y="234" width="60" height="14" rx="5" fill="#EAF0F8"/><text x="46" y="244" text-anchor="middle" font-family="monospace" font-size="7" fill="#2B3A55">COMMUNITY</text>
+          <text x="84" y="244" font-family="sans-serif" font-size="8" fill="#7C828E">edition cap 4800</text>
+          <!-- provenance well -->
+          <rect x="16" y="258" width="182" height="40" rx="9" fill="#EAF0F8"/><text x="28" y="276" font-family="sans-serif" font-size="8.5" fill="#2B3A55">Scanned by @rkdiecast</text><text x="28" y="290" font-family="monospace" font-size="7.5" fill="#3F434D">REDUCED · 2.41 MB · 312 picks</text>
+          <!-- CTAs -->
+          <rect x="16" y="312" width="182" height="38" rx="11" fill="#F26B1F"/><text x="107" y="336" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="700" fill="#fff">Pick to shelf</text>
+          <rect x="16" y="356" width="182" height="34" rx="11" fill="#fff" stroke="#16181D"/><text x="107" y="378" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#16181D">View in 3D</text>
+        </svg>
+      </div></div>
+      <div class="specbox">
+        <h4>Release detail</h4>
+        <p class="purpose">The full release card, showing all three scan states through light, not buttons.</p>
+        <div class="lbl">The three states (light-as-state)</div>
+        <ul><li><strong>(a) Pick existing scan</strong> — canonical community model present: lit poster + provenance well + <em>Pick to shelf</em> + <em>View in 3D</em>.</li><li><strong>(b) Scan it yourself [Pro]</strong> — no scan yet, Pro device: matte recess + tungsten <em>Guided scan</em> CTA.</li><li><strong>(c) No scan yet [non-Pro]</strong> — matte recess + designed steel note: "no community scan yet; needs a Pro iPhone to seed it." Never a dead button.</li></ul>
+        <div class="lbl">Key components</div>
+        <ul><li>Niche/poster, mono placard, drive decal, provenance well (steel), YOURS/COMMUNITY tag, maker/livery/year/edition-cap metadata.</li></ul>
+        <div class="lbl">States</div>
+        <div class="stateline"><span class="st load">loading → poster shimmer</span><span class="st err">error → reconstruct/fetch failed + retry</span><span class="st off">offline → shelved copy viewable; pick disabled w/ steel note</span><span class="st ns">not-supported → state (c) above</span></div>
+      </div>
+    </div>
+
+    <!-- 4.6 3D viewer -->
+    <div class="screenrow">
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <svg viewBox="0 0 214 436" role="img" aria-label="3D viewer dark stage mockup">
+          <defs><radialGradient id="vg" cx="50%" cy="36%" r="75%"><stop offset="0%" stop-color="#1B2029"/><stop offset="78%" stop-color="#101319"/></radialGradient></defs>
+          <rect width="214" height="436" fill="url(#vg)"/>
+          <text x="16" y="48" font-family="sans-serif" font-size="11" fill="#c9cedb">✕</text>
+          <text x="107" y="48" text-anchor="middle" font-family="serif" font-weight="700" font-size="13" fill="#fff">GR Supra</text>
+          <!-- horizon rim -->
+          <rect x="0" y="250" width="214" height="1" fill="#F26B1F" opacity=".55"/>
+          <ellipse cx="107" cy="262" rx="74" ry="14" fill="#F26B1F" opacity=".2"/>
+          <text x="107" y="210" text-anchor="middle" font-size="56">🏎️</text>
+          <text x="107" y="300" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#7d8499">drag to rotate · pinch to zoom</text>
+          <text x="107" y="316" text-anchor="middle" font-family="monospace" font-size="8" fill="#7d8499">EDITION 1510 / 2022</text>
+          <!-- floating control bar -->
+          <rect x="16" y="356" width="182" height="44" rx="13" fill="#1B2029" stroke="#2a3342"/>
+          <text x="28" y="374" font-family="monospace" font-size="7.5" fill="#c9cedb">MGT00748 ·</text><rect x="86" y="368" width="11" height="11" rx="2" fill="#1F7A8C"/><text x="91.5" y="377" text-anchor="middle" font-family="monospace" font-size="7" font-weight="800" fill="#fff">L</text>
+          <text x="28" y="390" font-family="monospace" font-size="7.5" fill="#7d8499">REDUCED · 2.41 MB</text>
+          <rect x="120" y="366" width="64" height="24" rx="9" fill="#F26B1F"/><text x="152" y="382" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="700" fill="#fff">View in AR</text>
+        </svg>
+      </div></div>
+      <div class="specbox">
+        <h4>3D viewer — the dark stage</h4>
+        <p class="purpose">The single sanctioned dark surface — diegetic, reached via the lift-from-the-case transition. The USDZ is the brightest thing on screen.</p>
+        <div class="lbl">Layout</div>
+        <ul><li>Car on a spotlit turntable over <code>--stage-0</code>, vignetted; a thin <code>--stage-rim</code> tungsten horizon keeps it in the warm brand system.</li><li>RealityView rotate/pinch; idle slow auto-orbit that stops on first touch.</li><li>Floating thinMaterial control bar with mono catalog+drive+detail telemetry; the edition-serial stamp reveal; a prominent tungsten <em>View in AR</em>.</li></ul>
+        <div class="lbl">Key components</div>
+        <ul><li>Stage backdrop, turntable plinth, viewer control bar, AR button.</li><li><em>3D placeholder note: live model rotates here via RealityView; AR via AR Quick Look.</em></li></ul>
+        <div class="lbl">States</div>
+        <div class="stateline"><span class="st load">loading → model load progress on stage</span><span class="st err">error → "Couldn't load model" + retry, re-cabinets on dismiss</span><span class="st off">offline → cached USDZ plays; AR works locally</span></div>
+      </div>
+    </div>
+
+    <!-- 4.7 AR preview -->
+    <div class="screenrow">
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <svg viewBox="0 0 214 436" role="img" aria-label="AR placement preview mockup">
+          <rect width="214" height="436" fill="#2b2722"/>
+          <rect x="0" y="250" width="214" height="186" fill="#3a352d"/>
+          <ellipse cx="107" cy="300" rx="60" ry="14" fill="#000" opacity=".25"/>
+          <text x="107" y="288" text-anchor="middle" font-size="40">🏎️</text>
+          <!-- coaching -->
+          <rect x="34" y="60" width="146" height="36" rx="12" fill="rgba(16,19,25,.7)"/><text x="107" y="78" text-anchor="middle" font-family="sans-serif" font-size="9.5" fill="#fff">Move to find a surface…</text><text x="107" y="90" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#c9cedb">point at a table</text>
+          <!-- success bar -->
+          <rect x="16" y="376" width="182" height="40" rx="13" fill="rgba(16,19,25,.72)"/><text x="40" y="396" font-family="sans-serif" font-size="9.5" fill="#fff">Placed — hand it to a friend</text><rect x="150" y="384" width="34" height="24" rx="8" fill="#1F9D62"/><text x="167" y="400" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#fff">✓</text>
+        </svg>
+      </div></div>
+      <div class="specbox">
+        <h4>AR placement preview</h4>
+        <p class="purpose">AR Quick Look handoff — the "show a friend" payoff, one tap from the viewer.</p>
+        <div class="lbl">Layout</div>
+        <ul><li>System AR Quick Look surface with a "place on a table" coaching state, then the car composited on a real surface.</li><li>A success affordance for the one-tap "show a friend" moment.</li></ul>
+        <div class="lbl">States</div>
+        <div class="stateline"><span class="st load">loading → AR session warm-up coaching</span><span class="st err">error → "AR unavailable on this device" → return to 3D viewer</span><span class="st ns">not-supported → falls back to 3D viewer only</span></div>
+      </div>
+    </div>
+
+    <!-- 4.8 Guided scan -->
+    <div class="screenrow">
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <svg viewBox="0 0 214 436" role="img" aria-label="Guided scan flow Pro mockup">
+          <rect width="214" height="436" fill="#F7F4EC"/>
+          <rect x="0" y="28" width="214" height="30" fill="#fff"/><text x="16" y="48" font-family="sans-serif" font-size="10" fill="#F26B1F">‹</text><text x="107" y="48" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#16181D">Guided scan</text>
+          <!-- capture orbit gauge -->
+          <circle cx="107" cy="150" r="64" fill="none" stroke="#E4DECF" stroke-width="10"/>
+          <path d="M107 86 A64 64 0 1 1 51 182" fill="none" stroke="#F26B1F" stroke-width="10" stroke-linecap="round"/>
+          <text x="107" y="146" text-anchor="middle" font-family="monospace" font-size="20" font-weight="700" fill="#16181D">72%</text>
+          <text x="107" y="164" text-anchor="middle" font-family="monospace" font-size="8" fill="#7C828E">COVERAGE · 41 SHOTS</text>
+          <!-- tip -->
+          <rect x="16" y="232" width="182" height="44" rx="10" fill="#fff" stroke="#E4DECF"/><text x="28" y="252" font-family="sans-serif" font-size="9" font-weight="700" fill="#16181D">Remove the car from its case</text><text x="28" y="266" font-family="sans-serif" font-size="8" fill="#7C828E">diffuse, even light · matte surface helps</text>
+          <!-- verdict caveat -->
+          <rect x="16" y="288" width="182" height="44" rx="10" fill="#FBF3DD" stroke="#B8860B"/><text x="28" y="308" font-family="sans-serif" font-size="9" font-weight="700" fill="#7a5a00">⚠ Reduced detail expected</text><text x="28" y="322" font-family="sans-serif" font-size="8" fill="#7a5a00">glossy diecast is hard — keep or re-scan</text>
+          <rect x="16" y="346" width="88" height="36" rx="11" fill="#F26B1F"/><text x="60" y="369" text-anchor="middle" font-family="sans-serif" font-size="10.5" font-weight="700" fill="#fff">Keep</text>
+          <rect x="110" y="346" width="88" height="36" rx="11" fill="#fff" stroke="#B8860B"/><text x="154" y="369" text-anchor="middle" font-family="sans-serif" font-size="10.5" font-weight="700" fill="#7a5a00">Re-scan</text>
+        </svg>
+      </div></div>
+      <div class="specbox">
+        <h4>Guided scan flow <span class="pill steel" style="vertical-align:middle">Pro</span></h4>
+        <p class="purpose">Multi-step Object Capture, honest about Spike-0 quality — no triumphant success-only toast.</p>
+        <div class="lbl">Steps</div>
+        <ul><li>Remove-from-case tip (diffuse-light guidance).</li><li>Capture orbit gauge with mono coverage telemetry (COVERAGE 72% · 41 SHOTS).</li><li>Reconstructing — determinate progress.</li><li>Keep / re-scan verdict card ("good enough to show a friend?") with a brass <code>--warn</code> "reduced detail" note.</li></ul>
+        <div class="lbl">States</div>
+        <div class="stateline"><span class="st load">loading → reconstruct progress (errors 4011/4012 surfaced)</span><span class="st err">error → reconstruct failed → re-scan</span><span class="st ns">not-supported → this flow is never reachable on non-Pro (no dead button anywhere)</span></div>
+      </div>
+    </div>
+
+    <!-- 4.9 Bond -->
+    <div class="screenrow">
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <svg viewBox="0 0 214 436" role="img" aria-label="Bond flow Pro mockup">
+          <rect width="214" height="436" fill="#F7F4EC"/>
+          <rect x="0" y="28" width="214" height="30" fill="#fff"/><text x="107" y="48" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#16181D">Bond to catalog</text>
+          <text x="16" y="84" font-family="sans-serif" font-size="8" letter-spacing="1.5" fill="#7C828E">MINI GT NUMBER</text>
+          <rect x="16" y="90" width="182" height="40" rx="10" fill="#fff" stroke="#2B3A55"/><text x="28" y="115" font-family="monospace" font-size="14" fill="#2B3A55">MGT00748</text>
+          <text x="16" y="156" font-family="sans-serif" font-size="8" letter-spacing="1.5" fill="#7C828E">DRIVE (REQUIRED)</text>
+          <rect x="16" y="162" width="88" height="34" rx="9" fill="#E5F2F4" stroke="#1F7A8C"/><rect x="26" y="171" width="14" height="14" rx="3" fill="#1F7A8C"/><text x="33" y="183" text-anchor="middle" font-family="monospace" font-size="9" font-weight="800" fill="#fff">L</text><text x="70" y="183" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#1F7A8C">LHD</text>
+          <rect x="110" y="162" width="88" height="34" rx="9" fill="#fff" stroke="#E4DECF"/><rect x="120" y="171" width="14" height="14" rx="3" fill="#9A4B17"/><text x="127" y="183" text-anchor="middle" font-family="monospace" font-size="9" font-weight="800" fill="#fff">R</text><text x="164" y="183" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#7C828E">RHD</text>
+          <text x="16" y="224" font-family="sans-serif" font-size="8" letter-spacing="1.5" fill="#7C828E">EDITION SERIAL (OPTIONAL)</text>
+          <rect x="16" y="230" width="182" height="36" rx="10" fill="#fff" stroke="#E4DECF"/><text x="28" y="253" font-family="monospace" font-size="12" fill="#3F434D">1510 / 2022</text>
+          <!-- preview header band -->
+          <rect x="16" y="288" width="182" height="44" rx="10" fill="#F1ECE1"/><text x="28" y="308" font-family="monospace" font-size="9" fill="#2B3A55">MGT00748 · L · 1510/2022</text><text x="28" y="324" font-family="serif" font-weight="700" font-size="11" fill="#16181D">GR Supra</text>
+          <rect x="16" y="352" width="182" height="40" rx="11" fill="#F26B1F"/><text x="107" y="377" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="700" fill="#fff">Bond &amp; add to shelf</text>
+        </svg>
+      </div></div>
+      <div class="specbox">
+        <h4>Bond flow <span class="pill steel" style="vertical-align:middle">Pro</span></h4>
+        <p class="purpose">Separate from scanning — attach identity deterministically so it never depends on scan success.</p>
+        <div class="lbl">Layout</div>
+        <ul><li>Enter Mini GT number; select drive via the designed decal toggle (required); optional edition serial (1510/2022) as a per-copy attribute.</li><li>A live preview header band assembles the mono code.</li><li>Bond confirmation animates the mono code into the card header with a stamp-press.</li></ul>
+        <div class="lbl">States</div>
+        <div class="stateline"><span class="st err">error → unknown number → "add as custom?" path</span><span class="st empty">no drive chosen → CTA disabled w/ inline hint</span></div>
+      </div>
+    </div>
+
+    <!-- 4.10 Library browse -->
+    <div class="screenrow">
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <svg viewBox="0 0 214 436" role="img" aria-label="Community library browse mockup">
+          <rect width="214" height="436" fill="#F7F4EC"/>
+          <rect x="0" y="28" width="214" height="64" fill="#fff"/><rect x="0" y="92" width="214" height="1" fill="#E4DECF"/>
+          <text x="16" y="54" font-family="serif" font-weight="700" font-size="18" fill="#16181D">Library</text>
+          <rect x="16" y="64" width="182" height="22" rx="8" fill="#EFEAE0"/><text x="26" y="79" font-family="sans-serif" font-size="9" fill="#7C828E">⌕  community scans</text>
+          <defs><radialGradient id="lg" cx="50%" cy="116%" r="80%"><stop offset="0%" stop-color="#FFE6CE"/><stop offset="60%" stop-color="#FFE6CE" stop-opacity="0"/></radialGradient></defs>
+          <g>
+            <rect x="16" y="104" width="88" height="92" rx="9" fill="url(#lg)" stroke="#E4DECF"/><rect x="22" y="110" width="50" height="11" rx="3" fill="#EAF0F8"/><text x="47" y="119" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#2B3A55">COMMUNITY</text><text x="60" y="166" text-anchor="middle" font-size="22">🏎️</text><text x="22" y="190" font-family="serif" font-weight="700" font-size="9" fill="#16181D">GR Supra</text>
+            <rect x="110" y="104" width="88" height="92" rx="9" fill="url(#lg)" stroke="#E4DECF"/><text x="154" y="166" text-anchor="middle" font-size="22">🚗</text><text x="116" y="190" font-family="serif" font-weight="700" font-size="9" fill="#16181D">LBWK GT-R</text>
+            <rect x="16" y="204" width="88" height="92" rx="9" fill="url(#lg)" stroke="#E4DECF"/><text x="60" y="266" text-anchor="middle" font-size="22">🚙</text><text x="22" y="290" font-family="serif" font-weight="700" font-size="9" fill="#16181D">Civic Type R</text>
+            <rect x="110" y="204" width="88" height="92" rx="9" fill="url(#lg)" stroke="#E4DECF"/><text x="154" y="266" text-anchor="middle" font-size="22">🏎️</text><text x="116" y="290" font-family="serif" font-weight="700" font-size="9" fill="#16181D">Evo X</text>
+          </g>
+          <text x="16" y="320" font-family="monospace" font-size="8" fill="#7C828E">deduped by (number, drive) · 1 canonical / slot</text>
+          <rect x="0" y="402" width="214" height="34" fill="#fff"/><rect x="0" y="402" width="214" height="1" fill="#E4DECF"/><text x="138" y="423" text-anchor="middle" font-family="sans-serif" font-size="8" font-weight="700" fill="#F26B1F">☁ Library</text>
+        </svg>
+      </div></div>
+      <div class="specbox">
+        <h4>Community library browse</h4>
+        <p class="purpose">The shared deduped library keyed by (number, drive) — the supply that makes picking possible.</p>
+        <div class="lbl">Layout</div>
+        <ul><li>Browse/search canonical community scans with provenance/attribution and download counts; each tile carries the COMMUNITY tag.</li><li>Pick-to-shelf transition (light-on bloom) shared with Release detail.</li></ul>
+        <div class="lbl">States</div>
+        <div class="stateline"><span class="st load">loading → poster skeletons</span><span class="st empty">empty → "Library is still being seeded — be the first to contribute."</span><span class="st err">error → fetch failed + retry</span><span class="st off">offline → whole tab dimmed/unavailable with a steel note (cached shelf still works)</span></div>
+      </div>
+    </div>
+
+    <!-- 4.11 Share / upload -->
+    <div class="screenrow">
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <svg viewBox="0 0 214 436" role="img" aria-label="Share opt-in upload mockup">
+          <rect width="214" height="436" fill="#F7F4EC"/>
+          <rect x="0" y="28" width="214" height="30" fill="#fff"/><text x="16" y="48" font-family="sans-serif" font-size="10" fill="#7C828E">Cancel</text><text x="107" y="48" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#16181D">Share to community</text>
+          <rect x="16" y="72" width="182" height="40" rx="10" fill="#EAF0F8"/><text x="28" y="90" font-family="sans-serif" font-size="9" fill="#2B3A55">Attribution: @rkdiecast</text><text x="28" y="104" font-family="sans-serif" font-size="8" fill="#3F434D">via Sign in with Apple handle</text>
+          <rect x="16" y="120" width="182" height="48" rx="10" fill="#fff" stroke="#E4DECF"/><text x="28" y="140" font-family="sans-serif" font-size="9" font-weight="700" fill="#16181D">Non-commercial license</text><text x="28" y="154" font-family="sans-serif" font-size="8" fill="#7C828E">view-only · no export · revocable</text>
+          <rect x="16" y="176" width="182" height="48" rx="10" fill="#fff" stroke="#E4DECF"/><rect x="26" y="192" width="14" height="14" rx="4" fill="#1F9D62"/><text x="33" y="203" text-anchor="middle" font-size="10" fill="#fff">✓</text><text x="48" y="196" font-family="sans-serif" font-size="9" fill="#16181D">I own this copy and scanned it</text><text x="48" y="210" font-family="sans-serif" font-size="8" fill="#7C828E">uploader attestation</text>
+          <rect x="16" y="232" width="182" height="36" rx="10" fill="#EAF0F8"/><text x="28" y="250" font-family="monospace" font-size="8" fill="#2B3A55">one canonical per (MGT00748, L)</text><text x="28" y="263" font-family="sans-serif" font-size="7.5" fill="#3F434D">no scan present yet — yours becomes canonical</text>
+          <!-- progress -->
+          <rect x="16" y="284" width="182" height="10" rx="5" fill="#EFEAE0"/><rect x="16" y="284" width="120" height="10" rx="5" fill="#F26B1F"/><text x="16" y="310" font-family="monospace" font-size="8" fill="#a8530f">UPLOADING · 1.6 / 2.4 MB → R2</text>
+          <rect x="16" y="356" width="182" height="40" rx="11" fill="#F26B1F"/><text x="107" y="381" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="700" fill="#fff">Upload to community</text>
+        </svg>
+      </div></div>
+      <div class="specbox">
+        <h4>Share / opt-in upload</h4>
+        <p class="purpose">Per-model consent — nothing leaves the device without explicit, revocable opt-in.</p>
+        <div class="lbl">Layout</div>
+        <ul><li>Attribution (Sign in with Apple handle), explicit non-commercial license note, uploader attestation, "one canonical per (number, drive)" explanation, presigned-upload progress.</li></ul>
+        <div class="lbl">Key components</div>
+        <ul><li>Consent rows, attestation checkbox, mono dedup explainer, upload progress (bytes → R2 directly).</li></ul>
+        <div class="lbl">States</div>
+        <div class="stateline"><span class="st load">loading → presigned-PUT progress</span><span class="st err">error → upload failed + retry; partial bytes discarded</span><span class="st empty">already canonical → "a scan exists for this slot" + contribute-alternate path</span><span class="st off">offline → upload disabled w/ steel note; queued isn't promised in v1</span></div>
+      </div>
+    </div>
+
+    <!-- 4.12 Settings -->
+    <div class="screenrow">
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <svg viewBox="0 0 214 436" role="img" aria-label="Settings mockup">
+          <rect width="214" height="436" fill="#F7F4EC"/>
+          <rect x="0" y="28" width="214" height="46" fill="#fff"/><rect x="0" y="74" width="214" height="1" fill="#E4DECF"/><text x="16" y="58" font-family="serif" font-weight="700" font-size="18" fill="#16181D">Settings</text>
+          <text x="16" y="98" font-family="sans-serif" font-size="8" letter-spacing="1.5" fill="#7C828E">ACCOUNT</text>
+          <rect x="16" y="104" width="182" height="38" rx="9" fill="#fff" stroke="#E4DECF"/><text x="28" y="122" font-family="sans-serif" font-size="9.5" fill="#16181D">Signed in with Apple</text><text x="28" y="135" font-family="monospace" font-size="8" fill="#2B3A55">@rkdiecast</text>
+          <text x="16" y="166" font-family="sans-serif" font-size="8" letter-spacing="1.5" fill="#7C828E">SYNC</text>
+          <rect x="16" y="172" width="182" height="50" rx="9" fill="#fff" stroke="#E4DECF"/><text x="28" y="190" font-family="sans-serif" font-size="9.5" fill="#16181D">iCloud sync</text><text x="28" y="204" font-family="sans-serif" font-size="8" fill="#7C828E">off by default · uses your iCloud quota</text><rect x="158" y="180" width="30" height="18" rx="9" fill="#EFEAE0"/><circle cx="167" cy="189" r="7" fill="#fff" stroke="#E4DECF"/>
+          <text x="16" y="246" font-family="sans-serif" font-size="8" letter-spacing="1.5" fill="#7C828E">DEVICE</text>
+          <rect x="16" y="252" width="182" height="44" rx="9" fill="#EAF0F8" stroke="#2B3A55"/><rect x="28" y="266" width="8" height="8" rx="4" fill="#2B3A55"/><text x="44" y="273" font-family="sans-serif" font-size="9" fill="#2B3A55">Scanning: not available</text><text x="44" y="286" font-family="sans-serif" font-size="8" fill="#3F434D">this iPhone has no LiDAR — picking works</text>
+          <text x="16" y="320" font-family="sans-serif" font-size="8" letter-spacing="1.5" fill="#7C828E">SAFETY</text>
+          <rect x="16" y="326" width="182" height="38" rx="9" fill="#fff" stroke="#E4DECF"/><text x="28" y="344" font-family="sans-serif" font-size="9.5" fill="#16181D">Report a scan / takedown</text><text x="28" y="357" font-family="sans-serif" font-size="8" fill="#7C828E">DMCA designated-agent contact</text>
+        </svg>
+      </div></div>
+      <div class="specbox">
+        <h4>Settings</h4>
+        <p class="purpose">Account, sync, capability transparency, and the safety entry point.</p>
+        <div class="lbl">Layout (grouped iOS list)</div>
+        <ul><li>iCloud sync toggle — opt-in, <strong>off by default</strong>, explains it consumes the user's iCloud quota.</li><li>Sign in with Apple account state.</li><li>Capability/device status — a calm steel note, never an alarm.</li><li>Report/takedown + DMCA designated-agent contact entry point.</li></ul>
+        <div class="lbl">States</div>
+        <div class="stateline"><span class="st ns">not-supported → "Scanning: not available" steel row (informational)</span><span class="st err">sync error → inline status row</span><span class="st off">offline → account/sync rows show last-known state</span></div>
+      </div>
+    </div>
+
+    <!-- 4.13 Cross-cutting states -->
+    <h3>Cross-cutting states (authored, not generic)</h3>
+    <div class="grid c2">
+      <div class="tile"><span class="st empty">empty</span><p style="margin-top:8px"><strong>No cars yet</strong> — an authored cabinet of dark matte niches under the lightbar, each inviting a first pick. The lightbar reads "0 LIT · pick your first car." Not a blank screen.</p></div>
+      <div class="tile"><span class="st err">error</span><p style="margin-top:8px"><strong>Failed fetch / reconstruct</strong> — inline retry on the affected surface (not a blocking modal); the cabinet around it stays usable.</p></div>
+      <div class="tile"><span class="st off">offline</span><p style="margin-top:8px"><strong>Offline</strong> — the cached shelf works fully; the Library tab dims with a steel "reconnect to browse community scans" note. Picks queue is not promised in v1.</p></div>
+      <div class="tile"><span class="st ns">not-supported</span><p style="margin-top:8px"><strong>Scan affordances on non-Pro</strong> — rendered as steel-outlined un-lit states framed as contribution, <em>never</em> dead-greyed buttons or modal warnings.</p></div>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- 5 · STATE-COVERAGE MATRIX -->
+  <!-- ============================================================= -->
+  <section id="matrix">
+    <h2><span class="n">5</span> State-coverage matrix</h2>
+    <p>Which states each screen designs for. <span class="matrix"><span class="yes">●</span></span> = designed state · <span class="matrix"><span class="key">★</span></span> = the state is the screen's core idea (light-as-state) · <span class="matrix"><span class="na">—</span></span> = not applicable.</p>
+    <div class="tbl">
+      <table class="matrix">
+        <thead><tr><th>Screen</th><th>Default</th><th>Loading</th><th>Empty</th><th>Error</th><th>Offline</th><th>Not-supported</th></tr></thead>
+        <tbody>
+          <tr><td>First-run capability gate</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td><td class="yes">●</td><td class="yes">●</td><td class="key">★</td></tr>
+          <tr><td>Home · The Cabinet</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td></tr>
+          <tr><td>Home · Index list mode</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td></tr>
+          <tr><td>Catalog search + drive</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td></tr>
+          <tr><td>Release detail</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td><td class="yes">●</td><td class="yes">●</td><td class="key">★</td></tr>
+          <tr><td>3D viewer · dark stage</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td></tr>
+          <tr><td>AR placement preview</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td><td class="yes">●</td><td class="na">—</td><td class="yes">●</td></tr>
+          <tr><td>Guided scan flow [Pro]</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td><td class="yes">●</td><td class="na">—</td><td class="key">★</td></tr>
+          <tr><td>Bond flow [Pro]</td><td class="yes">●</td><td class="na">—</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td><td class="na">—</td></tr>
+          <tr><td>Community library browse</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td></tr>
+          <tr><td>Share / opt-in upload</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td></tr>
+          <tr><td>Settings</td><td class="yes">●</td><td class="na">—</td><td class="na">—</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="callout steel"><b>Read this matrix as the anti-template guarantee:</b> "not-supported" is a <em>core idea</em> (★) on the capability gate, Release detail, and Guided scan — it is expressed through light-as-state and steel notes, never a greyed-out dead control. Offline never blacks out the app: the cached shelf always works.</p>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- 6 · COMPONENT SYSTEM -->
+  <!-- ============================================================= -->
+  <section id="system">
+    <h2><span class="n">6</span> Component inventory / design system</h2>
+    <p>The reusable atoms, rendered. Controls stay flat and iOS-native (44pt targets) — the cabinetry lives in lighting and recess depth, never in skeuomorphic texture.</p>
+    <div class="ds-grid">
+
+      <div class="ds">
+        <div class="eyebrow">Buttons</div>
+        <div class="btn-row">
+          <span class="btn primary">Pick to shelf</span>
+          <span class="btn secondary">View in 3D</span>
+        </div>
+        <div class="btn-row" style="margin-top:10px">
+          <span class="btn ghost">Cancel</span>
+          <span class="btn steel-outline">Scanning needs a Pro iPhone</span>
+        </div>
+        <p style="font-size:.78rem;margin-top:10px">Primary = tungsten (action). Secondary = ink-outline. Steel-outline = a capability <em>note</em>, never a dead-greyed button. Pressed → <code>--tungsten-deep</code>.</p>
+      </div>
+
+      <div class="ds">
+        <div class="eyebrow">Cabinet cell — lit vs empty</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="cell lit">
+            <span class="placard mtag placard">748</span>
+            <span class="drv decal l">L</span>
+            <div class="car" style="font-size:34px">🏎️</div>
+            <div class="nm">GR Supra</div>
+          </div>
+          <div class="cell empty">
+            <span class="placard mtag placard">219</span>
+            <div class="hint">no scan yet<br/>pick · or scan it</div>
+          </div>
+        </div>
+        <p style="font-size:.78rem;margin-top:10px">LIT = owned/present (glow pre-baked). EMPTY = matte recess (inset shadow). The recess is the inverse of a card.</p>
+      </div>
+
+      <div class="ds">
+        <div class="eyebrow">Drive LHD/RHD toggle</div>
+        <div class="drive-toggle">
+          <span class="opt sel l"><span class="decal l">L</span> LHD</span>
+          <span class="opt r"><span class="decal r">R</span> RHD</span>
+        </div>
+        <p style="font-size:.78rem;margin-top:10px">Color + glyph, redundantly coded for color-vision safety. Required at both pick and bond. Snaps with a short rotateY + haptic — drive is half the key, so it's the most-designed control.</p>
+      </div>
+
+      <div class="ds">
+        <div class="eyebrow">Provenance tags</div>
+        <div class="btn-row">
+          <span class="mtag yours">● Yours</span>
+          <span class="mtag comm">☁ Community</span>
+          <span class="mtag placard">MGT00748</span>
+        </div>
+        <p style="font-size:.78rem;margin-top:10px">YOURS (tungsten dot) vs COMMUNITY (steel) expose the PRD's supply/demand split. The mono placard is the museum-accession treatment of the catalog number.</p>
+      </div>
+
+      <div class="ds">
+        <div class="eyebrow">Capability badge</div>
+        <div class="capbadge"><span class="dot"></span> Scanning: not available on this iPhone — picking is fully yours</div>
+        <p style="font-size:.78rem;margin-top:10px">A designed steel spec-note, framed as a contributor invitation. Never a modal warning.</p>
+      </div>
+
+      <div class="ds">
+        <div class="eyebrow">Viewer chrome (dark stage)</div>
+        <div class="viewer">
+          <div class="rim"></div><div class="turn"></div>
+          <div class="car3d">🏎️</div>
+          <div class="ctrlbar"><span class="tel">MGT00748 · </span><span class="decal l" style="width:18px;height:18px;font-size:11px">L</span><span class="tel">· REDUCED · 2.41 MB</span><span class="ar">View in AR</span></div>
+        </div>
+        <p style="font-size:.78rem;margin-top:10px">The one dark surface. Mono telemetry + tungsten AR action; a thin <code>--stage-rim</code> horizon keeps it in the warm system. <em>(Live model rotates here via RealityView / AR Quick Look.)</em></p>
+      </div>
+
+      <div class="ds">
+        <div class="eyebrow">Catalog / spec card</div>
+        <div class="speccard">
+          <div class="band"><span class="num">MGT00748</span><span class="decal l">L</span><span class="mtag comm" style="margin-left:auto">☁ Community</span></div>
+          <div class="body">
+            <h5>Toyota GR Supra</h5>
+            <div class="row"><span class="k">MAKER</span><span class="v">Mini GT</span></div>
+            <div class="row"><span class="k">YEAR · CHASSIS</span><span class="v">2022 · A90</span></div>
+            <div class="row"><span class="k">EDITION</span><span class="v">1510 / 2022</span></div>
+            <div class="row"><span class="k">DETAIL · BYTES</span><span class="v">REDUCED · 2.41 MB</span></div>
+          </div>
+        </div>
+        <p style="font-size:.78rem;margin-top:10px">Serif name as the objet anchor; mono identity rows treated as accession placards with tabular figures.</p>
+      </div>
+
+      <div class="ds">
+        <div class="eyebrow">Lightbar telemetry counter</div>
+        <div style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:1rem;color:var(--steel);font-variant-numeric:tabular-nums">
+          <span style="width:9px;height:9px;border-radius:50%;background:var(--tungsten);box-shadow:0 0 0 4px var(--tungsten-glow)"></span>
+          <b style="color:var(--tungsten-deep)">14</b> LIT · <b>3</b> EMPTY · <b>9</b> BY YOU
+        </div>
+        <p style="font-size:.78rem;margin-top:10px">Tabular-figure digits odometer-roll on sync/pick (grafted from Pit Wall). The app's single ambient flourish, used sparingly.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- 7 · MOTION & ACCESSIBILITY -->
+  <!-- ============================================================= -->
+  <section id="motion">
+    <h2><span class="n">7</span> Motion principles &amp; accessibility</h2>
+    <div class="grid c2">
+      <div class="card">
+        <h3 style="margin-top:0">Motion principles</h3>
+        <ul class="clean">
+          <li><strong>Lift-from-the-case</strong> is the signature and the sole justification for going dark: a matched-geometry shared-element zoom — niche glow swells, poster scales up, warm chrome cross-dims to <code>--stage-0</code>, car settles on a spotlit turntable. Dismiss reverses, re-seating the car. The model is never teleported.</li>
+          <li><strong>Light-on bloom</strong> on pick: a matte recess fills with <code>--tungsten-glow</code> as the poster fades up — light arriving, not a card appearing.</li>
+          <li><strong>Telemetry odometer-roll</strong> on the lightbar counters on sync/pick; one warmer pulse on pull-to-refresh / new pick.</li>
+          <li><strong>Designed touch states:</strong> drive decals snap with rotateY + haptic; accent presses to <code>--tungsten-deep</code>; a tungsten selection ring; 3D idle auto-orbit stops on first touch and decelerates with a settle ease.</li>
+          <li><strong>Compositor-friendly only:</strong> animate <code>transform</code>, <code>opacity</code>, <code>clip-path</code>, and (sparingly, pre-baked) glow — never <code>width/height/top/left/margin/font-size</code>. Per-niche glow is baked into the cell background; live blur is capped to visible cells.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Accessibility (concrete, per WCAG)</h3>
+        <ul class="clean">
+          <li><strong>Dynamic Type:</strong> all chrome uses SF Pro and scales fully. The serif carries a hard minimum size and <em>falls to SF Pro Display at accessibility-XL</em> sizes, so names never go fragile or low-contrast.</li>
+          <li><strong>Color contrast:</strong> <code>--ink</code> on <code>--paper</code> ≈ 14:1 and on <code>--cell-surface</code> ≈ 16:1 (far past WCAG AA 4.5:1). Drive is <em>never color-only</em> — the L/R glyph carries it for color-vision deficiency (1.4.1 Use of Color). Tungsten/steel are used for fills with white text checked for ≥4.5:1, or paired with a glyph/label.</li>
+          <li><strong>VoiceOver:</strong> a lit niche reads "Toyota GR Supra, MGT00748, left-hand drive, community scan, owned — opens 3D viewer"; an empty niche reads "MGT00219, no community scan yet, double-tap to pick or scan." Light-as-state is mirrored in the accessibility label, never conveyed by color alone.</li>
+          <li><strong>Reduced Motion (first-class path):</strong> every signature transition degrades to a clean crossfade/opacity change; auto-orbit, lightbar pulse, and odometer roll are disabled; nothing essential is conveyed by motion alone (2.3.3).</li>
+          <li><strong>Targets &amp; focus:</strong> 44pt minimum tap targets, correct safe areas, a visible tungsten focus ring, and full keyboard/switch-control traversal of all controls (2.4.7, 2.5.5).</li>
+          <li><strong>Capability without dead ends:</strong> non-Pro states are informational steel notes with the same VoiceOver dignity as actions — no "disabled, dimmed" announcements that read as failure.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- 8 · OPEN QUESTIONS -->
+  <!-- ============================================================= -->
+  <section id="open">
+    <h2><span class="n">8</span> Open design questions</h2>
+    <div class="card q">
+      <div class="item">Empty-niche affordance for non-Pro users: should a matte recess on the <em>Cabinet</em> be tappable to jump straight to Catalog-pick, or stay a passive "known release" marker until reached via Catalog? <span style="display:block;margin-top:4px;font-size:.86rem;color:var(--steel)">Lean: tappable → Release detail, since the steel note already frames the next action.</span></div>
+      <div class="item">Feature-niche selection: which release earns the wide niche per ~5–6 cells — most-recent pick, a "shelf hero" the user pins, or editorial rotation? <span style="display:block;margin-top:4px;font-size:.86rem;color:var(--steel)">Lean: user-pinned, falling back to most-recent, to avoid the fuzzy "why is this big" read that hurt Direction A.</span></div>
+      <div class="item">Index vs Cabinet default on first launch with a populated shelf — does a collector who thinks in catalog order want Index remembered as their default? <span style="display:block;margin-top:4px;font-size:.86rem;color:var(--steel)">Lean: remember last-used mode per user.</span></div>
+      <div class="item">Lightbar count semantics when the library is browsed (not just the personal shelf): does "LIT" ever count library scans, or strictly owned copies? <span style="display:block;margin-top:4px;font-size:.86rem;color:var(--steel)">Lean: strictly owned, to keep the Cabinet personal; library has its own count.</span></div>
+    </div>
+    <p style="margin-top:10px">None block build. Each carries a default lean; the PM can correct at Gate 1.</p>
+  </section>
+
+  <footer>
+    Diecast Vault · Design Document v1.0 · direction <strong>Vitrine — the lit display cabinet (light-as-state)</strong> · authored by the Designer for the SDD pipeline · 2026-06-17. Next: Gate 1 (Design + Spike-0 scan-quality go/no-go). Interactive mockup → <a href="./mockup/index.html" style="color:var(--tungsten-deep)">./mockup/index.html</a>.
+  </footer>
+</div>
+</body>
+</html>
