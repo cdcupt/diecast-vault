@@ -1,0 +1,17 @@
+# macOS
+.DS_Store
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+*.xcuserdatad/
+xcuserdata/
+*.moved-aside
+.swiftpm/
+.build/
+# Node (tooling/scripts)
+node_modules/
+# Secrets
+*.env
+.env*
+!*.env.example
