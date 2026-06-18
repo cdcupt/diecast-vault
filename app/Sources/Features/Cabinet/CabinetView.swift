@@ -30,6 +30,29 @@ struct CabinetView: View {
                     Spacer()
                 }
 
+                // Spike-1: lift the whole shelf into the real-time 3D cabinet
+                // (the single dark surface). Entry kept on the Cabinet home.
+                NavigationLink {
+                    Spike1CabinetView()
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "cube.transparent")
+                        Text("Open 3D cabinet (Spike-1)")
+                            .font(Voice.mono(12, weight: .semibold))
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 11, weight: .semibold))
+                    }
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 12)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .fill(Ink.tungsten)
+                    )
+                }
+                .buttonStyle(.plain)
+
                 LazyVGrid(columns: columns, spacing: 14) {
                     ForEach(shelf) { release in
                         NavigationLink(value: release) {
