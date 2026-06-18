@@ -1,0 +1,28 @@
+# Diecast Vault — API reverse-proxy vhost.
+# DEPLOY ARTIFACT (v1.1 backend). Decoupled per-app snippet, mirrors the
+# established /opt/9relay/caddy-snippets/{billmind,english,status}.caddy pattern.
+#
+# Plug-in (when the backend ships, and ONLY when no other session is mid-edit):
+#   1) cp this file → /opt/9relay/caddy-snippets/diecast-vault.caddy
+#   2) add to /opt/9relay/Caddyfile (alongside the other imports):
+#        import /etc/caddy/snippets/diecast-vault.caddy
+#   3) docker exec 9relay-caddy caddy validate --config /etc/caddy/Caddyfile
+#   4) docker restart 9relay-caddy        # NOT reload (stale-inode bind mount)
+#   5) smoke-test EVERY site (9relay/billmind/english/status/diecast) + this one
+#   6) rollback = remove the import line + file, restart, re-verify
+#
+# TODO at deploy: confirm final domain + the API container's internal port +
+# that diecast-vault-api joins the shared docker network 9relay-caddy is on.
+
+api.diecast.daichenlab.com {           # TODO: confirm final domain
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+	reverse_proxy diecast-vault-api:8080 {   # TODO: container name + internal port
+		flush_interval -1
+	}
+}
