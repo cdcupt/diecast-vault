@@ -87,7 +87,7 @@
       </div>
     </div>
     <div class="meta-pills">
-      <span class="pill accent">PRD v1.1</span>
+      <span class="pill accent">PRD v1.2</span>
       <span class="pill ok">research-grounded</span>
       <span class="pill">Pipeline Step 1</span>
       <span class="pill">2026-06-17</span>
@@ -321,6 +321,7 @@
           <tr><td>F10</td><td>Identity &amp; safety</td><td>Sign in with Apple for attribution; in-app report → takedown flow; repeat-infringer policy.</td><td>Any</td><td>P1</td></tr>
           <tr><td>F11</td><td>Real-Car profile</td><td>On the detail screen: the real vehicle’s history (AI prose <em>grounded + cited</em> on Wikipedia) + specs (Wikidata), a reference gallery (real Commons photos first; a labeled <em>AI illustration</em> only as fallback), and a side-by-side compare against the user’s model. Fetched server-side once per release and cached.</td><td>Any</td><td>P0</td></tr>
           <tr><td>F12</td><td>Icon &amp; asset system</td><td><strong>Hybrid:</strong> app icon + illustrative art generated via <strong>GPT-Image-2</strong> (high quality); tiny functional UI glyphs use vector / SF Symbols. App icon = the lit-cabinet grid mark. See <code>assets/icons/README.md</code>.</td><td>Any</td><td>P1</td></tr>
+          <tr><td>F13</td><td>Localization (i18n)</td><td><strong>English + 简体中文</strong> with an in-app language switcher in Settings (live, no relaunch). UI fully localized via string catalogs; CJK-safe layout (Dynamic Type + Chinese). <strong>AI Real-Car history is localized too</strong> — generated &amp; cached per <code>(release, locale)</code>, so Chinese users read Chinese history. Traditional Chinese (zh-Hant) is a later add; car model names stay as proper nouns.</td><td>Any</td><td>P1</td></tr>
         </tbody>
       </table>
     </div>
@@ -383,7 +384,7 @@
       </svg>
       <figcaption>◆ = the dedup key is <strong>(mgtNumber, drive)</strong>, not the number alone — the research’s highest-severity correction. Edition serials (<code>1510/2022</code>) are per-<em>copy</em> attributes on <code>OwnedCopy</code>. <code>CommunityScan</code> holds one approved canonical model per (number, drive) with an upload-provenance trail.</figcaption>
     </div>
-    <p><strong>Real-Car profile</strong> hangs off <code>Release</code> 1→1: <code>RealCarProfile { mgtNumber FK · wikidataQid · specs(JSON) · historyMD + sources[] · heroImageRef · galleryRefs[] · imageOrigin(commons|ai) · attribution/license }</code>. Specs are factual (Wikidata); history is AI prose grounded + cited on the Wikipedia extract; images are real Commons photos with a labeled AI-illustration fallback — all fetched server-side once per release and cached (metadata in Postgres, image blobs in R2).</p>
+    <p><strong>Real-Car profile</strong> hangs off <code>Release</code> 1→1: <code>RealCarProfile { mgtNumber FK · wikidataQid · specs(JSON) · historyMD + sources[] · heroImageRef · galleryRefs[] · imageOrigin(commons|ai) · attribution/license }</code>. Specs are factual (Wikidata); history is AI prose grounded + cited on the Wikipedia extract; images are real Commons photos with a labeled AI-illustration fallback — all fetched server-side and cached per <code>(release, locale)</code> (metadata in Postgres, image blobs in R2), so the history is served in the user's language. Images are shared across locales.</p>
   </section>
 
   <!-- 8 ARCHITECTURE -->
@@ -576,7 +577,7 @@
   </section>
 
   <footer>
-    Diecast Vault · PRD v1.1 · authored by the Coordinator from the PM’s locked decisions + a 6-agent feasibility/risk research pass · v1.1 adds the Real-Car profile (PM request, 2026-06-18). Next pipeline step: Design Document → <strong>Gate&nbsp;1</strong> (which also carries the Spike-0 scan-quality go/no-go).
+    Diecast Vault · PRD v1.2 · authored by the Coordinator from the PM’s locked decisions + a 6-agent feasibility/risk research pass · v1.1 added the Real-Car profile; v1.2 adds Chinese localization incl. AI content (PM requests, 2026-06-18). Next pipeline step: Design Document → <strong>Gate&nbsp;1</strong> (which also carries the Spike-0 scan-quality go/no-go).
   </footer>
 </div>
 </body>
