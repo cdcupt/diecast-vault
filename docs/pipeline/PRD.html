@@ -87,7 +87,7 @@
       </div>
     </div>
     <div class="meta-pills">
-      <span class="pill accent">PRD v1.0</span>
+      <span class="pill accent">PRD v1.1</span>
       <span class="pill ok">research-grounded</span>
       <span class="pill">Pipeline Step 1</span>
       <span class="pill">2026-06-17</span>
@@ -116,7 +116,7 @@
   <!-- ★ AT A GLANCE -->
   <section id="glance">
     <h2><span class="n">★</span> At a glance</h2>
-    <p class="lead">Turn a shelf of physical Mini&nbsp;GT diecast cars into a 3D collection you carry in your pocket. <strong>Anyone</strong> can browse the shared catalog, pick a model another owner already scanned, and spin it in 3D/AR to show a friend. <strong>Pro-iPhone owners</strong> scan their physical cars to <em>fill</em> that shared library — each release captured once, for everyone.</p>
+    <p class="lead">Turn a shelf of physical Mini&nbsp;GT diecast cars into a 3D collection you carry in your pocket. <strong>Anyone</strong> can browse the shared catalog, pick a model another owner already scanned, and spin it in 3D/AR to show a friend. <strong>Pro-iPhone owners</strong> scan their physical cars to <em>fill</em> that shared library — each release captured once, for everyone. Tap any model to meet the real car it replicates — its history, specs, and reference photos.</p>
     <div class="card fig">
       <svg viewBox="0 0 1120 560" role="img" aria-label="Two-path product loop, community library, and key decisions">
         <defs>
@@ -237,6 +237,7 @@
           <li><strong>View &amp; pick on any iOS 17 iPhone</strong> — browse catalog, add a community scan, rotate &amp; show in AR.</li>
           <li><strong>Scan on Pro iPhones</strong> — guided on-device capture → USDZ, gated at runtime on <code>isSupported</code>.</li>
           <li>Bond every model to its <strong>catalog number + drive</strong> (+ edition stamp as a per-copy attribute).</li>
+          <li><strong>Learn the real car</strong> — every detail screen carries the real vehicle’s history + specs and reference photos to compare against your model.</li>
           <li>Local-first storage with optional iCloud sync of the owner’s collection.</li>
           <li>Opt-in community library, deduped by number+drive, one canonical scan per release.</li>
           <li>Feel finished: clear capability messaging, graceful empty/error/offline states.</li>
@@ -294,7 +295,7 @@
   <section id="scope">
     <h2><span class="n">5</span> Scope (v1)</h2>
     <div class="grid c3">
-      <div class="tile"><span class="tag in">In · build now</span><p>Catalog browse + drive selection, community pick &amp; download-to-shelf, 3D grid, rotate + AR viewer (any iPhone); guided scan + on-device reconstruction + bonding + opt-in upload (Pro iPhone); local store + iCloud sync; Sign in with Apple; report/takedown.</p></div>
+      <div class="tile"><span class="tag in">In · build now</span><p>Catalog browse + drive selection, community pick &amp; download-to-shelf, 3D grid, rotate + AR viewer (any iPhone); guided scan + on-device reconstruction + bonding + opt-in upload (Pro iPhone); local store + iCloud sync; Sign in with Apple; report/takedown. <strong>Real-Car profile</strong> (history + specs + reference photos) on every detail screen.</p></div>
       <div class="tile"><span class="tag later">Later · designed-for</span><p>Server-side reconstruction fallback for non-Pro devices; manual model touch-up; collection stats; web share link for non-iOS friends; brand expansion; community voting on the canonical scan.</p></div>
       <div class="tile"><span class="tag out">Out · not v1</span><p>Mesh/USDZ export &amp; 3D printing; Android; payments / marketplace; social feed; AI auto-recognition of the car from a photo.</p></div>
     </div>
@@ -318,6 +319,7 @@
           <tr><td>F8</td><td>Local + iCloud</td><td>Local-first; optional iCloud sync via <code>NSPersistentCloudKitContainer</code>, USDZ as <code>CKAsset</code> in the private DB.</td><td>Any</td><td>P0 / P1</td></tr>
           <tr><td>F9</td><td>Community share</td><td>Per-model opt-in upload (presigned PUT to R2); consent + attribution; revocable; one canonical per (number, drive).</td><td>Pro</td><td>P1</td></tr>
           <tr><td>F10</td><td>Identity &amp; safety</td><td>Sign in with Apple for attribution; in-app report → takedown flow; repeat-infringer policy.</td><td>Any</td><td>P1</td></tr>
+          <tr><td>F11</td><td>Real-Car profile</td><td>On the detail screen: the real vehicle’s history (AI prose <em>grounded + cited</em> on Wikipedia) + specs (Wikidata), a reference gallery (real Commons photos first; a labeled <em>AI illustration</em> only as fallback), and a side-by-side compare against the user’s model. Fetched server-side once per release and cached.</td><td>Any</td><td>P0</td></tr>
         </tbody>
       </table>
     </div>
@@ -380,6 +382,7 @@
       </svg>
       <figcaption>◆ = the dedup key is <strong>(mgtNumber, drive)</strong>, not the number alone — the research’s highest-severity correction. Edition serials (<code>1510/2022</code>) are per-<em>copy</em> attributes on <code>OwnedCopy</code>. <code>CommunityScan</code> holds one approved canonical model per (number, drive) with an upload-provenance trail.</figcaption>
     </div>
+    <p><strong>Real-Car profile</strong> hangs off <code>Release</code> 1→1: <code>RealCarProfile { mgtNumber FK · wikidataQid · specs(JSON) · historyMD + sources[] · heroImageRef · galleryRefs[] · imageOrigin(commons|ai) · attribution/license }</code>. Specs are factual (Wikidata); history is AI prose grounded + cited on the Wikipedia extract; images are real Commons photos with a labeled AI-illustration fallback — all fetched server-side once per release and cached (metadata in Postgres, image blobs in R2).</p>
   </section>
 
   <!-- 8 ARCHITECTURE -->
@@ -418,6 +421,43 @@
       </svg>
       <figcaption>Local-first iOS client does all capture, viewing, and storage on-device. The VPS API is thin (auth, metadata, dedup, presigned URLs); model <em>bytes</em> live in Cloudflare R2 and move client↔R2 directly, so VPS CPU/bandwidth stay near zero and co-tenants are unaffected.</figcaption>
     </div>
+    <h3>Real-Car enrichment pipeline</h3>
+    <div class="card fig">
+      <svg viewBox="0 0 1120 250" role="img" aria-label="Real-car enrichment pipeline">
+        <defs>
+          <marker id="ahp" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#2b3a55"/></marker>
+          <marker id="ahpa" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#ff4326"/></marker>
+        </defs>
+        <g font-family="var(--sans)" font-size="11" fill="#15171c">
+          <rect x="16" y="98" width="132" height="54" rx="10" fill="#fff1ec" stroke="#ff4326" stroke-width="1.6"/>
+          <text x="82" y="121" text-anchor="middle" font-weight="700">Release</text><text x="82" y="138" text-anchor="middle" font-size="9.5" fill="#a82a17">identifies real car</text>
+          <rect x="176" y="98" width="150" height="54" rx="10" fill="#fff" stroke="#2b3a55" stroke-width="1.4"/>
+          <text x="251" y="121" text-anchor="middle" font-weight="700" fill="#2b3a55">Resolve → Wikidata</text><text x="251" y="138" text-anchor="middle" font-size="9.5" fill="#6b7280">match Q-id</text>
+          <rect x="354" y="24" width="190" height="44" rx="9" fill="#eef2f8" stroke="#2b3a55" stroke-width="1.2"/>
+          <text x="449" y="42" text-anchor="middle" font-weight="700">Specs</text><text x="449" y="58" text-anchor="middle" font-size="9.5" fill="#6b7280">Wikidata · factual</text>
+          <rect x="354" y="103" width="190" height="44" rx="9" fill="#eef2f8" stroke="#2b3a55" stroke-width="1.2"/>
+          <text x="449" y="121" text-anchor="middle" font-weight="700">History source</text><text x="449" y="137" text-anchor="middle" font-size="9.5" fill="#6b7280">Wikipedia extract</text>
+          <rect x="354" y="182" width="190" height="44" rx="9" fill="#eef2f8" stroke="#2b3a55" stroke-width="1.2"/>
+          <text x="449" y="200" text-anchor="middle" font-weight="700">Photos</text><text x="449" y="216" text-anchor="middle" font-size="9.5" fill="#6b7280">Commons · CC, attributed</text>
+          <rect x="572" y="98" width="168" height="54" rx="10" fill="#fff1ec" stroke="#ff4326" stroke-width="1.6"/>
+          <text x="656" y="118" text-anchor="middle" font-weight="700">AI · official provider</text><text x="656" y="134" text-anchor="middle" font-size="9.5" fill="#a82a17">cited history + img fallback</text>
+          <rect x="768" y="98" width="150" height="54" rx="10" fill="#fff" stroke="#2b3a55" stroke-width="1.4"/>
+          <text x="843" y="121" text-anchor="middle" font-weight="700" fill="#2b3a55">Cache</text><text x="843" y="138" text-anchor="middle" font-size="9.5" fill="#6b7280">Postgres + R2</text>
+          <rect x="946" y="98" width="150" height="54" rx="10" fill="#fff" stroke="#15171c" stroke-width="1.6"/>
+          <text x="1021" y="121" text-anchor="middle" font-weight="700">Detail screen</text><text x="1021" y="138" text-anchor="middle" font-size="9.5" fill="#6b7280">history · specs · gallery</text>
+          <line x1="148" y1="125" x2="174" y2="125" stroke="#2b3a55" stroke-width="1.6" marker-end="url(#ahp)"/>
+          <line x1="326" y1="120" x2="352" y2="50" stroke="#2b3a55" stroke-width="1.4" marker-end="url(#ahp)"/>
+          <line x1="326" y1="125" x2="352" y2="125" stroke="#2b3a55" stroke-width="1.4" marker-end="url(#ahp)"/>
+          <line x1="326" y1="130" x2="352" y2="200" stroke="#2b3a55" stroke-width="1.4" marker-end="url(#ahp)"/>
+          <line x1="544" y1="48" x2="570" y2="116" stroke="#ff4326" stroke-width="1.4" marker-end="url(#ahpa)"/>
+          <line x1="544" y1="125" x2="570" y2="125" stroke="#ff4326" stroke-width="1.4" marker-end="url(#ahpa)"/>
+          <line x1="544" y1="200" x2="570" y2="134" stroke="#ff4326" stroke-width="1.4" marker-end="url(#ahpa)"/>
+          <line x1="740" y1="125" x2="766" y2="125" stroke="#2b3a55" stroke-width="1.6" marker-end="url(#ahp)"/>
+          <line x1="918" y1="125" x2="944" y2="125" stroke="#2b3a55" stroke-width="1.6" marker-end="url(#ahp)"/>
+        </g>
+      </svg>
+      <figcaption>Per release, server-side: resolve the real car to Wikidata, pull factual specs + a Wikipedia extract + Commons photos, then AI writes a <em>cited</em> history and — only if no real photo exists — a labeled illustration. Cached in Postgres + R2; the client just reads it. Open APIs (Wikidata/Wikipedia/Commons) + an official AI provider (OpenAI, <em>not</em> the personal relay).</figcaption>
+    </div>
   </section>
 
   <!-- 9 STORAGE -->
@@ -453,6 +493,7 @@
           <li><strong>View-only — no mesh/USDZ export, no print path</strong> (removes the most-litigated harm).</li>
           <li><strong>No car-maker / “Mini&nbsp;GT” mark in the product name</strong> or chrome; catalog number is descriptive metadata only.</li>
           <li>ToS uploader attestation at the share step; non-commercial license; <strong>rapid-delist</strong> on any brand objection (hobby-platform norm).</li>
+          <li><strong>Real-car content:</strong> Wikipedia/Commons require <strong>attribution</strong> (CC-BY / BY-SA) — shown per photo and on the history blurb; AI-fallback images are badged “illustration”, never passed off as real.</li>
         </ul>
       </div>
     </div>
@@ -523,7 +564,7 @@
         <line x1="60" y1="86" x2="1060" y2="86" stroke="#e7e2d8" stroke-width="3"/>
         <g font-family="var(--sans)">
           <circle cx="120" cy="86" r="9" fill="#b8860b"/><text x="120" y="52" text-anchor="middle" font-weight="700" font-size="13">Spike-0</text><text x="120" y="116" text-anchor="middle" font-size="10" fill="#6b7280">scan-quality</text><text x="120" y="130" text-anchor="middle" font-size="10" fill="#6b7280">go/no-go</text>
-          <circle cx="350" cy="86" r="9" fill="#ff4326"/><text x="350" y="52" text-anchor="middle" font-weight="700" font-size="13">v1</text><text x="350" y="116" text-anchor="middle" font-size="10" fill="#6b7280">scan · bond · catalog ·</text><text x="350" y="130" text-anchor="middle" font-size="10" fill="#6b7280">view/AR · local</text>
+          <circle cx="350" cy="86" r="9" fill="#ff4326"/><text x="350" y="52" text-anchor="middle" font-weight="700" font-size="13">v1</text><text x="350" y="116" text-anchor="middle" font-size="10" fill="#6b7280">scan · bond · catalog ·</text><text x="350" y="130" text-anchor="middle" font-size="10" fill="#6b7280">view/AR · real-car · local</text>
           <circle cx="600" cy="86" r="9" fill="#2b3a55"/><text x="600" y="52" text-anchor="middle" font-weight="700" font-size="13">v1.1</text><text x="600" y="116" text-anchor="middle" font-size="10" fill="#6b7280">community pick/upload ·</text><text x="600" y="130" text-anchor="middle" font-size="10" fill="#6b7280">DMCA · iCloud</text>
           <circle cx="850" cy="86" r="9" fill="#2b3a55"/><text x="850" y="52" text-anchor="middle" font-weight="700" font-size="13">v2</text><text x="850" y="116" text-anchor="middle" font-size="10" fill="#6b7280">curation/voting ·</text><text x="850" y="130" text-anchor="middle" font-size="10" fill="#6b7280">collection stats</text>
           <circle cx="1020" cy="86" r="9" fill="#9aa3b2"/><text x="1020" y="52" text-anchor="middle" font-weight="700" font-size="13">later</text><text x="1020" y="116" text-anchor="middle" font-size="10" fill="#6b7280">web share ·</text><text x="1020" y="130" text-anchor="middle" font-size="10" fill="#6b7280">brands</text>
@@ -534,7 +575,7 @@
   </section>
 
   <footer>
-    Diecast Vault · PRD v1.0 · authored by the Coordinator from the PM’s locked decisions + a 6-agent feasibility/risk research pass · 2026-06-17. Next pipeline step: Design Document → <strong>Gate&nbsp;1</strong> (which also carries the Spike-0 scan-quality go/no-go).
+    Diecast Vault · PRD v1.1 · authored by the Coordinator from the PM’s locked decisions + a 6-agent feasibility/risk research pass · v1.1 adds the Real-Car profile (PM request, 2026-06-18). Next pipeline step: Design Document → <strong>Gate&nbsp;1</strong> (which also carries the Spike-0 scan-quality go/no-go).
   </footer>
 </div>
 </body>
