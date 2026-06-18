@@ -9,6 +9,8 @@ xcuserdata/
 *.moved-aside
 .swiftpm/
 .build/
+# xcodegen-generated project (source of truth is app/project.yml — run `xcodegen generate`)
+app/DiecastVault.xcodeproj/
 # Node (tooling/scripts)
 node_modules/
 # Secrets
