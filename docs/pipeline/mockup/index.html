@@ -404,6 +404,61 @@
   .resultrow .rhead{display:flex;align-items:center;gap:10px;padding:11px 12px;cursor:pointer}
   .resultrow .rexpand{padding:0 12px 13px;border-top:1px solid var(--line)}
 
+  /* ===========================================================
+     REAL-CAR PROFILE (F11) — light surface, reuses tokens
+     =========================================================== */
+  /* hero real-car reference photo (CSS placeholder) */
+  .realphoto{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);
+    box-shadow:var(--shadow-cell);max-width:100%}
+  .realphoto .rp-svg{display:block;width:100%;height:auto}
+  /* AI-fallback gets a visibly DIFFERENT treatment: dashed warm border + tint */
+  .realphoto.ai{border:1.5px dashed var(--warn);box-shadow:none;background:#FBF7EF}
+  .rp-tag{position:absolute;top:9px;left:9px;font-family:var(--mono);font-size:8.5px;font-weight:800;
+    letter-spacing:.08em;padding:3px 7px;border-radius:5px;text-transform:uppercase;
+    box-shadow:0 1px 2px rgba(0,0,0,.25)}
+  .rp-tag.photo{background:rgba(16,19,25,.78);color:#F2EFE8}
+  .rp-tag.illus{background:var(--warn);color:#fff}
+  /* attribution line */
+  .attrib{font-size:10px;color:var(--muted);font-family:var(--mono);margin:0 2px;line-height:1.4}
+  .attrib.ai{color:#7a5a00;font-weight:700}
+  /* history paragraphs (serif-led readable prose body uses sans for legibility) */
+  .histp{font-size:12.5px;line-height:1.5;color:var(--ink-soft);margin:0 0 9px}
+  .citechip{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;
+    font-weight:700;color:var(--steel);background:var(--steel-soft);border:1px solid #d7e1f1;
+    padding:4px 9px;border-radius:999px;letter-spacing:.02em}
+  /* reference gallery — swipeable thumbnails */
+  .gallery{display:flex;gap:9px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+    padding:2px 0 4px;scroll-snap-type:x mandatory}
+  .gallery::-webkit-scrollbar{height:0}
+  .gthumb{position:relative;flex:0 0 auto;width:112px;border-radius:10px;overflow:hidden;
+    border:1px solid var(--line);box-shadow:var(--shadow-cell);scroll-snap-align:start;background:var(--cell-surface)}
+  .gthumb svg{display:block;width:100%;height:auto}
+  .gthumb .lic{position:absolute;left:0;right:0;bottom:0;font-family:var(--mono);font-size:7.5px;
+    font-weight:700;letter-spacing:.03em;color:#fff;background:rgba(16,19,25,.6);
+    padding:2px 5px;text-align:left}
+  /* side-by-side compare */
+  .comparepair{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start}
+  .cmp-cell{min-width:0}
+  .cmp-frame{position:relative;border-radius:12px;overflow:hidden;display:flex;align-items:center;
+    justify-content:center;aspect-ratio:1/0.7}
+  .cmp-frame.yours{background:radial-gradient(120% 90% at 50% 120%,var(--tungsten-glow) 0%,#FFF6EE 40%,var(--cell-surface) 72%);
+    border:1px solid #F3ECDD;box-shadow:var(--shadow-cell)}
+  .cmp-frame.real{background:#CBD6DE;border:1px solid var(--line);box-shadow:var(--shadow-cell)}
+  .cmp-tag{position:absolute;top:6px;left:6px;font-family:var(--mono);font-size:8px;font-weight:800;
+    letter-spacing:.05em;padding:2px 6px;border-radius:5px;text-transform:uppercase;z-index:2}
+  .cmp-tag.yours{background:#222730;color:#FFE6CE}
+  .cmp-tag.real{background:rgba(16,19,25,.72);color:#F2EFE8}
+  .cmp-cap{margin-top:6px;display:flex;flex-direction:column;gap:1px;min-width:0}
+  .cmp-cap .cmp-ttl{font-family:var(--serif);font-weight:600;font-size:11.5px;color:var(--ink);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* loading skeleton blocks */
+  .sk{background:linear-gradient(90deg,#ECE6D9 25%,#F3EEE4 50%,#ECE6D9 75%);background-size:200% 100%;
+    border-radius:8px;animation:skshimmer 1.3s ease-in-out infinite}
+  .sk-hero{height:120px;border-radius:14px}
+  .sk-line{height:13px;width:100%}
+  @keyframes skshimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  @media(prefers-reduced-motion:reduce){.sk{animation:none}}
+
   /* responsive: keep phones, no horizontal overflow */
   @media(max-width:360px){
     .wrap{padding:14px}
@@ -1070,6 +1125,11 @@
             <div class="left"><span class="navbtn back" onclick="go('s-catalog')">‹ Catalog</span></div>
             <div class="right"><span class="iconbtn" title="Report" onclick="go('s-share')"><svg width="15" height="15" viewBox="0 0 15 15"><path d="M3 13V2l8 1.5L3 5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span></div>
           </div>
+          <!-- Model | Real Car — Model selected here -->
+          <div class="seg">
+            <button class="on" onclick="seg(this)">Model</button>
+            <button onclick="go('s-realcar')">Real Car</button>
+          </div>
           <div class="scroll"><div class="pad">
             <!-- poster hero on a lit niche-face -->
             <div class="niche lit" style="aspect-ratio:1.4/1;cursor:default;margin-bottom:14px">
@@ -1174,6 +1234,416 @@
             </div>
             <button class="cta outline-steel mt12" onclick="go('s-community')">Notify me when it’s scanned</button>
           </div></div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =====================================================================
+     FLOW C2 — REAL-CAR PROFILE (Model | Real Car)
+     ===================================================================== -->
+<section class="flow">
+  <h2><span class="num">FLOW C2</span> Real-Car profile <span style="font-family:var(--mono);font-size:.62rem;color:var(--tungsten-deep);background:var(--tungsten-glow);padding:3px 8px;border-radius:6px;letter-spacing:.05em">F11 · NEW</span></h2>
+  <div class="rule"></div>
+  <p class="flowsub">Tapping the <b>Real Car</b> segment on any release flips the detail screen from the diecast <em>Model</em> to the full-size car it replicates: a real reference photo (Wikimedia Commons) with attribution, a short AI-written history <em>grounded + cited</em> on Wikipedia, a factual Wikidata spec list, a swipeable reference gallery, and the heart of the feature — a side-by-side <b>compare</b> of your scanned model against the real car. This is a <span class="mono" style="color:var(--steel)">LIGHT</span> screen; the dark stage stays reserved for the 3D viewer. Server fetches the profile once per release and caches it — the client just reads it, so loading / partial / offline / not-found states all surface here.</p>
+  <div class="rail">
+
+    <!-- RC1: Real-Car — populated, REAL PHOTO -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Real Car — populated</div>
+        <div class="st">real Commons photo · cited history · specs</div>
+        <span class="badge amber">Model | Real Car · Real Car on</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-realcar">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar">
+            <div class="left"><span class="navbtn back" onclick="go('s-release')">‹ Catalog</span></div>
+            <div class="right"><span class="iconbtn" title="Compare" onclick="go('s-realcar-compare')">
+              <svg width="15" height="15" viewBox="0 0 15 15"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="3" width="5" height="9" rx="1"/><rect x="8.5" y="3" width="5" height="9" rx="1"/></g></svg></span></div>
+          </div>
+          <!-- Model | Real Car — Real Car selected -->
+          <div class="seg">
+            <button onclick="go('s-release')">Model</button>
+            <button class="on" onclick="seg(this)">Real Car</button>
+          </div>
+          <div class="scroll"><div class="pad">
+
+            <!-- hero real-car photo (CSS placeholder, REAL treatment) -->
+            <div class="realphoto" style="margin-bottom:8px">
+              <svg class="rp-svg" viewBox="0 0 320 196" role="img" aria-label="real car reference photo">
+                <defs>
+                  <linearGradient id="rp-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9FB6C9"/><stop offset="1" stop-color="#CBD6DE"/></linearGradient>
+                  <linearGradient id="rp-ground" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6E7681"/><stop offset="1" stop-color="#4C535C"/></linearGradient>
+                  <linearGradient id="rp-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EDEFF2"/><stop offset="1" stop-color="#B7BDC6"/></linearGradient>
+                </defs>
+                <rect x="0" y="0" width="320" height="120" fill="url(#rp-sky)"/>
+                <rect x="0" y="120" width="320" height="76" fill="url(#rp-ground)"/>
+                <ellipse cx="160" cy="176" rx="120" ry="13" fill="rgba(0,0,0,.22)"/>
+                <!-- low-slung sports car silhouette, 3/4 -->
+                <path d="M34 140 C 44 116 70 110 96 108 C 120 88 168 84 206 90 C 246 96 270 108 286 122 C 292 124 296 130 296 138 L 296 146 C 296 150 292 152 288 152 L 42 152 C 38 152 32 150 32 144 Z" fill="url(#rp-body)" stroke="#9097A1" stroke-width="1.3"/>
+                <path d="M104 108 C 124 90 168 87 200 92 C 224 96 244 104 256 114 L 236 114 C 220 104 196 99 172 99 C 142 99 120 103 110 114 Z" fill="#33414F" opacity=".94"/>
+                <rect x="36" y="144" width="252" height="4" rx="2" fill="#F26B1F" opacity=".85"/>
+                <circle cx="92" cy="152" r="22" fill="#16181D"/><circle cx="92" cy="152" r="10" fill="#C9CDD3"/>
+                <circle cx="238" cy="152" r="22" fill="#16181D"/><circle cx="238" cy="152" r="10" fill="#C9CDD3"/>
+                <path d="M52 124 C 110 104 220 104 280 128" fill="none" stroke="#fff" stroke-width="2.4" opacity=".5" stroke-linecap="round"/>
+              </svg>
+              <span class="rp-tag photo">PHOTO</span>
+            </div>
+            <p class="attrib">Photo: Matti Blume · CC-BY-SA 4.0 · Wikimedia&nbsp;Commons</p>
+
+            <div class="between mt12" style="align-items:flex-start">
+              <div><div class="car-name" style="font-size:21px;line-height:1.05">Porsche 911<br>GT3 RS (992)</div></div>
+              <span class="decal big l">L</span>
+            </div>
+            <div class="row mt8" style="flex-wrap:wrap;gap:6px">
+              <span class="chip steel">REAL CAR</span>
+              <span class="chip ok">matches MGT00612</span>
+            </div>
+
+            <!-- HISTORY -->
+            <div class="shelf-label mt16"><span class="uplabel">History</span><span class="rule"></span></div>
+            <p class="histp">Unveiled in 2022, the 992-generation 911 GT3 RS is the most aggressively aerodynamic road-going 911 Porsche had built, borrowing its swan-neck rear wing and active DRS flaps from the marque’s endurance racing programme.</p>
+            <p class="histp">A naturally-aspirated 4.0-litre flat-six revs to 9,000 rpm and feeds the rear wheels alone through a seven-speed PDK gearbox — no turbos, no hybrid assist, in deliberate contrast to its rivals.</p>
+            <p class="histp">The optional Weissach package trades steel and aluminium for carbon-fibre and magnesium, shedding weight and adding roll-cage bracing for owners who intend to take the car to a circuit.</p>
+            <span class="citechip"><svg width="11" height="11" viewBox="0 0 11 11"><circle cx="5.5" cy="5.5" r="5" fill="none" stroke="currentColor" stroke-width="1"/><path d="M5.5 5v3M5.5 3v.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> Source: Wikipedia</span>
+            <p class="small mt8">History is AI-written, grounded on and cited to the Wikipedia extract — never invented.</p>
+
+            <!-- SPECS -->
+            <div class="shelf-label mt16"><span class="uplabel">Specifications</span><span class="rule"></span><span class="chip steel" style="font-size:9px">Wikidata</span></div>
+            <div class="surface" style="padding:2px 13px">
+              <div class="metarow"><span class="k mono">MAKER</span><span class="v">Porsche</span></div>
+              <div class="metarow"><span class="k mono">ORIGIN</span><span class="v">Germany</span></div>
+              <div class="metarow"><span class="k mono">ENGINE</span><span class="v">4.0 L flat-six</span></div>
+              <div class="metarow"><span class="k mono">POWER</span><span class="v mono">386 kW · 525 hp</span></div>
+              <div class="metarow"><span class="k mono">0–100</span><span class="v mono">3.2 s</span></div>
+              <div class="metarow"><span class="k mono">TOP&nbsp;SPEED</span><span class="v mono">296 km/h</span></div>
+              <div class="metarow"><span class="k mono">DRIVE</span><span class="v">Rear-wheel</span></div>
+              <div class="metarow"><span class="k mono">PRODUCED</span><span class="v mono">2022–present</span></div>
+              <div class="metarow"><span class="k mono">DESIGNER</span><span class="v">Michael Mauer</span></div>
+            </div>
+
+            <!-- GALLERY -->
+            <div class="shelf-label mt16"><span class="uplabel">Reference gallery</span><span class="rule"></span></div>
+            <div class="gallery">
+              <div class="gthumb"><svg viewBox="0 0 120 80" role="img" aria-label="front three-quarter"><rect width="120" height="80" fill="#B9C4CE"/><rect y="48" width="120" height="32" fill="#5A626C"/><path d="M14 56 C 20 42 40 40 56 39 C 68 30 96 30 110 40 L 110 56 Z" fill="#E7E9ED" stroke="#9097A1"/><circle cx="36" cy="56" r="10" fill="#16181D"/><circle cx="92" cy="56" r="10" fill="#16181D"/></svg><span class="lic">CC-BY · M.Blume</span></div>
+              <div class="gthumb"><svg viewBox="0 0 120 80" role="img" aria-label="rear wing"><rect width="120" height="80" fill="#9FB0BD"/><rect y="50" width="120" height="30" fill="#545C66"/><rect x="22" y="30" width="76" height="6" rx="3" fill="#16181D"/><rect x="30" y="36" width="6" height="12" fill="#2A3038"/><rect x="84" y="36" width="6" height="12" fill="#2A3038"/><path d="M28 56 C 40 46 80 46 92 56 Z" fill="#D8DCE1"/></svg><span class="lic">CC-BY-SA</span></div>
+              <div class="gthumb"><svg viewBox="0 0 120 80" role="img" aria-label="interior"><rect width="120" height="80" fill="#2E343C"/><rect x="16" y="20" width="40" height="40" rx="6" fill="#454C55"/><circle cx="36" cy="40" r="13" fill="#1B1F25"/><rect x="68" y="24" width="40" height="14" rx="3" fill="#3A4049"/><rect x="68" y="44" width="28" height="10" rx="2" fill="#3A4049"/></svg><span class="lic">CC-BY</span></div>
+              <div class="gthumb"><svg viewBox="0 0 120 80" role="img" aria-label="detail"><rect width="120" height="80" fill="#C2B9A8"/><circle cx="60" cy="40" r="26" fill="#16181D"/><circle cx="60" cy="40" r="13" fill="#C9CDD3"/><path d="M60 27 v26 M47 40 h26 M51 31 l18 18 M69 31 l-18 18" stroke="#7C828E" stroke-width="2"/></svg><span class="lic">CC-BY-SA</span></div>
+            </div>
+            <p class="small mt8">Swipe · 4 reference photos · each from Wikimedia Commons under its own CC license.</p>
+
+            <!-- COMPARE entry -->
+            <button class="cta steel mt16" onclick="go('s-realcar-compare')">
+              <svg width="15" height="15" viewBox="0 0 15 15"><g fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="5" height="10" rx="1"/><rect x="8.5" y="2.5" width="5" height="10" rx="1"/></g></svg>
+              Compare to your model
+            </button>
+          </div></div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RC2: Real-Car — COMPARE (your model vs the real car) -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Compare — your model vs the real car</div>
+        <div class="st">side-by-side livery / fidelity check</div>
+        <span class="badge amber">the heart of the feature</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-realcar-compare">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar">
+            <div class="left"><span class="navbtn back" onclick="go('s-realcar')">‹ Real Car</span></div>
+            <div class="right"><span class="iconbtn" title="Swap layout"><svg width="15" height="15" viewBox="0 0 15 15"><path d="M3 5h7l-2-2M12 10H5l2 2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+          </div>
+          <div class="scroll"><div class="pad">
+            <div class="lg-title" style="font-size:21px;margin:2px 0 2px">Your model vs<br>the real car</div>
+            <p class="small mb10">Judge livery match, stance and proportions against the full-size reference.</p>
+
+            <!-- side-by-side pair -->
+            <div class="comparepair">
+              <!-- YOUR MODEL — lit niche-face poster -->
+              <div class="cmp-cell">
+                <div class="cmp-frame yours">
+                  <span class="cmp-tag yours">Your scan</span>
+                  <div class="carfig" style="width:90%;max-width:none"><svg viewBox="0 0 220 120" role="img" aria-label="your diecast model">
+<defs><linearGradient id="cmp-mdl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D9DCE1"/><stop offset="1" stop-color="#9AA0A8"/></linearGradient></defs>
+<ellipse cx="110" cy="104" rx="86" ry="9" fill="rgba(22,24,29,.16)"/>
+<path d="M18 78 C 24 64 40 60 56 58 C 70 44 96 40 120 42 C 150 44 168 52 182 62 C 196 64 204 70 204 80 L 204 86 C 204 90 200 92 196 92 L 24 92 C 20 92 16 90 16 84 Z" fill="url(#cmp-mdl)" stroke="#9AA0A8" stroke-width="1"/>
+<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#2E3742" opacity="0.92"/>
+<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#F26B1F" opacity="0.9"/>
+<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
+<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/>
+<path d="M30 70 C 60 60 150 60 188 72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+</svg></div>
+                </div>
+                <div class="cmp-cap"><span class="cmp-ttl">Your 1:64 scan</span><span class="catcode" style="font-size:9px">MGT00612 · L</span></div>
+              </div>
+              <!-- REAL CAR — photo placeholder -->
+              <div class="cmp-cell">
+                <div class="cmp-frame real">
+                  <span class="cmp-tag real">Real car</span>
+                  <svg viewBox="0 0 220 130" role="img" aria-label="real car photo" style="width:100%;height:auto;display:block">
+                    <defs>
+                      <linearGradient id="cmp-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9FB6C9"/><stop offset="1" stop-color="#CBD6DE"/></linearGradient>
+                      <linearGradient id="cmp-grd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6E7681"/><stop offset="1" stop-color="#4C535C"/></linearGradient>
+                      <linearGradient id="cmp-bdy" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EDEFF2"/><stop offset="1" stop-color="#B7BDC6"/></linearGradient>
+                    </defs>
+                    <rect width="220" height="82" fill="url(#cmp-sky)"/>
+                    <rect y="82" width="220" height="48" fill="url(#cmp-grd)"/>
+                    <ellipse cx="110" cy="116" rx="84" ry="9" fill="rgba(0,0,0,.22)"/>
+                    <path d="M20 96 C 28 78 50 74 70 72 C 86 58 124 55 154 60 C 184 64 204 74 216 86 L 216 100 C 216 102 214 104 210 104 L 24 104 C 22 104 18 102 18 98 Z" fill="url(#cmp-bdy)" stroke="#9097A1" stroke-width="1.1"/>
+                    <path d="M76 72 C 92 58 124 56 150 60 C 168 63 184 70 192 78 L 176 78 C 162 70 142 66 122 66 C 100 66 84 69 76 78 Z" fill="#33414F" opacity=".94"/>
+                    <rect x="22" y="98" width="186" height="3" rx="1.5" fill="#F26B1F" opacity=".85"/>
+                    <circle cx="66" cy="104" r="16" fill="#16181D"/><circle cx="66" cy="104" r="7" fill="#C9CDD3"/>
+                    <circle cx="172" cy="104" r="16" fill="#16181D"/><circle cx="172" cy="104" r="7" fill="#C9CDD3"/>
+                    <path d="M34 84 C 84 68 160 68 204 88" fill="none" stroke="#fff" stroke-width="2" opacity=".5" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="cmp-cap"><span class="cmp-ttl">Porsche 911 GT3 RS</span><span class="attrib" style="margin:0">Photo · CC-BY-SA · Commons</span></div>
+              </div>
+            </div>
+
+            <div class="well mt14">
+              <div class="wt"><span class="decal" style="background:var(--steel);width:16px;height:16px;font-size:9px">≈</span> Livery &amp; fidelity</div>
+              The scan’s GT Silver / Weissach livery and swan-neck wing line up against the reference. Pinch either side to zoom; long-press to flip layout to over/under.
+            </div>
+            <button class="cta ghost mt12" onclick="go('s-stage')">
+              <svg width="15" height="15" viewBox="0 0 15 15"><path d="M7.5 1.5 13 4.5v6l-5.5 3L2 10.5v-6z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+              Spin your model in 3D
+            </button>
+          </div></div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RC3: Real-Car — AI ILLUSTRATION FALLBACK -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Real Car — AI illustration fallback</div>
+        <div class="st">specs present · no real photo found</div>
+        <span class="badge warn">ILLUSTRATION · not a real photo</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-realcar-ai">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar">
+            <div class="left"><span class="navbtn back" onclick="go('s-release-noscan')">‹ Catalog</span></div>
+            <div class="right"></div>
+          </div>
+          <!-- Model | Real Car — Real Car selected -->
+          <div class="seg">
+            <button onclick="go('s-release-noscan')">Model</button>
+            <button class="on" onclick="seg(this)">Real Car</button>
+          </div>
+          <div class="scroll"><div class="pad">
+
+            <!-- hero AI ILLUSTRATION (distinct treatment: hatch overlay + dashed border) -->
+            <div class="realphoto ai" style="margin-bottom:8px">
+              <svg class="rp-svg" viewBox="0 0 320 196" role="img" aria-label="AI illustration of the car">
+                <defs>
+                  <linearGradient id="ai-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EBE3F2"/><stop offset="1" stop-color="#E2EAF1"/></linearGradient>
+                  <linearGradient id="ai-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9A227"/><stop offset="1" stop-color="#9A7A18"/></linearGradient>
+                  <pattern id="ai-hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="9" height="9" fill="none"/><line x1="0" y1="0" x2="0" y2="9" stroke="rgba(122,90,0,.16)" stroke-width="2.4"/></pattern>
+                </defs>
+                <rect x="0" y="0" width="320" height="196" fill="url(#ai-bg)"/>
+                <ellipse cx="160" cy="158" rx="118" ry="12" fill="rgba(0,0,0,.14)"/>
+                <path d="M34 132 C 46 104 78 98 104 98 C 128 76 176 74 214 82 C 250 90 274 102 288 116 L 288 130 C 288 134 284 136 280 136 L 40 136 C 36 136 30 134 30 128 Z" fill="url(#ai-body)" stroke="#7A5A00" stroke-width="1.3"/>
+                <path d="M112 98 C 132 78 176 76 206 82 C 226 86 244 94 252 104 L 232 104 C 216 94 192 89 168 89 C 138 89 116 93 108 104 Z" fill="#2B2410" opacity=".9"/>
+                <circle cx="96" cy="136" r="20" fill="#1B1709"/><circle cx="96" cy="136" r="9" fill="#D9C98A"/>
+                <circle cx="236" cy="136" r="20" fill="#1B1709"/><circle cx="236" cy="136" r="9" fill="#D9C98A"/>
+                <rect x="0" y="0" width="320" height="196" fill="url(#ai-hatch)"/>
+              </svg>
+              <span class="rp-tag illus">ILLUSTRATION</span>
+            </div>
+            <p class="attrib ai">AI illustration — not a real photo. No Commons image is available for this release yet.</p>
+
+            <div class="between mt12" style="align-items:flex-start">
+              <div><div class="car-name" style="font-size:21px;line-height:1.05">Lamborghini<br>Huracán EVO</div></div>
+              <span class="decal big l">L</span>
+            </div>
+            <div class="row mt8" style="flex-wrap:wrap;gap:6px">
+              <span class="chip steel">REAL CAR</span>
+              <span class="chip warn">photo missing</span>
+            </div>
+
+            <div class="shelf-label mt16"><span class="uplabel">History</span><span class="rule"></span></div>
+            <p class="histp">Introduced in 2019 as a sharper evolution of the Huracán, the EVO adopted the rear-wheel steering and torque-vectoring electronics first proven on the track-focused Performante.</p>
+            <p class="histp">Its 5.2-litre naturally-aspirated V10 produces 470 kW (640 hp), routed through a seven-speed dual-clutch transmission and, on most variants, all four wheels.</p>
+            <span class="citechip"><svg width="11" height="11" viewBox="0 0 11 11"><circle cx="5.5" cy="5.5" r="5" fill="none" stroke="currentColor" stroke-width="1"/><path d="M5.5 5v3M5.5 3v.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> Source: Wikipedia</span>
+
+            <div class="shelf-label mt16"><span class="uplabel">Specifications</span><span class="rule"></span><span class="chip steel" style="font-size:9px">Wikidata</span></div>
+            <div class="surface" style="padding:2px 13px">
+              <div class="metarow"><span class="k mono">MAKER</span><span class="v">Lamborghini</span></div>
+              <div class="metarow"><span class="k mono">ORIGIN</span><span class="v">Italy</span></div>
+              <div class="metarow"><span class="k mono">ENGINE</span><span class="v">5.2 L V10</span></div>
+              <div class="metarow"><span class="k mono">POWER</span><span class="v mono">470 kW · 640 hp</span></div>
+              <div class="metarow"><span class="k mono">0–100</span><span class="v mono">2.9 s</span></div>
+              <div class="metarow"><span class="k mono">TOP&nbsp;SPEED</span><span class="v mono">325 km/h</span></div>
+              <div class="metarow"><span class="k mono">DRIVE</span><span class="v">All-wheel</span></div>
+              <div class="metarow"><span class="k mono">PRODUCED</span><span class="v mono">2019–2024</span></div>
+              <div class="metarow"><span class="k mono">DESIGNER</span><span class="v">Centro Stile</span></div>
+            </div>
+            <div class="specnote mt14">
+              <div style="display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:5px">
+                <span class="decal" style="background:var(--warn);width:18px;height:18px">!</span> Partial profile
+              </div>
+              Specs and history are confirmed, but no freely-licensed Commons photo was found. The image above is a clearly-labelled AI illustration — it is replaced automatically the moment a real photo is added.
+            </div>
+          </div></div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RC4: Real-Car — LOADING -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Real Car — loading</div>
+        <div class="st">fetching profile from cache / server</div>
+        <span class="badge">transient state</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar">
+            <div class="left"><span class="navbtn back" onclick="go('s-realcar')">‹ Catalog</span></div>
+            <div class="right"></div>
+          </div>
+          <div class="seg">
+            <button onclick="go('s-release')">Model</button>
+            <button class="on" onclick="seg(this)">Real Car</button>
+          </div>
+          <div class="scroll"><div class="pad">
+            <div class="sk sk-hero mb10"></div>
+            <div class="sk sk-line" style="width:62%"></div>
+            <div class="sk sk-line" style="width:34%;height:11px;margin-top:8px"></div>
+            <div class="shelf-label mt16"><span class="uplabel">History</span><span class="rule"></span></div>
+            <div class="sk sk-line"></div><div class="sk sk-line"></div><div class="sk sk-line" style="width:78%"></div>
+            <div class="shelf-label mt16"><span class="uplabel">Specifications</span><span class="rule"></span></div>
+            <div class="surface" style="padding:11px 13px">
+              <div class="sk sk-line mb8" style="width:90%"></div>
+              <div class="sk sk-line mb8" style="width:74%"></div>
+              <div class="sk sk-line" style="width:82%"></div>
+            </div>
+            <p class="small center mt14">Fetching the real-car profile… cached after the first load.</p>
+          </div></div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RC5: Real-Car — OFFLINE (cached) -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Real Car — offline (cached)</div>
+        <div class="st">no connection · serving last cache</div>
+        <span class="badge warn">offline · gallery dimmed</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar">
+            <div class="left"><span class="navbtn back" onclick="go('s-realcar')">‹ Catalog</span></div>
+            <div class="right"></div>
+          </div>
+          <div class="seg">
+            <button onclick="go('s-release')">Model</button>
+            <button class="on" onclick="seg(this)">Real Car</button>
+          </div>
+          <div class="offlinebanner">
+            <svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 5.5 A 8 8 0 0 1 12 5.5 M3.6 7.7 A 5 5 0 0 1 10.4 7.7 M5.3 9.8 A 2.4 2.4 0 0 1 8.7 9.8" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M1.5 1.5 12.5 12.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            Offline — showing the cached profile. Gallery thumbnails load when you reconnect.
+          </div>
+          <div class="scroll"><div class="pad">
+            <div class="realphoto" style="margin-bottom:8px">
+              <svg class="rp-svg" viewBox="0 0 320 196" role="img" aria-label="cached real car photo">
+                <rect width="320" height="120" fill="#9FB6C9"/><rect y="120" width="320" height="76" fill="#5A626C"/>
+                <ellipse cx="160" cy="176" rx="120" ry="13" fill="rgba(0,0,0,.22)"/>
+                <path d="M34 140 C 44 116 70 110 96 108 C 120 88 168 84 206 90 C 246 96 270 108 286 122 L 286 146 C 286 150 282 152 278 152 L 42 152 C 38 152 32 150 32 144 Z" fill="#D6DAE0" stroke="#9097A1" stroke-width="1.2"/>
+                <path d="M104 108 C 124 90 168 87 200 92 C 224 96 244 104 256 114 L 236 114 C 220 104 196 99 172 99 C 142 99 120 103 110 114 Z" fill="#33414F" opacity=".94"/>
+                <circle cx="92" cy="152" r="22" fill="#16181D"/><circle cx="92" cy="152" r="10" fill="#C9CDD3"/>
+                <circle cx="238" cy="152" r="22" fill="#16181D"/><circle cx="238" cy="152" r="10" fill="#C9CDD3"/>
+              </svg>
+              <span class="rp-tag photo">CACHED</span>
+            </div>
+            <p class="attrib">Photo: Matti Blume · CC-BY-SA 4.0 · Wikimedia&nbsp;Commons</p>
+
+            <div class="between mt12" style="align-items:flex-start">
+              <div><div class="car-name" style="font-size:21px;line-height:1.05">Porsche 911<br>GT3 RS (992)</div></div>
+              <span class="decal big l">L</span>
+            </div>
+            <div class="shelf-label mt16"><span class="uplabel">History</span><span class="rule"></span></div>
+            <p class="histp">Unveiled in 2022, the 992-generation 911 GT3 RS is the most aggressively aerodynamic road-going 911 Porsche had built…</p>
+            <span class="citechip"><svg width="11" height="11" viewBox="0 0 11 11"><circle cx="5.5" cy="5.5" r="5" fill="none" stroke="currentColor" stroke-width="1"/><path d="M5.5 5v3M5.5 3v.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> Source: Wikipedia</span>
+
+            <div class="shelf-label mt16"><span class="uplabel">Reference gallery</span><span class="rule"></span></div>
+            <div class="gallery dimmed">
+              <div class="gthumb"><svg viewBox="0 0 120 80"><rect width="120" height="80" fill="#cfd3d8"/></svg><span class="lic">offline</span></div>
+              <div class="gthumb"><svg viewBox="0 0 120 80"><rect width="120" height="80" fill="#cfd3d8"/></svg><span class="lic">offline</span></div>
+              <div class="gthumb"><svg viewBox="0 0 120 80"><rect width="120" height="80" fill="#cfd3d8"/></svg><span class="lic">offline</span></div>
+            </div>
+          </div></div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RC6: Real-Car — NOT FOUND (no Wikidata match) -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Real Car — not found</div>
+        <div class="st">no Wikidata match · graceful note</div>
+        <span class="badge">minimal fallback</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar">
+            <div class="left"><span class="navbtn back" onclick="go('s-release')">‹ Catalog</span></div>
+            <div class="right"></div>
+          </div>
+          <div class="seg">
+            <button onclick="go('s-release')">Model</button>
+            <button class="on" onclick="seg(this)">Real Car</button>
+          </div>
+          <div class="midmsg">
+            <div class="mi" style="background:var(--steel-soft);color:var(--steel)">
+              <svg width="30" height="30" viewBox="0 0 30 30"><rect x="4" y="7" width="22" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9 7 V5 a2 2 0 0 1 2-2 h8 a2 2 0 0 1 2 2 V7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M11 19 q4 -5 8 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="14" r="1.1" fill="currentColor"/><circle cx="18" cy="14" r="1.1" fill="currentColor"/></svg>
+            </div>
+            <div class="mt">No real-car match yet</div>
+            <div class="mp">We couldn’t confidently match this release to a real vehicle in Wikidata, so there’s no history or specs to show. The diecast model itself is unaffected.</div>
+            <button class="cta ghost mt14" style="max-width:220px" onclick="go('s-release')">
+              <svg width="15" height="15" viewBox="0 0 15 15"><path d="M7.5 1.5 13 4.5v6l-5.5 3L2 10.5v-6z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+              Back to the model
+            </button>
+            <button class="navbtn mt10" onclick="go('s-share')">Suggest the right car</button>
+          </div>
           <div class="homebar"></div>
         </div>
       </div>

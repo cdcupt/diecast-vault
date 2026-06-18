@@ -217,6 +217,63 @@
   .speccard .row .k{color:var(--muted);font-family:var(--mono);font-size:.72rem;letter-spacing:.03em}
   .speccard .row .v{color:var(--ink-soft);font-family:var(--mono);font-size:.74rem;font-variant-numeric:tabular-nums}
 
+  /* ---------- real-car: segmented sub-view (Model | Real Car) ---------- */
+  .subseg{display:inline-flex;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:#EFEAE0}
+  .subseg .opt{display:flex;align-items:center;gap:6px;padding:8px 16px;font-family:var(--sans);font-size:.86rem;
+    color:var(--muted);min-height:40px}
+  .subseg .opt.sel{background:var(--cell-surface);color:var(--ink);font-weight:600;
+    box-shadow:0 1px 2px rgba(22,24,29,.08)}
+  .subseg .opt+.opt{border-left:1px solid var(--line)}
+
+  /* ---------- real-car: reference photo placeholder + illustration badge ---------- */
+  .refphoto{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:16/10;border:1px solid var(--line);
+    background:
+      linear-gradient(115deg, #cdd3da 0%, #aeb6c0 38%, #8f99a6 64%, #6f7884 100%);
+    box-shadow:var(--shadow-soft)}
+  .refphoto.ai{background:
+      repeating-linear-gradient(45deg,#efe7da 0,#efe7da 9px,#e7ddcc 9px,#e7ddcc 18px),
+      linear-gradient(120deg,#f3ead9,#e2d5bf)}
+  .refphoto .glint{position:absolute;inset:0;
+    background:radial-gradient(120% 80% at 22% 14%, rgba(255,255,255,.55), rgba(255,255,255,0) 46%)}
+  .refphoto.ai .glint{background:none}
+  .ill-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.62rem;font-weight:800;
+    letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:7px;
+    background:var(--warn);color:#fff;box-shadow:0 1px 2px rgba(22,24,29,.25)}
+  .refphoto .ill-badge{position:absolute;top:10px;left:10px}
+  .attrib{display:block;font-family:var(--mono);font-size:.68rem;color:var(--muted);margin-top:7px;line-height:1.45}
+  .attrib.ai{color:#7a5a00}
+
+  /* ---------- real-car: source / license chip ---------- */
+  .srcchip{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.64rem;font-weight:700;
+    letter-spacing:.03em;padding:3px 8px;border-radius:6px;background:var(--steel-soft);color:var(--steel);
+    border:1px solid #cfdcf0;vertical-align:middle}
+  .srcchip.cc{background:var(--ok-soft,#E8F6EE);color:#0d6b3f;border-color:#bfe6cf}
+
+  /* ---------- real-car: reference gallery strip ---------- */
+  .gallery{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+  .gallery .thumb{flex:0 0 96px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--cell-surface)}
+  .gallery .thumb .pic{aspect-ratio:4/3;background:linear-gradient(125deg,#c4cbd3,#9aa3ae)}
+  .gallery .thumb .pic.ai{background:repeating-linear-gradient(45deg,#efe7da 0,#efe7da 7px,#e7ddcc 7px,#e7ddcc 14px)}
+  .gallery .thumb .cap{padding:5px 6px}
+
+  /* ---------- real-car: side-by-side compare ---------- */
+  .compare{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;
+    border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--cell-surface)}
+  .compare .side{padding:12px}
+  .compare .side .pane{border-radius:10px;aspect-ratio:4/3;display:grid;place-items:center;position:relative;overflow:hidden}
+  .compare .side.yours .pane{background:
+      radial-gradient(120% 80% at 50% 116%, var(--tungsten-glow) 0%, rgba(255,230,206,0) 60%),var(--cell-surface);
+    box-shadow:var(--shadow-cell)}
+  .compare .side.real .pane{background:linear-gradient(120deg,#cdd3da,#8f99a6)}
+  .compare .side.real .pane.ai{background:repeating-linear-gradient(45deg,#efe7da 0,#efe7da 8px,#e7ddcc 8px,#e7ddcc 16px)}
+  .compare .side .lab{font-family:var(--mono);font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+  .compare .seam{width:1px;background:var(--line);position:relative}
+  .compare .seam .vs{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    font-family:var(--mono);font-size:.62rem;font-weight:800;color:var(--steel);background:var(--cell-surface);
+    border:1px solid var(--line);border-radius:999px;padding:4px 7px}
+  .compare .side .glyph{font-size:34px}
+
   /* phone frame for screen specs */
   .screenrow{display:grid;gap:20px;align-items:start;margin:18px 0}
   @media(min-width:860px){.screenrow{grid-template-columns:248px 1fr}}
@@ -278,10 +335,10 @@
         </div>
       </div>
       <div class="meta-pills">
-        <span class="pill accent">DESIGN v1.0</span>
+        <span class="pill accent">DESIGN v1.1</span>
         <span class="pill steel">Pipeline Step 2</span>
         <span class="pill">SwiftUI · RealityKit</span>
-        <span class="pill">2026-06-17</span>
+        <span class="pill">2026-06-18</span>
       </div>
     </div>
   </header>
@@ -524,7 +581,7 @@
   <!-- ============================================================= -->
   <section id="ia">
     <h2><span class="n">2</span> Information architecture / screen-map</h2>
-    <p>A standard native four-tab shell (Cabinet · Catalog · Library · Settings), preceded by a one-time capability gate. Modal sheets (drive select, share, scan, bond) and the full-screen 3D viewer overlay the tabs. Nothing fights iOS conventions — the cabinetry lives in surface and light, not in custom navigation.</p>
+    <p>A standard native four-tab shell (Cabinet · Catalog · Library · Settings), preceded by a one-time capability gate. Modal sheets (drive select, share, scan, bond) and the full-screen 3D viewer overlay the tabs. Nothing fights iOS conventions — the cabinetry lives in surface and light, not in custom navigation. <strong>Release detail itself carries a <code>Model | Real&nbsp;Car</code> segmented sub-view</strong>: <em>Model</em> is the existing 3D/scan reading that lifts into the dark viewer; <em>Real&nbsp;Car</em> is the light reference profile (history, specs, gallery, side-by-side compare) fed by the §8 enrichment pipeline.</p>
     <div class="card fig">
       <svg viewBox="0 0 1140 560" role="img" aria-label="Navigation graph: capability gate, four tabs, their screens, sheets, and the dark viewer">
         <defs>
@@ -549,7 +606,12 @@
         <text x="150" y="220" text-anchor="middle" font-family="var(--sans)" font-size="12" font-weight="700" fill="#16181D">Home · The Cabinet</text>
         <text x="150" y="237" text-anchor="middle" font-family="var(--sans)" font-size="9.5" fill="#a8530f">backlit bento vitrine · lightbar</text>
         <rect x="40" y="266" width="220" height="40" rx="10" fill="#fff" stroke="#E4DECF"/><text x="150" y="290" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="#3F434D">⇄ Index list mode</text>
-        <rect x="40" y="324" width="220" height="40" rx="10" fill="#fff" stroke="#E4DECF"/><text x="150" y="348" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="#3F434D">Release detail</text>
+        <rect x="40" y="324" width="220" height="52" rx="10" fill="#fff" stroke="#E4DECF"/><text x="150" y="342" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="#3F434D">Release detail</text>
+        <!-- Model | Real Car segmented sub-view -->
+        <rect x="62" y="350" width="176" height="18" rx="6" fill="#EFEAE0" stroke="#E4DECF"/>
+        <rect x="62" y="350" width="88" height="18" rx="6" fill="#fff" stroke="#E4DECF"/>
+        <text x="106" y="363" text-anchor="middle" font-family="var(--sans)" font-size="9" font-weight="700" fill="#16181D">Model</text>
+        <text x="194" y="363" text-anchor="middle" font-family="var(--sans)" font-size="9" fill="#7C828E">Real Car</text>
         <line x1="438" y1="150" x2="200" y2="198" stroke="#F26B1F" stroke-width="1.5" marker-end="url(#n-tun)"/>
         <line x1="150" y1="248" x2="150" y2="264" stroke="#16181D" stroke-width="1.2" marker-end="url(#n-ink)"/>
         <line x1="150" y1="306" x2="150" y2="322" stroke="#16181D" stroke-width="1.2" marker-end="url(#n-ink)"/>
@@ -617,9 +679,10 @@
 
     <h3>(a) PICK — works on any iPhone</h3>
     <div class="card fig">
-      <svg viewBox="0 0 1140 230" role="img" aria-label="Pick flow from catalog search to 3D and AR">
+      <svg viewBox="0 0 1140 296" role="img" aria-label="Pick flow from catalog search to 3D, AR, and the Real-Car view">
         <defs><marker id="f-ok" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#1F9D62"/></marker>
-        <marker id="f-tun" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#F26B1F"/></marker></defs>
+        <marker id="f-tun" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#F26B1F"/></marker>
+        <marker id="f-stl" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#2B3A55"/></marker></defs>
         <text x="20" y="24" font-family="var(--mono)" font-size="11" font-weight="700" fill="#1F9D62" style="letter-spacing:.08em">PICK · ANY iOS 17 iPhone · drive chosen up front</text>
         <g font-family="var(--sans)" font-size="11">
           <rect x="20" y="44" width="172" height="62" rx="11" fill="#fff" stroke="#1F9D62" stroke-width="1.6"/><text x="106" y="70" text-anchor="middle" font-weight="700">Catalog search</text><text x="106" y="89" text-anchor="middle" font-size="9.5" fill="#7C828E">number / name / livery</text>
@@ -642,8 +705,18 @@
           <line x1="525" y1="106" x2="525" y2="168" stroke="#2B3A55" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#f-tun)"/>
           <line x1="620" y1="193" x2="642" y2="193" stroke="#F26B1F" stroke-width="1.4" marker-end="url(#f-tun)"/>
         </g>
+        <!-- Real-Car branch: available from ANY release detail, scan present or not -->
+        <g font-family="var(--sans)" font-size="10.5">
+          <text x="20" y="240" font-family="var(--mono)" font-size="10" font-weight="700" fill="#2B3A55" style="letter-spacing:.06em">MEET THE REAL CAR · the Model | Real Car sub-view on every detail screen</text>
+          <rect x="430" y="250" width="190" height="40" rx="11" fill="#fff" stroke="#2B3A55"/><text x="525" y="268" text-anchor="middle" font-weight="700" fill="#2B3A55">→ Real Car view</text><text x="525" y="282" text-anchor="middle" font-size="9" fill="#7C828E">light reference profile</text>
+          <rect x="644" y="250" width="200" height="40" rx="11" fill="#fff" stroke="#E4DECF"/><text x="744" y="266" text-anchor="middle" font-weight="700" fill="#16181D">History · Specs · Gallery</text><text x="744" y="280" text-anchor="middle" font-size="9" fill="#7C828E">Wikidata + Wikipedia + Commons</text>
+          <rect x="868" y="250" width="200" height="40" rx="11" fill="#FFF3EA" stroke="#F26B1F"/><text x="968" y="266" text-anchor="middle" font-weight="700" fill="#a8530f">Side-by-side compare</text><text x="968" y="280" text-anchor="middle" font-size="9" fill="#a8530f">your model vs the real car</text>
+          <line x1="525" y1="106" x2="525" y2="248" stroke="#2B3A55" stroke-width="1.3" marker-end="url(#f-stl)"/>
+          <line x1="620" y1="270" x2="642" y2="270" stroke="#2B3A55" stroke-width="1.4" marker-end="url(#f-stl)"/>
+          <line x1="844" y1="270" x2="866" y2="270" stroke="#F26B1F" stroke-width="1.4" marker-end="url(#f-tun)"/>
+        </g>
       </svg>
-      <figcaption>(a) The default path. Drive is required <em>before</em> picking. When a community scan exists, picking plays a light-on bloom (the niche fills) and the car can lift into the dark viewer and out to AR. When no scan exists, the same detail screen shows a matte recess with a designed steel contribution note — and, on a Pro iPhone, a path into the scan flow.</figcaption>
+      <figcaption>(a) The default path. Drive is required <em>before</em> picking. When a community scan exists, picking plays a light-on bloom (the niche fills) and the car can lift into the dark viewer and out to AR. When no scan exists, the same detail screen shows a matte recess with a designed steel contribution note — and, on a Pro iPhone, a path into the scan flow. Independent of scan state, the <code>Real&nbsp;Car</code> sub-view is always reachable from the detail screen — its history, specs, and reference gallery, ending in the side-by-side compare against the user's own model.</figcaption>
     </div>
 
     <h3>(b) SCAN + BOND [Pro] — the contribution path, honest about Spike-0 quality</h3>
@@ -901,6 +974,68 @@
       </div>
     </div>
 
+    <!-- 4.5b Release detail — Real Car view -->
+    <div class="screenrow">
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <svg viewBox="0 0 214 436" role="img" aria-label="Release detail — Real Car view mockup">
+          <rect width="214" height="436" fill="#F7F4EC"/>
+          <rect x="0" y="28" width="214" height="30" fill="#fff"/><text x="16" y="48" font-family="sans-serif" font-size="10" fill="#F26B1F">‹ Catalog</text>
+          <!-- Model | Real Car segmented sub-view -->
+          <rect x="38" y="64" width="138" height="22" rx="7" fill="#EFEAE0" stroke="#E4DECF"/>
+          <rect x="107" y="64" width="69" height="22" rx="7" fill="#fff" stroke="#E4DECF"/>
+          <text x="72" y="79" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#7C828E">Model</text>
+          <text x="141" y="79" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="700" fill="#16181D">Real Car</text>
+          <!-- hero reference photo (real) -->
+          <rect x="16" y="96" width="182" height="104" rx="11" fill="#9aa3ae"/>
+          <rect x="16" y="96" width="182" height="104" rx="11" fill="url(#realhero)"/>
+          <defs>
+            <linearGradient id="realhero" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#cdd3da"/><stop offset="1" stop-color="#6f7884"/></linearGradient>
+            <radialGradient id="realglint" cx="22%" cy="14%" r="60%"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="46%" stop-color="#fff" stop-opacity="0"/></radialGradient>
+          </defs>
+          <rect x="16" y="96" width="182" height="104" rx="11" fill="url(#realglint)"/>
+          <ellipse cx="107" cy="168" rx="58" ry="9" fill="#16181D" opacity=".18"/><text x="107" y="160" text-anchor="middle" font-size="34">🏎️</text>
+          <text x="16" y="214" font-family="monospace" font-size="6.5" fill="#7C828E">Photo: Vauxford · CC-BY-SA · Wikimedia Commons</text>
+          <!-- history -->
+          <text x="16" y="234" font-family="serif" font-weight="700" font-size="12" fill="#16181D">The real GR Supra</text>
+          <rect x="142" y="225" width="56" height="12" rx="4" fill="#EAF0F8" stroke="#cfdcf0"/><text x="170" y="234" text-anchor="middle" font-family="monospace" font-size="6" fill="#2B3A55">Source: Wikipedia</text>
+          <rect x="16" y="240" width="182" height="2.5" rx="1.2" fill="#E4DECF"/>
+          <rect x="16" y="247" width="182" height="2.5" rx="1.2" fill="#E4DECF"/>
+          <rect x="16" y="254" width="150" height="2.5" rx="1.2" fill="#E4DECF"/>
+          <!-- specs -->
+          <rect x="16" y="266" width="182" height="92" rx="9" fill="#fff" stroke="#E4DECF"/>
+          <g font-family="monospace" font-size="7">
+            <text x="26" y="282" fill="#7C828E">MAKER</text><text x="188" y="282" text-anchor="end" fill="#3F434D">Toyota</text>
+            <rect x="26" y="287" width="162" height="1" fill="#E4DECF"/>
+            <text x="26" y="299" fill="#7C828E">ENGINE</text><text x="188" y="299" text-anchor="end" fill="#3F434D">3.0 L turbo I6</text>
+            <rect x="26" y="304" width="162" height="1" fill="#E4DECF"/>
+            <text x="26" y="316" fill="#7C828E">POWER</text><text x="188" y="316" text-anchor="end" fill="#3F434D">285 kW</text>
+            <rect x="26" y="321" width="162" height="1" fill="#E4DECF"/>
+            <text x="26" y="333" fill="#7C828E">0–100</text><text x="188" y="333" text-anchor="end" fill="#3F434D">3.9 s</text>
+            <rect x="26" y="338" width="162" height="1" fill="#E4DECF"/>
+            <text x="26" y="350" fill="#7C828E">DRIVETRAIN</text><text x="188" y="350" text-anchor="end" fill="#3F434D">RWD</text>
+          </g>
+          <!-- gallery strip -->
+          <text x="16" y="374" font-family="sans-serif" font-size="7.5" letter-spacing="1" fill="#7C828E">REFERENCE GALLERY</text>
+          <rect x="16" y="380" width="42" height="32" rx="6" fill="#9aa3ae"/><rect x="62" y="380" width="42" height="32" rx="6" fill="#b3bac3"/><rect x="108" y="380" width="42" height="32" rx="6" fill="#8f99a6"/><rect x="154" y="380" width="42" height="32" rx="6" fill="#aab1bb"/>
+          <text x="20" y="398" font-family="monospace" font-size="5" fill="#fff">CC-BY</text>
+          <!-- compare hint button -->
+          <rect x="16" y="356" width="0" height="0"/>
+        </svg>
+      </div></div>
+      <div class="specbox">
+        <h4>Release detail — Real&nbsp;Car view <span class="pill steel" style="vertical-align:middle">F11</span></h4>
+        <p class="purpose">The second face of the detail screen, reached by the <code>Model | Real&nbsp;Car</code> segmented control. A <strong>light</strong> editorial reference profile of the full-size car the release replicates — the dark stage belongs to the Model view only.</p>
+        <div class="lbl">Layout (top → bottom)</div>
+        <ul><li><strong>Segmented sub-view</strong> at the top — <em>Model</em> (existing 3D/scan) | <em>Real&nbsp;Car</em> (this view), persistent across the screen.</li><li><strong>Hero reference photo</strong> — real Commons photo by default; attribution line beneath: <em>"Photo: &lt;author&gt; · CC-BY-SA · Wikimedia Commons"</em>.</li><li><strong>History</strong> — 2–3 short grounded + cited paragraphs (serif heading) with a <span class="srcchip">Source: Wikipedia</span> cite chip.</li><li><strong>Specs</strong> — a structured mono spec list from Wikidata (Maker, Origin, Engine, Power, 0–100, Top speed, Drivetrain, Production years, Designer).</li><li><strong>Reference gallery</strong> — 3–5 swipeable thumbnails, each with a tiny source/license chip.</li><li><strong>Side-by-side compare</strong> — "Your model vs the real car": the diecast scan poster beside the real-car photo, to judge livery / fidelity match (the heart of the request).</li></ul>
+        <div class="lbl">Image provenance &amp; the AI fallback</div>
+        <ul><li>Real photo → no badge, CC-BY-SA attribution line.</li><li><strong>AI fallback</strong> (no real photo exists) → a clearly different placeholder treatment with an <span class="ill-badge">⚠ Illustration</span> badge and an <em>"AI illustration — not a real photo"</em> attribution; never passed off as real (PRD §10).</li></ul>
+        <div class="lbl">States</div>
+        <div class="stateline"><span class="st load">loading → fetching profile: hero shimmer, spec/history skeleton rows</span><span class="st empty">partial → specs present but no real photo: shows the labeled AI illustration, history still cited</span><span class="st off">offline → last-cached profile renders fully (text + cached images); gallery swipe limited to cached frames</span><span class="st ns">not-found → no Wikidata match: a graceful minimal note ("No real-car profile yet for this release") — never a broken/empty grid</span></div>
+      </div>
+    </div>
+
+    <div class="callout steel"><b>Sourced from the §8 enrichment pipeline.</b> This screen is a pure <em>reader</em> of the per-release <code>RealCarProfile</code> the PRD's enrichment pipeline (PRD&nbsp;§8) builds server-side once and caches: resolve the real car → Wikidata (factual specs), a Wikipedia extract (the grounded + cited history), and Commons photos (the real hero + gallery), with a labeled AI illustration only as a fallback when no real photo exists. The client fetches it read-only; the four states above mirror the pipeline's outcomes (full / partial / cached / no-match). <strong>Attribution is non-negotiable</strong> (PRD&nbsp;§10): every real photo shows its <em>CC-BY-SA · Wikimedia Commons</em> line, history carries a <em>Source: Wikipedia</em> chip, and any AI image is badged <em>Illustration</em> and never presented as a real photograph.</div>
+
     <!-- 4.6 3D viewer -->
     <div class="screenrow">
       <div class="phone"><div class="notch"></div><div class="scr">
@@ -1122,6 +1257,7 @@
           <tr><td>Home · Index list mode</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td></tr>
           <tr><td>Catalog search + drive</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td></tr>
           <tr><td>Release detail</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td><td class="yes">●</td><td class="yes">●</td><td class="key">★</td></tr>
+          <tr><td>Release detail — Real&nbsp;Car view</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td></tr>
           <tr><td>3D viewer · dark stage</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td></tr>
           <tr><td>AR placement preview</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td><td class="yes">●</td><td class="na">—</td><td class="yes">●</td></tr>
           <tr><td>Guided scan flow [Pro]</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td><td class="yes">●</td><td class="na">—</td><td class="key">★</td></tr>
@@ -1132,7 +1268,7 @@
         </tbody>
       </table>
     </div>
-    <p class="callout steel"><b>Read this matrix as the anti-template guarantee:</b> "not-supported" is a <em>core idea</em> (★) on the capability gate, Release detail, and Guided scan — it is expressed through light-as-state and steel notes, never a greyed-out dead control. Offline never blacks out the app: the cached shelf always works.</p>
+    <p class="callout steel"><b>Read this matrix as the anti-template guarantee:</b> "not-supported" is a <em>core idea</em> (★) on the capability gate, Release detail, and Guided scan — it is expressed through light-as-state and steel notes, never a greyed-out dead control. Offline never blacks out the app: the cached shelf always works. For the <strong>Real&nbsp;Car view</strong>, the "Empty" column is the <em>partial</em> state (specs present, no real photo → labeled AI illustration) and "Not-supported" is the <em>not-found</em> state (no Wikidata match → a graceful minimal note, never a broken grid).</p>
   </section>
 
   <!-- ============================================================= -->
@@ -1224,6 +1360,69 @@
       </div>
 
       <div class="ds">
+        <div class="eyebrow">Real-Car spec list (Wikidata)</div>
+        <div class="speccard">
+          <div class="band"><span class="num">REAL CAR</span><span class="srcchip">Wikidata</span></div>
+          <div class="body">
+            <h5>Toyota GR Supra</h5>
+            <div class="row"><span class="k">MAKER · ORIGIN</span><span class="v">Toyota · Japan</span></div>
+            <div class="row"><span class="k">ENGINE</span><span class="v">3.0 L turbo I6</span></div>
+            <div class="row"><span class="k">POWER · 0–100</span><span class="v">285 kW · 3.9 s</span></div>
+            <div class="row"><span class="k">TOP SPEED</span><span class="v">250 km/h</span></div>
+            <div class="row"><span class="k">DRIVETRAIN</span><span class="v">RWD</span></div>
+            <div class="row"><span class="k">PRODUCTION</span><span class="v">2019–</span></div>
+          </div>
+        </div>
+        <p style="font-size:.78rem;margin-top:10px">Same accession treatment as the catalog card — mono labels + tabular values — but the values are <em>factual</em>, sourced from Wikidata. The serif name reads as the real <em>objet</em> behind the diecast.</p>
+      </div>
+
+      <div class="ds">
+        <div class="eyebrow">Attribution / source chips</div>
+        <div class="btn-row">
+          <span class="srcchip">Source: Wikipedia</span>
+          <span class="srcchip cc">CC-BY-SA</span>
+          <span class="srcchip">Wikidata</span>
+        </div>
+        <span class="attrib">Photo: Vauxford · CC-BY-SA · Wikimedia Commons</span>
+        <p style="font-size:.78rem;margin-top:10px">Steel cite chips on history + specs; an <code>--ok</code>-green CC chip per image. Attribution is mandatory for Wikipedia/Commons content (PRD §10) — shown beneath every real photo and on the history blurb.</p>
+      </div>
+
+      <div class="ds">
+        <div class="eyebrow">ILLUSTRATION badge + AI placeholder</div>
+        <div class="refphoto ai" style="max-width:200px">
+          <span class="ill-badge">⚠ Illustration</span>
+          <div style="position:absolute;inset:0;display:grid;place-items:center;font-size:34px;opacity:.5">🏎️</div>
+        </div>
+        <span class="attrib ai">AI illustration — not a real photo</span>
+        <p style="font-size:.78rem;margin-top:10px">Shown <em>only</em> when no real Commons photo exists. A deliberately different (hatched, brass-warm) placeholder treatment + a brass <code>--warn</code> badge, so an AI image is never mistaken for the real car.</p>
+      </div>
+
+      <div class="ds" style="grid-column:1/-1">
+        <div class="eyebrow">Side-by-side compare — your model vs the real car</div>
+        <div class="compare">
+          <div class="side yours">
+            <div class="lab"><span class="mtag yours" style="padding:1px 6px">● Yours</span> diecast scan</div>
+            <div class="pane"><span class="glyph">🏎️</span></div>
+          </div>
+          <div class="seam"><span class="vs">VS</span></div>
+          <div class="side real">
+            <div class="lab"><span class="srcchip cc" style="padding:1px 6px">CC-BY-SA</span> real car</div>
+            <div class="pane"><span class="glyph">🏎️</span></div>
+          </div>
+        </div>
+        <p style="font-size:.78rem;margin-top:10px">The heart of the Real-Car view: the user's scan poster (a lit niche surface) set beside the real-car reference photo across a hairline <em>VS</em> seam, to judge livery and fidelity match. When the real side is an AI fallback it uses the hatched <code>.ai</code> treatment and carries the Illustration badge instead of the CC chip.</p>
+      </div>
+
+      <div class="ds">
+        <div class="eyebrow">Model | Real Car sub-view</div>
+        <div class="subseg">
+          <span class="opt">▦ Model</span>
+          <span class="opt sel">◐ Real Car</span>
+        </div>
+        <p style="font-size:.78rem;margin-top:10px">The segmented control at the top of Release detail. <em>Model</em> = the existing 3D/scan reading (lifts into the dark stage); <em>Real&nbsp;Car</em> = this light reference profile. Native iOS segmented styling, 40–44pt targets.</p>
+      </div>
+
+      <div class="ds">
         <div class="eyebrow">Lightbar telemetry counter</div>
         <div style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:1rem;color:var(--steel);font-variant-numeric:tabular-nums">
           <span style="width:9px;height:9px;border-radius:50%;background:var(--tungsten);box-shadow:0 0 0 4px var(--tungsten-glow)"></span>
@@ -1280,7 +1479,7 @@
   </section>
 
   <footer>
-    Diecast Vault · Design Document v1.0 · direction <strong>Vitrine — the lit display cabinet (light-as-state)</strong> · authored by the Designer for the SDD pipeline · 2026-06-17. Next: Gate 1 (Design + Spike-0 scan-quality go/no-go). Interactive mockup → <a href="./mockup/index.html" style="color:var(--tungsten-deep)">./mockup/index.html</a>.
+    Diecast Vault · Design Document v1.1 · direction <strong>Vitrine — the lit display cabinet (light-as-state)</strong> · authored by the Designer for the SDD pipeline · 2026-06-17, v1.1 adds the <strong>Real-Car view</strong> (PRD v1.1 §6 F11 · PM request, 2026-06-18). Next: Gate 1 (Design + Spike-0 scan-quality go/no-go). Interactive mockup → <a href="./mockup/index.html" style="color:var(--tungsten-deep)">./mockup/index.html</a>.
   </footer>
 </div>
 </body>
