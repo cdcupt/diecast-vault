@@ -87,7 +87,7 @@
       </div>
     </div>
     <div class="meta-pills">
-      <span class="pill accent">PRD v1.2</span>
+      <span class="pill accent">PRD v1.3</span>
       <span class="pill ok">research-grounded</span>
       <span class="pill">Pipeline Step 1</span>
       <span class="pill">2026-06-17</span>
@@ -322,6 +322,7 @@
           <tr><td>F11</td><td>Real-Car profile</td><td>On the detail screen: the real vehicle’s history (AI prose <em>grounded + cited</em> on Wikipedia) + specs (Wikidata), a reference gallery (real Commons photos first; a labeled <em>AI illustration</em> only as fallback), and a side-by-side compare against the user’s model. Fetched server-side once per release and cached.</td><td>Any</td><td>P0</td></tr>
           <tr><td>F12</td><td>Icon &amp; asset system</td><td><strong>Hybrid:</strong> app icon + illustrative art generated via <strong>GPT-Image-2</strong> (high quality); tiny functional UI glyphs use vector / SF Symbols. App icon = the lit-cabinet grid mark. See <code>assets/icons/README.md</code>.</td><td>Any</td><td>P1</td></tr>
           <tr><td>F13</td><td>Localization (i18n)</td><td><strong>English + 简体中文</strong> with an in-app language switcher in Settings (live, no relaunch). UI fully localized via string catalogs; CJK-safe layout (Dynamic Type + Chinese). <strong>AI Real-Car history is localized too</strong> — generated &amp; cached per <code>(release, locale)</code>, so Chinese users read Chinese history. Traditional Chinese (zh-Hant) is a later add; car model names stay as proper nouns.</td><td>Any</td><td>P1</td></tr>
+          <tr><td>F14</td><td>Contribution / grow-the-library</td><td><strong>Opt-in but actively encouraged</strong> (the shared library is the product's durable asset): a one-tap <strong>post-scan share prompt</strong> at model creation, <strong>"be the first to scan"</strong> gap nudges on unscanned releases (Catalog/Cabinet), and <strong>contributor recognition</strong> (per-model credit, a "N releases lit for the community" stat, light badges) + reciprocity framing. Consent + attribution + non-commercial + DMCA intact; <strong>personal models never auto-upload</strong> — only opt-in shares reach the VPS. Power users seed the canonical library.</td><td>Pro</td><td>P1</td></tr>
         </tbody>
       </table>
     </div>
@@ -577,7 +578,7 @@
   </section>
 
   <footer>
-    Diecast Vault · PRD v1.2 · authored by the Coordinator from the PM’s locked decisions + a 6-agent feasibility/risk research pass · v1.1 added the Real-Car profile; v1.2 adds Chinese localization incl. AI content (PM requests, 2026-06-18). Next pipeline step: Design Document → <strong>Gate&nbsp;1</strong> (which also carries the Spike-0 scan-quality go/no-go).
+    Diecast Vault · PRD v1.2 · authored by the Coordinator from the PM’s locked decisions + a 6-agent feasibility/risk research pass · v1.1 added the Real-Car profile; v1.2 added Chinese localization incl. AI content; v1.3 adds the contribution / grow-the-library flow (PM requests, 2026-06-18). Next pipeline step: Design Document → <strong>Gate&nbsp;1</strong> (which also carries the Spike-0 scan-quality go/no-go).
   </footer>
 </div>
 </body>
