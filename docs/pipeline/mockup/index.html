@@ -2283,6 +2283,105 @@
       </div>
     </div>
 
+    <!-- RC7: Real-Car — SIMPLIFIED CHINESE (UI + AI history localized) -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl" style="font-family:'Songti SC','STSong',serif">真车 — 简体中文</div>
+        <div class="st">UI + AI 车史 已本地化</div>
+        <span class="badge amber">zh-Hans · cached per release+locale</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-realcar-zh">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar">
+            <div class="left"><span class="navbtn back" onclick="go('s-release')">‹ 目录</span></div>
+            <div class="right"><span class="iconbtn" title="对比" onclick="go('s-realcar-compare')">
+              <svg width="15" height="15" viewBox="0 0 15 15"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="3" width="5" height="9" rx="1"/><rect x="8.5" y="3" width="5" height="9" rx="1"/></g></svg></span></div>
+          </div>
+          <!-- 模型 | 真车 — 真车 selected -->
+          <div class="seg">
+            <button onclick="go('s-release')">模型</button>
+            <button class="on" onclick="seg(this)">真车</button>
+          </div>
+          <div class="scroll"><div class="pad">
+
+            <!-- hero real-car photo (CSS placeholder, REAL treatment) -->
+            <div class="realphoto" style="margin-bottom:8px">
+              <svg class="rp-svg" viewBox="0 0 320 196" role="img" aria-label="真车参考照片">
+                <defs>
+                  <linearGradient id="rp-sky-zh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9FB6C9"/><stop offset="1" stop-color="#CBD6DE"/></linearGradient>
+                  <linearGradient id="rp-ground-zh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6E7681"/><stop offset="1" stop-color="#4C535C"/></linearGradient>
+                  <linearGradient id="rp-body-zh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EDEFF2"/><stop offset="1" stop-color="#B7BDC6"/></linearGradient>
+                </defs>
+                <rect x="0" y="0" width="320" height="120" fill="url(#rp-sky-zh)"/>
+                <rect x="0" y="120" width="320" height="76" fill="url(#rp-ground-zh)"/>
+                <ellipse cx="160" cy="176" rx="120" ry="13" fill="rgba(0,0,0,.22)"/>
+                <path d="M34 140 C 44 116 70 110 96 108 C 120 88 168 84 206 90 C 246 96 270 108 286 122 C 292 124 296 130 296 138 L 296 146 C 296 150 292 152 288 152 L 42 152 C 38 152 32 150 32 144 Z" fill="url(#rp-body-zh)" stroke="#9097A1" stroke-width="1.3"/>
+                <path d="M104 108 C 124 90 168 87 200 92 C 224 96 244 104 256 114 L 236 114 C 220 104 196 99 172 99 C 142 99 120 103 110 114 Z" fill="#33414F" opacity=".94"/>
+                <rect x="36" y="144" width="252" height="4" rx="2" fill="#F26B1F" opacity=".85"/>
+                <circle cx="92" cy="152" r="22" fill="#16181D"/><circle cx="92" cy="152" r="10" fill="#C9CDD3"/>
+                <circle cx="238" cy="152" r="22" fill="#16181D"/><circle cx="238" cy="152" r="10" fill="#C9CDD3"/>
+                <path d="M52 124 C 110 104 220 104 280 128" fill="none" stroke="#fff" stroke-width="2.4" opacity=".5" stroke-linecap="round"/>
+              </svg>
+              <span class="rp-tag photo">照片</span>
+            </div>
+            <p class="attrib">照片：Matti Blume · CC-BY-SA 4.0 · 维基共享资源</p>
+
+            <div class="between mt12" style="align-items:flex-start">
+              <div><div class="car-name" style="font-size:19px;line-height:1.1">Porsche 911 GT3 RS (992)</div></div>
+              <span class="decal big l">L</span>
+            </div>
+            <div class="row mt8" style="flex-wrap:wrap;gap:6px">
+              <span class="chip steel">真车</span>
+              <span class="chip ok">对应 MGT00612</span>
+            </div>
+
+            <!-- 车史 -->
+            <div class="shelf-label mt16"><span class="uplabel">车史</span><span class="rule"></span></div>
+            <p class="histp">2022 年发布的 992 代 911 GT3 RS，是保时捷迄今空气动力学最激进的量产 911；其鹅颈式尾翼与主动式 DRS 风门均源自厂队耐力赛赛车。</p>
+            <p class="histp">4.0 升自然吸气水平对置六缸发动机可攀升至 9000 转/分，并通过七速 PDK 双离合变速箱驱动后轮。</p>
+            <p class="histp">来源：维基百科</p>
+            <span class="citechip"><svg width="11" height="11" viewBox="0 0 11 11"><circle cx="5.5" cy="5.5" r="5" fill="none" stroke="currentColor" stroke-width="1"/><path d="M5.5 5v3M5.5 3v.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> 来源：维基百科</span>
+            <p class="small mt8">车史由 AI 撰写，基于并引用维基百科摘要 — 绝不杜撰。</p>
+
+            <!-- 规格 -->
+            <div class="shelf-label mt16"><span class="uplabel">规格</span><span class="rule"></span><span class="chip steel" style="font-size:9px">Wikidata</span></div>
+            <div class="surface" style="padding:2px 13px">
+              <div class="metarow"><span class="k">厂商</span><span class="v">Porsche</span></div>
+              <div class="metarow"><span class="k">产地</span><span class="v">德国</span></div>
+              <div class="metarow"><span class="k">引擎</span><span class="v">4.0L 自吸 水平对置六缸</span></div>
+              <div class="metarow"><span class="k">马力</span><span class="v mono">525 PS</span></div>
+              <div class="metarow"><span class="k">0–100</span><span class="v mono">3.2 秒</span></div>
+              <div class="metarow"><span class="k">极速</span><span class="v mono">296 km/h</span></div>
+              <div class="metarow"><span class="k">驱动</span><span class="v">后轮驱动</span></div>
+              <div class="metarow"><span class="k">生产</span><span class="v">2022 年起</span></div>
+              <div class="metarow"><span class="k">设计</span><span class="v">Porsche AG</span></div>
+            </div>
+
+            <!-- 参考图库 -->
+            <div class="shelf-label mt16"><span class="uplabel">参考图库</span><span class="rule"></span></div>
+            <div class="gallery">
+              <div class="gthumb"><svg viewBox="0 0 120 80" role="img" aria-label="前侧四分之三"><rect width="120" height="80" fill="#B9C4CE"/><rect y="48" width="120" height="32" fill="#5A626C"/><path d="M14 56 C 20 42 40 40 56 39 C 68 30 96 30 110 40 L 110 56 Z" fill="#E7E9ED" stroke="#9097A1"/><circle cx="36" cy="56" r="10" fill="#16181D"/><circle cx="92" cy="56" r="10" fill="#16181D"/></svg><span class="lic">CC-BY · M.Blume</span></div>
+              <div class="gthumb"><svg viewBox="0 0 120 80" role="img" aria-label="尾翼"><rect width="120" height="80" fill="#9FB0BD"/><rect y="50" width="120" height="30" fill="#545C66"/><rect x="22" y="30" width="76" height="6" rx="3" fill="#16181D"/><rect x="30" y="36" width="6" height="12" fill="#2A3038"/><rect x="84" y="36" width="6" height="12" fill="#2A3038"/><path d="M28 56 C 40 46 80 46 92 56 Z" fill="#D8DCE1"/></svg><span class="lic">CC-BY-SA</span></div>
+              <div class="gthumb"><svg viewBox="0 0 120 80" role="img" aria-label="内饰"><rect width="120" height="80" fill="#2E343C"/><rect x="16" y="20" width="40" height="40" rx="6" fill="#454C55"/><circle cx="36" cy="40" r="13" fill="#1B1F25"/><rect x="68" y="24" width="40" height="14" rx="3" fill="#3A4049"/><rect x="68" y="44" width="28" height="10" rx="2" fill="#3A4049"/></svg><span class="lic">CC-BY</span></div>
+              <div class="gthumb"><svg viewBox="0 0 120 80" role="img" aria-label="细节"><rect width="120" height="80" fill="#C2B9A8"/><circle cx="60" cy="40" r="26" fill="#16181D"/><circle cx="60" cy="40" r="13" fill="#C9CDD3"/><path d="M60 27 v26 M47 40 h26 M51 31 l18 18 M69 31 l-18 18" stroke="#7C828E" stroke-width="2"/></svg><span class="lic">CC-BY-SA</span></div>
+            </div>
+            <p class="small mt8">滑动 · 4 张参考照片 · 均来自维基共享资源，各按其 CC 许可授权。</p>
+
+            <!-- 对比入口 -->
+            <button class="cta steel mt16" onclick="go('s-realcar-compare')">
+              <svg width="15" height="15" viewBox="0 0 15 15"><g fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="5" height="10" rx="1"/><rect x="8.5" y="2.5" width="5" height="10" rx="1"/></g></svg>
+              与你的模型对比
+            </button>
+          </div></div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -2913,6 +3012,16 @@
               <span class="chip ok">Pro</span>
             </div>
 
+            <!-- LANGUAGE — live in-app switcher (no relaunch) -->
+            <div class="uplabel mb6" style="color:var(--steel)">Language</div>
+            <div class="surface mb14" style="padding:4px 14px">
+              <div class="metarow" onclick="go('s-language')" style="cursor:pointer">
+                <span class="k" style="color:var(--ink)">语言<span class="small" style="margin-left:7px;color:var(--muted)">Language</span></span>
+                <span class="v" style="color:var(--muted)">简体中文 ›</span>
+              </div>
+              <div class="metarow" style="display:block"><span class="small" style="color:var(--muted)">Switches the whole app live — no relaunch. Car model names stay as-is. AI real-car history is localized and cached per release.</span></div>
+            </div>
+
             <div class="uplabel mb6" style="color:var(--steel)">Storage</div>
             <div class="surface mb14" style="padding:4px 14px">
               <div class="metarow"><span class="k">iCloud sync</span><span style="display:inline-flex;align-items:center;gap:7px"><span class="small">off</span><span style="width:40px;height:24px;border-radius:14px;background:var(--cell-recess);position:relative;display:inline-block"><i style="position:absolute;left:2px;top:2px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2)"></i></span></span></div>
@@ -2939,6 +3048,44 @@
               <div class="metarow" style="cursor:pointer"><span class="k" style="color:var(--ink)">Non-commercial license</span><span class="v" style="color:var(--muted)">›</span></div>
             </div>
             <p class="small center mt14">Diecast Vault · v1.0 · catalog numbers are descriptive metadata only.</p>
+          </div></div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- F4: language picker — live in-app switch (English / 简体中文) -->
+    <div class="device">
+      <div class="cap">
+        <div class="ttl">Language picker</div>
+        <div class="st">English / 简体中文 · live, no relaunch</div>
+        <span class="badge preview"><b>语言</b> · Language</span>
+      </div>
+      <div class="phone"><div class="island"></div>
+        <div class="screen" id="s-language">
+          <div class="statusbar"><span>9:41</span><span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="8" rx="1" fill="currentColor"/><rect x="12" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
+          </span></div>
+          <div class="navbar"><div class="left"><span class="navbtn back" onclick="go('s-settings')">‹ Me</span></div><div class="right"></div></div>
+          <div class="scroll"><div class="pad">
+            <div class="lg-title mb12">Language</div>
+            <div class="uplabel mb6" style="color:var(--steel)">Display language</div>
+            <div class="surface mb12" style="padding:2px 0">
+              <div class="metarow" style="padding:13px 14px;cursor:pointer" onclick="seg(this)">
+                <span class="k" style="color:var(--ink);font-weight:600">English</span>
+                <span class="v" style="color:var(--muted)"></span>
+              </div>
+              <div class="metarow" style="padding:13px 14px;cursor:pointer">
+                <span class="k" style="color:var(--ink);font-weight:600">简体中文<span class="small" style="margin-left:7px;color:var(--muted)">Simplified Chinese</span></span>
+                <span class="chip amber">已选</span>
+              </div>
+            </div>
+            <p class="small">切换语言会即时刷新整个界面，无需重启应用。<br>Switching applies live across the whole app — no relaunch.</p>
+            <div class="well mt12">
+              <div class="wt">🌐 What localizes</div>
+              UI strings, tabs and the AI real-car history all switch. Car model names stay as proper nouns (e.g. Porsche 911 GT3 RS). 繁體中文 comes later.
+            </div>
           </div></div>
           <div class="homebar"></div>
         </div>

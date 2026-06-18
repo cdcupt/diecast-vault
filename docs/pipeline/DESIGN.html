@@ -637,7 +637,7 @@
         <!-- Settings -->
         <rect x="790" y="200" width="220" height="48" rx="11" fill="#fff" stroke="#E4DECF"/>
         <text x="900" y="220" text-anchor="middle" font-family="var(--sans)" font-size="12" font-weight="700" fill="#16181D">Settings</text>
-        <text x="900" y="237" text-anchor="middle" font-family="var(--sans)" font-size="9.5" fill="#7C828E">iCloud · account · capability</text>
+        <text x="900" y="237" text-anchor="middle" font-family="var(--sans)" font-size="9.5" fill="#7C828E">iCloud · account · language · capability</text>
         <rect x="790" y="266" width="220" height="40" rx="10" fill="#fff" stroke="#E4DECF"/><text x="900" y="290" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="#3F434D">Report / takedown · DMCA</text>
         <line x1="724" y1="150" x2="880" y2="198" stroke="#2B3A55" stroke-width="1.4" marker-end="url(#n-stl)"/>
         <line x1="900" y1="248" x2="900" y2="264" stroke="#16181D" stroke-width="1.2" marker-end="url(#n-ink)"/>
@@ -1389,27 +1389,106 @@
     <!-- 4.12 Settings -->
     <div class="screenrow">
       <div class="phone"><div class="notch"></div><div class="scr">
-        <svg viewBox="0 0 214 436" role="img" aria-label="Settings mockup">
+        <svg viewBox="0 0 214 436" role="img" aria-label="Settings mockup, with the Language control and the Chinese-selected state">
           <rect width="214" height="436" fill="#F7F4EC"/>
-          <rect x="0" y="28" width="214" height="46" fill="#fff"/><rect x="0" y="74" width="214" height="1" fill="#E4DECF"/><text x="16" y="58" font-family="serif" font-weight="700" font-size="18" fill="#16181D">Settings</text>
-          <text x="16" y="98" font-family="sans-serif" font-size="8" letter-spacing="1.5" fill="#7C828E">ACCOUNT</text>
-          <rect x="16" y="104" width="182" height="38" rx="9" fill="#fff" stroke="#E4DECF"/><text x="28" y="122" font-family="sans-serif" font-size="9.5" fill="#16181D">Signed in with Apple</text><text x="28" y="135" font-family="monospace" font-size="8" fill="#2B3A55">@rkdiecast</text>
-          <text x="16" y="166" font-family="sans-serif" font-size="8" letter-spacing="1.5" fill="#7C828E">SYNC</text>
-          <rect x="16" y="172" width="182" height="50" rx="9" fill="#fff" stroke="#E4DECF"/><text x="28" y="190" font-family="sans-serif" font-size="9.5" fill="#16181D">iCloud sync</text><text x="28" y="204" font-family="sans-serif" font-size="8" fill="#7C828E">off by default · uses your iCloud quota</text><rect x="158" y="180" width="30" height="18" rx="9" fill="#EFEAE0"/><circle cx="167" cy="189" r="7" fill="#fff" stroke="#E4DECF"/>
-          <text x="16" y="246" font-family="sans-serif" font-size="8" letter-spacing="1.5" fill="#7C828E">DEVICE</text>
-          <rect x="16" y="252" width="182" height="44" rx="9" fill="#EAF0F8" stroke="#2B3A55"/><rect x="28" y="266" width="8" height="8" rx="4" fill="#2B3A55"/><text x="44" y="273" font-family="sans-serif" font-size="9" fill="#2B3A55">Scanning: not available</text><text x="44" y="286" font-family="sans-serif" font-size="8" fill="#3F434D">this iPhone has no LiDAR — picking works</text>
-          <text x="16" y="320" font-family="sans-serif" font-size="8" letter-spacing="1.5" fill="#7C828E">SAFETY</text>
-          <rect x="16" y="326" width="182" height="38" rx="9" fill="#fff" stroke="#E4DECF"/><text x="28" y="344" font-family="sans-serif" font-size="9.5" fill="#16181D">Report a scan / takedown</text><text x="28" y="357" font-family="sans-serif" font-size="8" fill="#7C828E">DMCA designated-agent contact</text>
+          <rect x="0" y="28" width="214" height="42" fill="#fff"/><rect x="0" y="70" width="214" height="1" fill="#E4DECF"/><text x="16" y="56" font-family="serif" font-weight="700" font-size="18" fill="#16181D">Settings</text>
+          <text x="16" y="90" font-family="sans-serif" font-size="8" letter-spacing="1.5" fill="#7C828E">ACCOUNT</text>
+          <rect x="16" y="96" width="182" height="34" rx="9" fill="#fff" stroke="#E4DECF"/><text x="28" y="112" font-family="sans-serif" font-size="9.5" fill="#16181D">Signed in with Apple</text><text x="28" y="124" font-family="monospace" font-size="8" fill="#2B3A55">@rkdiecast</text>
+          <text x="16" y="150" font-family="sans-serif" font-size="8" letter-spacing="1.5" fill="#7C828E">GENERAL</text>
+          <!-- Language control — live in-app switch, currently 简体中文 -->
+          <rect x="16" y="156" width="182" height="42" rx="9" fill="#fff" stroke="#E4DECF"/>
+          <text x="28" y="173" font-family="sans-serif" font-size="9.5" fill="#16181D">语言</text><text x="49" y="173" font-family="sans-serif" font-size="7.5" fill="#7C828E">Language</text>
+          <text x="190" y="173" text-anchor="end" font-family="sans-serif" font-size="9" fill="#F26B1F">简体中文 ›</text>
+          <text x="28" y="189" font-family="sans-serif" font-size="7.5" fill="#7C828E">switches instantly · English / 简体中文</text>
+          <text x="16" y="218" font-family="sans-serif" font-size="8" letter-spacing="1.5" fill="#7C828E">SYNC</text>
+          <rect x="16" y="224" width="182" height="44" rx="9" fill="#fff" stroke="#E4DECF"/><text x="28" y="241" font-family="sans-serif" font-size="9.5" fill="#16181D">iCloud sync</text><text x="28" y="254" font-family="sans-serif" font-size="7.5" fill="#7C828E">off by default · uses your iCloud quota</text><rect x="160" y="232" width="30" height="18" rx="9" fill="#EFEAE0"/><circle cx="169" cy="241" r="7" fill="#fff" stroke="#E4DECF"/>
+          <text x="16" y="288" font-family="sans-serif" font-size="8" letter-spacing="1.5" fill="#7C828E">DEVICE</text>
+          <rect x="16" y="294" width="182" height="40" rx="9" fill="#EAF0F8" stroke="#2B3A55"/><rect x="28" y="307" width="8" height="8" rx="4" fill="#2B3A55"/><text x="44" y="314" font-family="sans-serif" font-size="9" fill="#2B3A55">Scanning: not available</text><text x="44" y="326" font-family="sans-serif" font-size="7.5" fill="#3F434D">this iPhone has no LiDAR — picking works</text>
+          <text x="16" y="356" font-family="sans-serif" font-size="8" letter-spacing="1.5" fill="#7C828E">SAFETY</text>
+          <rect x="16" y="362" width="182" height="36" rx="9" fill="#fff" stroke="#E4DECF"/><text x="28" y="379" font-family="sans-serif" font-size="9.5" fill="#16181D">Report a scan / takedown</text><text x="28" y="391" font-family="sans-serif" font-size="7.5" fill="#7C828E">DMCA designated-agent contact</text>
         </svg>
       </div></div>
       <div class="specbox">
         <h4>Settings</h4>
-        <p class="purpose">Account, sync, capability transparency, and the safety entry point.</p>
+        <p class="purpose">Account, language, sync, capability transparency, and the safety entry point.</p>
         <div class="lbl">Layout (grouped iOS list)</div>
-        <ul><li>iCloud sync toggle — opt-in, <strong>off by default</strong>, explains it consumes the user's iCloud quota.</li><li>Sign in with Apple account state.</li><li>Capability/device status — a calm steel note, never an alarm.</li><li>Report/takedown + DMCA designated-agent contact entry point.</li></ul>
+        <ul><li>Sign in with Apple account state.</li><li><strong>Language control</strong> (GENERAL group) — a value row labelled <strong>语言</strong> with a small secondary <code>Language</code>, showing the current value <code>简体中文 ›</code>. Tapping opens a picker with <code>English</code> and <code>简体中文（已选）</code>. The switch is <strong>live and in-app</strong> — the UI re-renders into the chosen locale with no App Store re-download and no Settings.app round-trip; English and 简体中文 (Simplified) ship at launch, Traditional Chinese is a later add. See the <em>Internationalization</em> subsection below.</li><li>iCloud sync toggle — opt-in, <strong>off by default</strong>, explains it consumes the user's iCloud quota.</li><li>Capability/device status — a calm steel note, never an alarm.</li><li>Report/takedown + DMCA designated-agent contact entry point.</li></ul>
         <div class="lbl">States</div>
-        <div class="stateline"><span class="st ns">not-supported → "Scanning: not available" steel row (informational)</span><span class="st err">sync error → inline status row</span><span class="st off">offline → account/sync rows show last-known state</span></div>
+        <div class="stateline"><span class="st">language → 语言 row reflects current locale; picker marks the active one 简体中文（已选）</span><span class="st ns">not-supported → "Scanning: not available" steel row (informational)</span><span class="st err">sync error → inline status row</span><span class="st off">offline → account/sync rows show last-known state</span></div>
       </div>
+    </div>
+
+    <!-- 4.12b Internationalization (i18n) -->
+    <h3 class="serif" style="margin-top:30px" id="i18n">Internationalization (i18n) — English &amp; 简体中文</h3>
+    <div class="card">
+      <p class="eyebrow">String catalogs · live runtime locale override · CJK-safe layout · CJK serif headline · per-(release, locale) AI history</p>
+      <p style="margin-top:2px"><strong>Decision (PM, 2026-06-18):</strong> the app ships fully localized in <strong>English</strong> and <strong>简体中文 (Simplified Chinese)</strong>, switchable from the Settings <strong>语言 / Language</strong> control with <em>no relaunch</em>. Car <em>model</em> names stay as proper nouns in both locales (e.g. <code>Porsche 911 GT3 RS</code>); only UI chrome and generated copy localize. Traditional Chinese is a later add and is out of v1 scope.</p>
+      <div class="grid c2" style="margin-top:14px">
+        <div class="tile">
+          <h4 style="font-size:.95rem">String catalogs for all UI</h4>
+          <p style="font-size:.86rem">Every piece of chrome — tab titles (<strong>陈列柜 / 目录 / 社区库 / 我的</strong>), labels, section headings, states, and steel notes — comes from Apple <code>.xcstrings</code> String Catalogs keyed by a stable identifier, never a hard-coded literal. Pluralization &amp; number/date formatting go through the locale's rules; catalog codes stay <code>--mono</code> and locale-neutral.</p>
+        </div>
+        <div class="tile">
+          <h4 style="font-size:.95rem">Live in-app locale override</h4>
+          <p style="font-size:.86rem">The picker writes a chosen locale and the app re-resolves its <code>Bundle</code>/<code>Locale</code> at runtime so views re-render immediately — no trip to iOS Settings.app, no App Store re-download. <strong>iOS caveat:</strong> some chrome (and any cached AI text) only re-reads its locale on view rebuild, so the switch triggers a coordinated re-render of the visible tree; if a surface can't re-resolve cleanly, fall back to a <em>light, animated relaunch</em> rather than leaving mixed-locale strings on screen.</p>
+        </div>
+        <div class="tile">
+          <h4 style="font-size:.95rem">CJK-safe layout (no clipping)</h4>
+          <p style="font-size:.86rem">Layout is intrinsic-size driven and honours <strong>Dynamic Type</strong> in both scripts: rows grow vertically rather than truncate, line-height uses Chinese line metrics (taller leading than Latin), and labels reserve room to grow. No fixed-width text boxes, no single-line ellipsis on translatable content, no horizontal overflow — verified at 320 / 390 / 1440.</p>
+        </div>
+        <div class="tile">
+          <h4 style="font-size:.95rem">CJK serif maps the editorial headline</h4>
+          <p style="font-size:.86rem">The editorial-serif intent (car names &amp; large titles) carries into Chinese via a <strong>CJK serif stack</strong> — <code>"Songti SC","STSong",serif</code> — so a Chinese title still reads as a Songti display face, not a default sans. Latin proper nouns inside a Chinese title keep the New York serif; the <code>--mono</code> catalog voice is unchanged across locales.</p>
+        </div>
+      </div>
+
+      <div class="lbl" style="margin-top:18px">AI Real-Car history is generated &amp; cached per (release, locale)</div>
+      <div class="fig" style="margin-top:8px">
+        <svg viewBox="0 0 1140 320" role="img" aria-label="The AI Real-Car history is generated and cached once per release and locale; model names stay as proper nouns in both English and Simplified Chinese">
+          <defs>
+            <marker id="i18n-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2B3A55"/></marker>
+            <marker id="i18n-arrow-t" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#F26B1F"/></marker>
+          </defs>
+          <!-- source -->
+          <rect x="20" y="118" width="180" height="84" rx="12" fill="#fff" stroke="#E4DECF"/>
+          <text x="110" y="148" text-anchor="middle" font-family="var(--sans)" font-size="13" font-weight="700" fill="#16181D">Release</text>
+          <text x="110" y="168" text-anchor="middle" font-family="var(--mono)" font-size="12" fill="#2B3A55">MGT00612</text>
+          <text x="110" y="186" text-anchor="middle" font-family="var(--sans)" font-size="10" fill="#7C828E">Wikidata · Wikipedia · Commons</text>
+
+          <!-- per-locale generation -->
+          <text x="300" y="40" font-family="var(--mono)" font-size="12" font-weight="700" fill="#7C828E" style="letter-spacing:.08em">GENERATE + CACHE PER (RELEASE, LOCALE)</text>
+
+          <!-- EN cache -->
+          <rect x="300" y="58" width="520" height="92" rx="12" fill="#F7F4EC" stroke="#E4DECF"/>
+          <text x="320" y="82" font-family="var(--mono)" font-size="11" font-weight="700" fill="#2B3A55">key (MGT00612, en)</text>
+          <text x="320" y="104" font-family="var(--serif)" font-weight="700" font-size="15" fill="#16181D">Porsche 911 GT3 RS (992)</text>
+          <text x="320" y="124" font-family="var(--sans)" font-size="10.5" fill="#3F434D">"The 992-generation 911 GT3 RS is Porsche's most aero-aggressive…"</text>
+          <text x="320" y="140" font-family="var(--sans)" font-size="9.5" font-style="italic" fill="#7C828E">cited history · specs · Source: Wikipedia</text>
+
+          <!-- ZH cache -->
+          <rect x="300" y="168" width="520" height="100" rx="12" fill="#F7F4EC" stroke="#E4DECF"/>
+          <text x="320" y="192" font-family="var(--mono)" font-size="11" font-weight="700" fill="#2B3A55">key (MGT00612, zh-Hans)</text>
+          <text x="320" y="214" font-family="'Songti SC','STSong',serif" font-weight="700" font-size="15" fill="#16181D">Porsche 911 GT3 RS (992)</text>
+          <text x="320" y="234" font-family="'Songti SC','STSong',serif" font-size="11" fill="#3F434D">"2022 年发布的 992 代 911 GT3 RS，是保时捷迄今空气动力学最激进的…"</text>
+          <text x="320" y="252" font-family="var(--sans)" font-size="9.5" font-style="italic" fill="#7C828E">已本地化历史 · 规格 · 来源：维基百科</text>
+
+          <!-- arrows source -> caches -->
+          <line x1="200" y1="150" x2="296" y2="104" stroke="#2B3A55" stroke-width="1.4" marker-end="url(#i18n-arrow)"/>
+          <line x1="200" y1="170" x2="296" y2="216" stroke="#2B3A55" stroke-width="1.4" marker-end="url(#i18n-arrow)"/>
+
+          <!-- client reads by active locale -->
+          <rect x="900" y="100" width="216" height="116" rx="12" fill="#FFF3EA" stroke="#F26B1F"/>
+          <text x="1008" y="128" text-anchor="middle" font-family="var(--sans)" font-size="12" font-weight="700" fill="#a8530f">Real-Car view</text>
+          <text x="1008" y="148" text-anchor="middle" font-family="var(--sans)" font-size="10" fill="#a8530f">reads the cache for the</text>
+          <text x="1008" y="163" text-anchor="middle" font-family="var(--sans)" font-size="10" fill="#a8530f">active app locale</text>
+          <text x="1008" y="188" text-anchor="middle" font-family="var(--mono)" font-size="9.5" fill="#2B3A55">model name = proper noun</text>
+          <text x="1008" y="202" text-anchor="middle" font-family="var(--mono)" font-size="9.5" fill="#2B3A55">(unchanged across locales)</text>
+          <line x1="820" y1="104" x2="896" y2="140" stroke="#F26B1F" stroke-width="1.4" marker-end="url(#i18n-arrow-t)"/>
+          <line x1="820" y1="218" x2="896" y2="176" stroke="#F26B1F" stroke-width="1.4" marker-end="url(#i18n-arrow-t)"/>
+        </svg>
+        <figcaption>The §8 enrichment pipeline grounds the same release once per language: a <code>(release, locale)</code> cache holds one English and one Simplified-Chinese <code>RealCarProfile</code> (localized history paragraphs + spec labels, each still cited to Wikipedia / Wikidata). Switching the app's language flips the Real-Car view to the matching cached profile; the <strong>car model name stays a proper noun</strong> in both — e.g. <code>Porsche 911 GT3 RS</code> — and the Chinese title renders in the <code>Songti SC</code> serif so the editorial voice carries.</figcaption>
+      </div>
+      <div class="callout steel"><b>Localized, never machine-mangled.</b> Chinese UI uses the authoritative Simplified strings (tabs <strong>陈列柜 / 目录 / 社区库 / 我的</strong>; the Real-Car screen's <strong>模型 | 真车</strong> sub-view, <strong>车史</strong> heading, <strong>与你的模型对比</strong> CTA), not ad-hoc translation. Attribution localizes too — a Chinese profile shows <em>照片：&lt;author&gt; · CC-BY-SA 4.0 · 维基共享资源</em> and a <em>来源：维基百科</em> cite — while licenses, catalog codes, and model names are kept locale-neutral.</div>
     </div>
 
     <!-- 4.13 Cross-cutting states -->
@@ -1445,10 +1524,12 @@
           <tr><td>Community library browse</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td></tr>
           <tr><td>Share / opt-in upload</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td></tr>
           <tr><td>Settings</td><td class="yes">●</td><td class="na">—</td><td class="na">—</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td></tr>
+          <tr><td>Settings — Language control</td><td class="yes">●</td><td class="na">—</td><td class="na">—</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td></tr>
         </tbody>
       </table>
     </div>
     <p class="callout steel"><b>Read this matrix as the anti-template guarantee:</b> "not-supported" is a <em>core idea</em> (★) on the capability gate, Release detail, and Guided scan — it is expressed through light-as-state and steel notes, never a greyed-out dead control. Offline never blacks out the app: the cached shelf always works. For the <strong>Real&nbsp;Car view</strong>, the "Empty" column is the <em>partial</em> state (specs present, no real photo → labeled AI illustration) and "Not-supported" is the <em>not-found</em> state (no Wikidata match → a graceful minimal note, never a broken grid).</p>
+    <p class="callout"><b>Localization is a cross-cutting state, not a screen.</b> <strong>Every</strong> row above ships in both <strong>English</strong> and <strong>简体中文</strong>: the same designed states are authored in each locale (steel notes, error/offline copy, empty-cabinet invites) from <code>.xcstrings</code> catalogs, with CJK-safe layout (no clipping/truncation) and the <code>Songti SC</code> serif mapping for headlines. The Settings <strong>语言 / Language</strong> control switches the active locale live; the Real-Car view's AI history is cached per <code>(release, locale)</code>, while car model names stay proper nouns in both. See the <a href="#i18n" style="color:var(--steel)"><em>Internationalization (i18n)</em></a> subsection.</p>
   </section>
 
   <!-- ============================================================= -->
@@ -1758,7 +1839,7 @@
   </section>
 
   <footer>
-    Diecast Vault · Design Document v1.1 · direction <strong>Vitrine — the lit display cabinet (light-as-state)</strong> · authored by the Designer for the SDD pipeline · 2026-06-17, v1.1 adds the <strong>Real-Car view</strong> (PRD v1.1 §6 F11 · PM request, 2026-06-18). v1.1 also simplifies the first-run capability gate to a calm "Hero + one capability line" screen and commits the Home cabinet to a true real-time 3D scene (the HTML mockup is a flat preview). Next: Gate 1 (Design + Spike-0 scan-quality &amp; Spike-1 3D-cabinet go/no-go). Interactive mockup → <a href="./mockup/index.html" style="color:var(--tungsten-deep)">./mockup/index.html</a>.
+    Diecast Vault · Design Document v1.1 · direction <strong>Vitrine — the lit display cabinet (light-as-state)</strong> · authored by the Designer for the SDD pipeline · 2026-06-17, v1.1 adds the <strong>Real-Car view</strong> (PRD v1.1 §6 F11 · PM request, 2026-06-18). v1.1 also simplifies the first-run capability gate to a calm "Hero + one capability line" screen, commits the Home cabinet to a true real-time 3D scene (the HTML mockup is a flat preview), and adds <strong>English + 简体中文 localization</strong> with a live in-app <strong>语言 / Language</strong> switch (PM decision, 2026-06-18). Next: Gate 1 (Design + Spike-0 scan-quality &amp; Spike-1 3D-cabinet go/no-go). Interactive mockup → <a href="./mockup/index.html" style="color:var(--tungsten-deep)">./mockup/index.html</a>.
   </footer>
 </div>
 </body>
