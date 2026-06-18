@@ -23,6 +23,14 @@ public struct Release: Identifiable, Hashable, Codable, Sendable {
 
     public var mgtNumber: String { key.mgtNumber }
     public var drive: Drive { key.drive }
+
+    /// The scan state expressed through light-as-state. A LIT release has a
+    /// viewable model; a MATTE release routes to the Pro/non-Pro contribution
+    /// note depending on device capability (DESIGN §4.5 three states).
+    public func scanState(isProDevice: Bool) -> ScanState {
+        if isLit { return .hasModel }
+        return isProDevice ? .noScanPro : .noScanBasic
+    }
 }
 
 public extension Release {
@@ -37,5 +45,22 @@ public extension Release {
         Release(key: .init(mgtNumber: "MGT00471", drive: .rhd), name: "Subaru Impreza WRX", edition: "0612/2022"),
         Release(key: .init(mgtNumber: "MGT00588", drive: .lhd), name: "Lamborghini Huracán", edition: "0344/2023", isLit: true),
         Release(key: .init(mgtNumber: "MGT00295", drive: .lhd), name: "Ford Mustang GT", edition: "1024/2021")
+    ]
+
+    /// A broader bundled catalog for the Catalog tab's search (slice 2, no
+    /// backend). Includes a few numbers offered in BOTH drives so the drive
+    /// toggle is exercised, and several MATTE (no-scan-yet) releases so the
+    /// designed three-state detail is reachable. Superset of `sampleShelf`.
+    static let catalogSample: [Release] = sampleShelf + [
+        // Same number, the other drive — proves one number → up to two bodies.
+        Release(key: .init(mgtNumber: "MGT00748", drive: .rhd), name: "Toyota GR Supra", edition: "0640/2022"),
+        Release(key: .init(mgtNumber: "MGT00512", drive: .rhd), name: "Mazda RX-7 FD3S", edition: "0218/2022"),
+        // No-scan-yet catalog entries (MATTE) — both drives offered, neither lit.
+        Release(key: .init(mgtNumber: "MGT00533", drive: .lhd), name: "Honda Civic Type R FL5", edition: "0044/2023"),
+        Release(key: .init(mgtNumber: "MGT00533", drive: .rhd), name: "Honda Civic Type R FL5", edition: "0044/2023"),
+        Release(key: .init(mgtNumber: "MGT00611", drive: .rhd), name: "Lancer Evolution X", edition: "0771/2022"),
+        Release(key: .init(mgtNumber: "MGT00702", drive: .lhd), name: "Chevrolet Corvette C8", edition: "0319/2023"),
+        Release(key: .init(mgtNumber: "MGT00689", drive: .lhd), name: "Alpine A110", edition: "0556/2023"),
+        Release(key: .init(mgtNumber: "MGT00689", drive: .rhd), name: "Alpine A110", edition: "0556/2023")
     ]
 }

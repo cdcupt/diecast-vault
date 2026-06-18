@@ -50,6 +50,57 @@ struct DriveDecal: View {
     }
 }
 
+/// The twin-state drive toggle from DESIGN §4.4 — teal LHD / amber RHD. Drive is
+/// a required part of the key, so this is the gate before picking. Only the
+/// drives the catalog offers for a release are shown; selection tints to the
+/// drive's decal color.
+struct DriveToggle: View {
+    let drives: [Drive]
+    let selection: Drive?
+    let onChoose: (Drive) -> Void
+
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(orderedDrives) { drive in
+                option(drive)
+                if drive != orderedDrives.last { Divider().frame(height: 28) }
+            }
+        }
+        .background(Ink.cellSurface)
+        .clipShape(RoundedRectangle(cornerRadius: 11, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 11, style: .continuous)
+                .stroke(Ink.line, lineWidth: 1)
+        )
+    }
+
+    /// Stable L-then-R ordering regardless of catalog insertion order.
+    private var orderedDrives: [Drive] { Drive.allCases.filter(drives.contains) }
+
+    private func option(_ drive: Drive) -> some View {
+        let isSelected = selection == drive
+        let tint = drive == .lhd ? Ink.lhd : Ink.rhd
+        let fill = drive == .lhd ? Color(Palette.lhd).opacity(0.12) : Color(Palette.rhd).opacity(0.12)
+        return Button {
+            onChoose(drive)
+        } label: {
+            HStack(spacing: 7) {
+                DriveDecal(drive: drive)
+                Text(drive == .lhd ? "LHD" : "RHD")
+                    .font(.system(size: 14, weight: isSelected ? .semibold : .regular))
+            }
+            .foregroundStyle(isSelected ? tint : Ink.muted)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 10)
+            .background(isSelected ? fill : Color.clear)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(drive.displayName)
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
+    }
+}
+
 /// A small mono catalog placard (the "748" tab in the design).
 struct CatalogPlacard: View {
     let mgtNumber: String
