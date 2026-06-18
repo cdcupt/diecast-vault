@@ -97,6 +97,8 @@
   .cap .badge.amber{background:var(--tungsten-glow);color:var(--tungsten-deep)}
   .cap .badge.warn{background:#FBF1D8;color:#7a5a00}
   .cap .badge.stage{background:#15181f;color:#FFE6CE}
+  .cap .badge.preview{background:#16181D;color:#E9ECF2}
+  .cap .badge.preview b{color:#FFE6CE;font-weight:700}
 
   /* ===========================================================
      iPHONE FRAME — ~390pt logical width
@@ -365,17 +367,8 @@
     background:radial-gradient(120% 80% at 50% 120%,var(--tungsten-glow),var(--cell-surface));
     box-shadow:var(--shadow-cell);display:grid;place-items:center}
 
-  /* capability gate */
-  .gate{flex:1 1 auto;display:flex;flex-direction:column;padding:18px 18px 10px;position:relative;overflow:hidden}
-  .gate .cabicon{align-self:center;margin:8px 0 14px}
-  .gate h2.gh{font-family:var(--serif);font-weight:600;font-size:25px;letter-spacing:-.02em;
-    line-height:1.05;margin:0 0 8px}
-  .gate p.gp{color:var(--ink-soft);font-size:13px;line-height:1.45;margin:0 0 14px}
-  .gate .capcard{border-radius:14px;padding:13px 14px;margin-bottom:11px;border:1px solid var(--line)}
-  .gate .capcard.pro{background:linear-gradient(180deg,#FFF7EF,var(--cell-surface));border-color:#F3D9C2}
-  .gate .capcard.any{background:var(--steel-soft);border-color:#d7e1f1}
-  .gate .capcard .ch{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;margin-bottom:4px}
-  .gate .capcard .cd{font-size:11.5px;color:var(--ink-soft);line-height:1.4}
+  /* capability gate — light container; calm hero styles live below */
+  .gate{flex:1 1 auto;display:flex;flex-direction:column;padding:18px 18px 14px;position:relative;overflow:hidden}
   .applebtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:#000;color:#fff;
     border:0;border-radius:12px;padding:13px;font-size:14px;font-weight:600;cursor:pointer}
 
@@ -571,7 +564,26 @@
 
   /* ============ STYLE THEME SWAPS (same skeleton) ============ */
 
-  /* --- Lightbar White (DEFAULT) --- handled by .case base vars --- */
+  /* --- Lightbar White (DEFAULT) ---
+     Tracks the PM's real unit: black powder-coated outer frame,
+     glossy WHITE cells, and a glowing tungsten lightbar rail across
+     the top valance. Cells stay light/glossy; only the carcass + rail
+     are dark — the case interior reads bright. */
+  .style-lightbar .case{
+    --frame-a:#23262c;--frame-b:#15171b;--frame-edge:rgba(255,255,255,.16);--frame-shade:rgba(0,0,0,.55);
+    --mullion:rgba(0,0,0,.5);--case-shadow:0 2px 1px rgba(255,255,255,.10) inset,0 18px 40px rgba(22,24,29,.30);
+    /* cells: keep the glossy bright white interior */
+    --back-a:#FFFFFF;--back-b:#F6F3EC;
+    --shelf-a:#FFFFFF;--shelf-b:#E9E3D6;--shelf-lip:rgba(242,107,31,.40);--shelf-edge:rgba(255,255,255,.95);
+    --recess-fill:#E7E1D2;--recess-shadow:inset 0 3px 8px rgba(22,24,29,.20),inset 0 -1px 0 rgba(255,255,255,.5);
+    /* engraved nameplate sits on the dark frame rail */
+    --plate-ink:#c9cdd6;--plate-rule:rgba(255,255,255,.16);--plate-chip-bg:rgba(255,255,255,.08);--plate-chip-ink:#FFE6CE;
+    padding-top:18px}
+  /* the glowing lightbar rail across the top of the case valance */
+  .style-lightbar .case::after{content:"";position:absolute;left:13px;right:13px;top:7px;height:5px;
+    border-radius:3px;z-index:5;pointer-events:none;
+    background:linear-gradient(90deg,#D8540F,#F26B1F 32%,#FFE6CE 52%,#F26B1F 72%,#D8540F);
+    box-shadow:0 0 14px rgba(242,107,31,.80),0 1px 0 rgba(255,255,255,.25) inset}
 
   /* --- Walnut Case --- */
   .style-walnut .case{
@@ -696,43 +708,30 @@
   .styleopt .sw-note{font-family:var(--mono);font-size:8px;color:var(--warn);margin-top:4px}
 
   /* ===========================================================
-     GATE — Two Lit Niches (capability split = product)
+     GATE — calm light hero + one quiet capability line
+     (no vitrine niches; lots of breathing room)
      =========================================================== */
-  .gatebar{position:relative;margin:0 0 14px;border-radius:14px;overflow:hidden;
-    background:linear-gradient(180deg,#15181f,#0e1116);padding:13px 15px 14px;color:#F2EFE8;
-    box-shadow:0 8px 22px rgba(22,24,29,.20)}
-  .gatebar .glowstrip{position:absolute;left:0;right:0;top:0;height:6px;
-    background:linear-gradient(90deg,#D8540F,#F26B1F 35%,#FFE6CE 55%,#F26B1F 75%,#D8540F);
-    box-shadow:0 0 16px rgba(242,107,31,.85)}
-  .gatebar .gb-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#cfd4dd}
-  .gatebar .gb-name{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.01em;margin-top:4px}
-
-  /* gate uses a flat case (no perspective) — depth reads from shadow/glass/light alone */
-  .gateframe .case{transform-style:flat}
-  .gatepair{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:12px}
-  /* equal-dignity gate niche reuses the .case z-stack; taller so poster + label fit */
-  .gateniche{position:relative;border-radius:var(--r-cell);overflow:hidden;isolation:isolate;min-width:0;
-    min-height:232px;display:flex;flex-direction:column;justify-content:flex-end}
-  .gatepair > .gateniche{min-width:0}
-  .case .gateniche.niche .poster{flex:0 0 auto;min-height:0;padding-bottom:0;transform:none}
-  /* gate niches sit flat in the pair (no translateZ projection) — depth from shadow/glass/light */
-  .case .gateniche.niche{transform-style:flat;aspect-ratio:auto;width:auto}
-  .case .gateniche.niche .placard,.case .gateniche.niche .shelf{transform:none}
-  .gateniche .gn-label{position:relative;z-index:5;padding:0 10px 12px}
-  .gateniche .gn-code{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.04em;
-    color:var(--steel);background:var(--steel-soft);padding:2px 6px;border-radius:4px;display:inline-block}
-  .gateniche .gn-cap{font-family:var(--serif);font-weight:600;font-size:12px;color:var(--ink);line-height:1.16;margin-top:7px}
-  .gateniche .gn-tag{font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
-    margin-top:8px;display:inline-block;padding:3px 7px;border-radius:5px}
-  .gateniche .gn-tag.ready{background:var(--tungsten-glow);color:var(--tungsten-deep)}
-  .gateniche .gn-tag.pro{background:#222730;color:#FFE6CE}
-  .gateniche .gn-tag.wait{background:#FBF1D8;color:#7a5a00}
-  /* the empty (non-Pro) Scan niche: an open slot waiting to be lit, centered */
-  .gateniche.empty{justify-content:center}
-  .gateniche.empty .gn-label{padding:14px 10px}
-  .gateniche.empty .plus{width:30px;height:30px;border-radius:50%;border:1.6px dashed var(--muted);
-    display:grid;place-items:center;margin:0 auto 11px;color:var(--muted);font-size:18px;font-weight:300}
-  .contribline{font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center;margin:2px 0 14px;letter-spacing:.02em}
+  .gatehero{flex:1 1 auto;display:flex;flex-direction:column;align-items:flex-start;
+    padding:8px 4px 4px}
+  /* a single small, lit emblem instead of a dark valance — quiet, premium */
+  .gatehero .emblem{width:50px;height:50px;border-radius:14px;position:relative;overflow:hidden;
+    flex:0 0 auto;margin:18px 0 26px;background:linear-gradient(155deg,#1d212a,#0e1116);
+    box-shadow:0 8px 20px rgba(22,24,29,.22)}
+  .gatehero .emblem .bar{position:absolute;left:8px;right:8px;top:9px;height:6px;border-radius:3px;
+    background:linear-gradient(90deg,#F26B1F,#FFE6CE);box-shadow:0 0 9px rgba(242,107,31,.8)}
+  .gatehero .emblem .cells{position:absolute;left:8px;bottom:8px;display:flex;gap:3px}
+  .gatehero .emblem .cells i{width:9px;height:12px;border-radius:2px;background:#2a2f3a;display:block}
+  .gatehero .emblem .cells i.lit{background:radial-gradient(circle at 50% 120%,#FFE6CE,#F26B1F 70%)}
+  .gatehero .eyebrow{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--muted)}
+  .gatehero h2.gate-h{font-family:var(--serif);font-weight:600;font-size:30px;letter-spacing:-.02em;
+    line-height:1.04;margin:8px 0 0;color:var(--ink);max-width:13ch}
+  /* ONE quiet capability line */
+  .gatehero .capline{font-size:13.5px;line-height:1.5;color:var(--ink-soft);margin:18px 0 0;max-width:30ch}
+  .gatehero .capline b{color:var(--ink);font-weight:700}
+  .gatehero .capline .pro-note{color:var(--tungsten-deep);font-weight:700}
+  /* actions pinned to the bottom with air above */
+  .gate-actions{flex:0 0 auto;padding:0 4px 6px}
 </style>
 </head>
 <body>
@@ -773,7 +772,7 @@
 <section class="flow">
   <h2><span class="num">FLOW A</span> First run &amp; entry</h2>
   <div class="rule"></div>
-  <p class="flowsub">Capability is communicated as an <em>invitation to contribute</em>, never a denial — and the split literally <b>becomes the product</b>. The two capabilities are rendered as two real vitrine niches lifted straight from Home, so first-run doubles as a wordless tutorial for light-as-state. <b>Pro</b> = both niches lit (browse &amp; pick + scan &amp; seed). <b>Non-Pro</b> = the Browse niche is lit and the same-size Scan niche is an unlit matte recess <em>waiting to be lit</em> — an open slot, framed as a contributor invitation, never greyed-out or denied. Both keep Sign in with Apple. The gate renders in the active cabinet style (Lightbar White by default).</p>
+  <p class="flowsub">First run stays <b>calm and premium</b>: a light surface, a small lit emblem, a serif headline — <em>“Welcome to your vault.”</em> — and <b>one quiet capability line</b> that tells you what this iPhone can do. <b>Pro</b> = “Browse &amp; pick on any iPhone. This iPhone can also scan — seed the library.” <b>Non-Pro</b> = “Browse &amp; pick on any iPhone. Scanning new cars needs a Pro iPhone (12 Pro–17 Pro).” No vitrine niches, no denial — just an invitation. Both keep <b>Sign in with Apple</b> and <b>Maybe later — just browse</b>.</p>
   <div class="rail">
 
     <!-- A1: capability gate — PRO -->
@@ -790,60 +789,21 @@
             <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
           </span></div>
           <div class="gate scroll">
-            <!-- HEADER: the locked dark glowbar valance + serif headline -->
-            <div class="gatebar">
-              <span class="glowstrip"></span>
-              <div class="gb-eyebrow">Diecast Vault</div>
-              <div class="gb-name">Welcome to your vault</div>
-            </div>
-            <p class="gp" style="margin-top:0">We checked this iPhone — it can light <b style="color:var(--tungsten-deep)">both</b> niches.</p>
-
-            <!-- THE NICHE PAIR — both lit (Pro), equal size / equal dignity -->
-            <div class="gateframe">
-              <div class="case">
-                <div class="gatepair">
-                  <!-- LEFT · BROWSE & PICK (always lit, both user types) -->
-                  <div class="niche lit gateniche">
-                    <span class="backboard"></span>
-                    <span class="contact"></span><span class="shelf"></span>
-                    <div class="poster" style="padding-top:16px"><div class="carfig" style="max-width:118px"><svg viewBox="0 0 220 120" role="img" aria-label="community car poster">
-<defs><linearGradient id="gate-browse" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2F6FB0"/><stop offset="1" stop-color="#1C4B7E"/></linearGradient></defs>
-<path d="M18 78 C 24 64 40 60 56 58 C 70 44 96 40 120 42 C 150 44 168 52 182 62 C 196 64 204 70 204 80 L 204 86 C 204 90 200 92 196 92 L 24 92 C 20 92 16 90 16 84 Z" fill="url(#gate-browse)" stroke="#1C4B7E" stroke-width="1"/>
-<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#16324A" opacity="0.92"/>
-<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#FFE6CE" opacity="0.9"/>
-<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
-<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/></svg></div></div>
-                    <div class="gn-label">
-                      <span class="gn-code">BROWSE·PICK</span>
-                      <div class="gn-cap">Find any release, pick a scan, spin it in 3D</div>
-                      <span class="gn-tag ready">Ready</span>
-                    </div>
-                  </div>
-                  <!-- RIGHT · SCAN & SEED (Pro = lit) -->
-                  <div class="niche lit gateniche">
-                    <span class="backboard"></span>
-                    <span class="contact"></span><span class="shelf"></span>
-                    <div class="poster" style="padding-top:16px"><div class="carfig" style="max-width:118px"><svg viewBox="0 0 220 120" role="img" aria-label="your scanned car poster">
-<defs><linearGradient id="gate-scan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D9DCE1"/><stop offset="1" stop-color="#9AA0A8"/></linearGradient></defs>
-<path d="M18 78 C 24 64 40 60 56 58 C 70 44 96 40 120 42 C 150 44 168 52 182 62 C 196 64 204 70 204 80 L 204 86 C 204 90 200 92 196 92 L 24 92 C 20 92 16 90 16 84 Z" fill="url(#gate-scan)" stroke="#9AA0A8" stroke-width="1"/>
-<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#2E3742" opacity="0.92"/>
-<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#F26B1F" opacity="0.9"/>
-<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
-<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/></svg></div></div>
-                    <div class="gn-label">
-                      <span class="gn-code">SCAN·SEED</span>
-                      <div class="gn-cap">Scan your own cars to seed the shared library</div>
-                      <span class="gn-tag pro">Pro · 12–17</span>
-                    </div>
-                  </div>
-                </div>
+            <!-- calm light hero — serif headline + ONE quiet capability line -->
+            <div class="gatehero">
+              <div class="emblem" aria-hidden="true">
+                <span class="bar"></span>
+                <span class="cells"><i class="lit"></i><i class="lit"></i><i></i><i class="lit"></i></span>
               </div>
+              <div class="eyebrow">Diecast Vault</div>
+              <h2 class="gate-h">Welcome to your vault.</h2>
+              <p class="capline">Browse &amp; pick on any iPhone. <span class="pro-note">This iPhone can also scan — seed the library.</span></p>
             </div>
-            <p class="contribline">Each release captured once, for everyone.</p>
 
-            <div style="flex:1"></div>
-            <button class="applebtn" onclick="go('s-home')">  Sign in with Apple</button>
-            <button class="navbtn" style="align-self:center;margin:12px 0 6px" onclick="go('s-home')">Maybe later — just browse</button>
+            <div class="gate-actions">
+              <button class="applebtn" onclick="go('s-home')">  Sign in with Apple</button>
+              <button class="navbtn" style="display:block;width:100%;text-align:center;margin:14px 0 4px" onclick="go('s-home')">Maybe later — just browse</button>
+            </div>
           </div>
           <div class="homebar"></div>
         </div>
@@ -864,53 +824,21 @@
             <svg width="22" height="11" viewBox="0 0 22 11"><rect x="1" y="1" width="18" height="9" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2.5" y="2.5" width="13" height="6" rx="1.2" fill="currentColor"/><rect x="20" y="3.6" width="1.6" height="3.8" rx="0.8" fill="currentColor"/></svg>
           </span></div>
           <div class="gate scroll">
-            <!-- HEADER: same dark glowbar valance + serif headline -->
-            <div class="gatebar">
-              <span class="glowstrip"></span>
-              <div class="gb-eyebrow">Diecast Vault</div>
-              <div class="gb-name">Welcome to your vault</div>
-            </div>
-            <p class="gp" style="margin-top:0">Browsing &amp; picking are fully lit for you. Scanning lights up later — on a Pro iPhone.</p>
-
-            <!-- THE NICHE PAIR — Browse lit, Scan a matte recess waiting to be lit -->
-            <div class="gateframe">
-              <div class="case">
-                <div class="gatepair">
-                  <!-- LEFT · BROWSE & PICK — lit (yours, both user types) -->
-                  <div class="niche lit gateniche">
-                    <span class="backboard"></span>
-                    <span class="contact"></span><span class="shelf"></span>
-                    <div class="poster" style="padding-top:16px"><div class="carfig" style="max-width:118px"><svg viewBox="0 0 220 120" role="img" aria-label="community car poster">
-<defs><linearGradient id="gate-browse2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2F6FB0"/><stop offset="1" stop-color="#1C4B7E"/></linearGradient></defs>
-<path d="M18 78 C 24 64 40 60 56 58 C 70 44 96 40 120 42 C 150 44 168 52 182 62 C 196 64 204 70 204 80 L 204 86 C 204 90 200 92 196 92 L 24 92 C 20 92 16 90 16 84 Z" fill="url(#gate-browse2)" stroke="#1C4B7E" stroke-width="1"/>
-<path d="M62 58 C 76 47 98 44 118 46 C 138 48 152 53 162 60 L 150 60 C 140 54 124 51 110 51 C 92 51 78 54 70 60 Z" fill="#16324A" opacity="0.92"/>
-<rect x="20" y="84" width="178" height="3.5" rx="1.8" fill="#FFE6CE" opacity="0.9"/>
-<circle cx="62" cy="92" r="16" fill="#1b1d22"/><circle cx="62" cy="92" r="7.5" fill="#E8EAEE"/>
-<circle cx="160" cy="92" r="16" fill="#1b1d22"/><circle cx="160" cy="92" r="7.5" fill="#E8EAEE"/></svg></div></div>
-                    <div class="gn-label">
-                      <span class="gn-code">BROWSE·PICK</span>
-                      <div class="gn-cap">Find any release, pick a scan, spin it in 3D</div>
-                      <span class="gn-tag ready">Ready</span>
-                    </div>
-                  </div>
-                  <!-- RIGHT · SCAN & SEED — SAME SIZE, unlit matte recess waiting to be lit -->
-                  <div class="niche empty gateniche">
-                    <span class="backboard"></span>
-                    <div class="gn-label" style="text-align:center;display:flex;flex-direction:column;align-items:center;flex:1 1 auto;justify-content:center">
-                      <div class="plus" style="margin-bottom:10px">+</div>
-                      <span class="gn-code">SCAN·SEED</span>
-                      <div class="gn-cap" style="color:var(--ink-soft);margin-top:7px">Scan your own cars to seed the shared library</div>
-                      <span class="gn-tag wait" style="margin-top:9px;max-width:100%;white-space:normal;line-height:1.35">Lights up on iPhone 12 Pro–17 Pro</span>
-                    </div>
-                  </div>
-                </div>
+            <!-- calm light hero — serif headline + ONE quiet capability line -->
+            <div class="gatehero">
+              <div class="emblem" aria-hidden="true">
+                <span class="bar"></span>
+                <span class="cells"><i class="lit"></i><i class="lit"></i><i></i><i class="lit"></i></span>
               </div>
+              <div class="eyebrow">Diecast Vault</div>
+              <h2 class="gate-h">Welcome to your vault.</h2>
+              <p class="capline">Browse &amp; pick on any iPhone. <b>Scanning new cars needs a Pro iPhone (12 Pro–17 Pro).</b></p>
             </div>
-            <p class="contribline">Each release captured once, for everyone.</p>
 
-            <div style="flex:1"></div>
-            <button class="applebtn" onclick="go('s-home')">  Sign in with Apple</button>
-            <button class="navbtn" style="align-self:center;margin:12px 0 6px" onclick="go('s-home')">Maybe later — just browse</button>
+            <div class="gate-actions">
+              <button class="applebtn" onclick="go('s-home')">  Sign in with Apple</button>
+              <button class="navbtn" style="display:block;width:100%;text-align:center;margin:14px 0 4px" onclick="go('s-home')">Maybe later — just browse</button>
+            </div>
           </div>
           <div class="homebar"></div>
         </div>
@@ -935,6 +863,7 @@
         <div class="ttl">Home — The Cabinet</div>
         <div class="st">populated / Shelves view</div>
         <span class="badge amber">tap a lit niche → 3D stage</span>
+        <span class="badge preview">PREVIEW · ships as real-time 3D <b>(RealityKit)</b></span>
       </div>
       <div class="phone"><div class="island"></div>
         <div class="screen style-lightbar" id="s-home">
@@ -1145,6 +1074,7 @@
         <div class="ttl">Home — Walnut Case</div>
         <div class="st">same cabinet · Walnut style</div>
         <span class="badge amber">cozy collector’s study</span>
+        <span class="badge preview">PREVIEW · ships as real-time 3D <b>(RealityKit)</b></span>
       </div>
       <div class="phone"><div class="island"></div>
         <div class="screen style-walnut" id="s-home-walnut">
@@ -1320,6 +1250,7 @@
         <div class="ttl">Home — Museum Vitrine</div>
         <div class="st">same cabinet · Museum style</div>
         <span class="badge stage">the one dark, contained case</span>
+        <span class="badge preview">PREVIEW · ships as real-time 3D <b>(RealityKit)</b></span>
       </div>
       <div class="phone"><div class="island"></div>
         <div class="screen style-museum" id="s-home-museum">

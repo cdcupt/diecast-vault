@@ -784,78 +784,59 @@
     <h2><span class="n">4</span> Screen-by-screen specs</h2>
     <p>Every screen in the locked inventory, each with a styled mini-render, purpose, layout, key components, and all relevant states. State chips: <span class="st load">loading</span> <span class="st empty">empty</span> <span class="st err">error</span> <span class="st off">offline</span> <span class="st ns">not-supported</span>.</p>
 
-    <!-- 4.1 Capability gate — "Two Lit Niches" -->
+    <!-- 4.1 Capability gate — "Hero + one capability line" (simplified per PM) -->
     <div class="screenrow">
       <div class="phone"><div class="notch"></div><div class="scr">
-        <svg viewBox="0 0 214 436" role="img" aria-label="First-run capability gate mockup — the Two Lit Niches layout">
+        <svg viewBox="0 0 214 436" role="img" aria-label="First-run capability gate mockup — the simplified Hero plus one capability line layout">
           <defs>
-            <linearGradient id="gate-lbg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#D8540F"/><stop offset=".5" stop-color="#FFE6CE"/><stop offset="1" stop-color="#D8540F"/></linearGradient>
-            <radialGradient id="gate-litfloor" cx="50%" cy="128%" r="80%"><stop offset="0" stop-color="#F26B1F" stop-opacity=".34"/><stop offset="70%" stop-color="#F26B1F" stop-opacity="0"/></radialGradient>
-            <linearGradient id="gate-glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".28" stop-color="#fff" stop-opacity="0"/></linearGradient>
             <radialGradient id="gate-toplight" cx="50%" cy="0%" r="80%"><stop offset="0" stop-color="#FFE6CE"/><stop offset="70%" stop-color="#FFE6CE" stop-opacity="0"/></radialGradient>
           </defs>
+          <!-- light paper surface, generous breathing room, no vitrine niches -->
           <rect width="214" height="436" fill="#F7F4EC"/>
-          <rect x="0" y="28" width="214" height="84" fill="url(#gate-toplight)"/>
-          <!-- HEADER: locked dark lightbar valance -->
-          <rect x="16" y="34" width="182" height="30" rx="9" fill="#15181f"/>
-          <rect x="22" y="38" width="170" height="5" rx="2.5" fill="url(#gate-lbg)"/>
-          <text x="26" y="58" font-family="serif" font-weight="600" font-size="11" fill="#F2EFE8">Welcome to your vault</text>
-          <!-- THE NICHE PAIR (equal size / equal dignity) -->
-          <!-- LEFT: BROWSE & PICK — LIT -->
-          <rect x="16" y="80" width="86" height="120" rx="11" fill="#fff" stroke="#F3ECDD"/>
-          <rect x="16" y="80" width="86" height="120" rx="11" fill="url(#gate-litfloor)"/>
-          <ellipse cx="59" cy="150" rx="30" ry="6" fill="#16181D" opacity=".10"/>
-          <text x="59" y="146" text-anchor="middle" font-size="24">🏎️</text>
-          <rect x="22" y="86" width="20" height="10" rx="3" fill="#222730"/><text x="32" y="94" text-anchor="middle" font-family="monospace" font-size="6" font-weight="700" fill="#FFE6CE">748</text>
-          <text x="22" y="172" font-family="monospace" font-size="6.5" font-weight="700" fill="#2B3A55">BROWSE·PICK</text>
-          <text x="22" y="183" font-family="sans-serif" font-size="6.5" fill="#3F434D">Pick a scan, spin it in 3D</text>
-          <text x="22" y="194" font-family="monospace" font-size="6" font-weight="700" fill="#F26B1F">READY</text>
-          <rect x="16" y="80" width="86" height="120" rx="11" fill="url(#gate-glass)"/>
-          <!-- RIGHT: SCAN & SEED — Pro = LIT (foreground), shown as the supported state -->
-          <rect x="112" y="80" width="86" height="120" rx="11" fill="#fff" stroke="#F3ECDD"/>
-          <rect x="112" y="80" width="86" height="120" rx="11" fill="url(#gate-litfloor)"/>
-          <ellipse cx="155" cy="150" rx="30" ry="6" fill="#16181D" opacity=".10"/>
-          <text x="155" y="146" text-anchor="middle" font-size="24">🔦</text>
-          <text x="118" y="172" font-family="monospace" font-size="6.5" font-weight="700" fill="#2B3A55">SCAN·SEED</text>
-          <text x="118" y="183" font-family="sans-serif" font-size="6.5" fill="#3F434D">Scan to seed the library</text>
-          <text x="118" y="194" font-family="monospace" font-size="6" font-weight="700" fill="#F26B1F">PRO · 12–17</text>
-          <rect x="112" y="80" width="86" height="120" rx="11" fill="url(#gate-glass)"/>
-          <!-- non-Pro twin (inset, the matte recess the right niche becomes) -->
-          <rect x="118" y="210" width="74" height="44" rx="9" fill="#EAE4D6" stroke="#DED7C7"/>
-          <rect x="118" y="210" width="74" height="44" rx="9" fill="#16181D" opacity=".05"/>
-          <circle cx="155" cy="226" r="7" fill="none" stroke="#7C828E" stroke-width="1" stroke-dasharray="2 2"/><text x="155" y="230" text-anchor="middle" font-size="9" fill="#7C828E">+</text>
-          <text x="155" y="248" text-anchor="middle" font-family="monospace" font-size="5.5" font-weight="700" fill="#B8860B">LIGHTS UP ON 12–17 PRO</text>
-          <text x="118" y="206" font-family="monospace" font-size="5.5" fill="#7C828E">non-Pro: same niche, unlit ↓</text>
-          <!-- CONTRIBUTOR LINE -->
-          <text x="107" y="280" text-anchor="middle" font-family="monospace" font-size="7" fill="#7C828E">Each release captured once, for everyone.</text>
-          <!-- ACTIONS -->
-          <rect x="20" y="356" width="174" height="38" rx="11" fill="#000"/><text x="107" y="380" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="600" fill="#fff"> Sign in with Apple</text>
+          <rect x="0" y="34" width="214" height="120" fill="url(#gate-toplight)"/>
+          <!-- quiet brand mark -->
+          <rect x="86" y="92" width="42" height="42" rx="11" fill="#EAE4D6"/>
+          <text x="107" y="118" text-anchor="middle" font-family="monospace" font-size="10" font-weight="800" fill="#D8540F">1:64</text>
+          <!-- SERIF HERO HEADLINE -->
+          <text x="107" y="186" text-anchor="middle" font-family="serif" font-weight="700" font-size="20" fill="#16181D">Welcome to</text>
+          <text x="107" y="210" text-anchor="middle" font-family="serif" font-weight="700" font-size="20" fill="#16181D">your vault.</text>
+          <!-- ONE QUIET CAPABILITY LINE (Pro variant shown) -->
+          <text x="107" y="248" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#3F434D">Browse &amp; pick on any iPhone.</text>
+          <text x="107" y="262" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#3F434D">This iPhone can also scan —</text>
+          <text x="107" y="276" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#3F434D">seed the library.</text>
+          <!-- ACTIONS: Sign in with Apple + Maybe later -->
+          <rect x="24" y="352" width="166" height="40" rx="11" fill="#000"/><text x="107" y="377" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="600" fill="#fff"> Sign in with Apple</text>
           <text x="107" y="412" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="600" fill="#F26B1F">Maybe later — just browse</text>
         </svg>
       </div></div>
       <div class="specbox">
-        <h4>First-run capability gate — <em>Two Lit Niches</em></h4>
-        <p class="purpose">The capability split literally <em>becomes the product</em>: the two capabilities are rendered as two real vitrine niches lifted from the Home cabinet, so first run doubles as a wordless tutorial for light-as-state before the user reaches Home. Detection routes the result, framed as a <em>contributor invitation</em>, never a denial. Renders in whatever cabinet style is active (defaults to Lightbar White), so first run also previews the user's chosen vitrine.</p>
+        <h4>First-run capability gate — <em>Hero + one capability line</em></h4>
+        <p class="purpose">A calm, premium first screen with lots of breathing room: a serif hero headline, <em>one</em> quiet capability line, then the auth actions. Capability detection is communicated in a single sentence — never as two competing niches, denial copy, or a greyed control. The old "Two Lit Niches" vitrine layout is <strong>retired</strong>; no niches appear on the gate anymore.</p>
         <div class="lbl">Layout (top → bottom)</div>
         <ul>
-          <li><strong>Header:</strong> the locked dark glowing <code>lightbar</code> strip acts as the cabinet's top valance, with the serif headline <em>"Welcome to your vault"</em> seated just beneath. The only dark element — consistent with the "one dark surface = the case" rule.</li>
-          <li><strong>The niche pair:</strong> a 2-up grid of the exact <code>.niche</code> component at gate scale — equal size, equal dignity. <em>Left = BROWSE &amp; PICK</em>: a fully lit niche (tungsten floor-glow, glass edge, a community car), mono code <code>BROWSE·PICK</code>, placard "Find any release, pick a scan, spin it in 3D", mono tag <code>READY</code> (always yours, both user types). <em>Right = SCAN &amp; SEED</em>: <strong>Pro</strong> = a fully lit niche, mono code <code>SCAN·SEED</code>, placard "Scan your own cars to seed the shared library", tag <code>PRO · 12–17</code>; <strong>non-Pro</strong> = the same-size niche as a matte recess (locked <code>.niche.empty</code>) with a dashed plus and a warn-gold mono caption "LIGHTS UP ON iPhone 12 Pro–17 Pro" — visually identical to a Home known-but-unscanned slot, an unlit niche <em>waiting to be lit</em>.</li>
-          <li><strong>Contributor line:</strong> one quiet mono sentence beneath the pair — <em>"Each release captured once, for everyone."</em> (replaces the old steel spec-note block).</li>
-          <li><strong>Actions:</strong> preserved exactly — the <code>Sign in with Apple</code> system button and the centered <em>"Maybe later — just browse"</em>.</li>
+          <li><strong>Brand mark + ambient top-light:</strong> a small quiet <code>1:64</code> mark on a soft tungsten-glow wash over light paper — atmosphere, not chrome. No dark lightbar valance; the gate is a light surface.</li>
+          <li><strong>Serif hero headline:</strong> <em>"Welcome to your vault."</em> in the locked editorial <code>--serif</code>, large, centered, with generous space above and below.</li>
+          <li><strong>One capability line</strong> (the <em>only</em> Pro/non-Pro difference) in plain <code>--sans</code> body — see States below.</li>
+          <li><strong>Actions:</strong> the <code>Sign in with Apple</code> system button and the centered <em>"Maybe later — just browse"</em> ghost action, both preserved.</li>
+        </ul>
+        <div class="lbl">The single capability line · Pro vs non-Pro</div>
+        <ul>
+          <li><strong>Pro iPhone (12 Pro–17 Pro):</strong> <em>"Browse &amp; pick on any iPhone. This iPhone can also scan — seed the library."</em></li>
+          <li><strong>Non-Pro iPhone:</strong> <em>"Browse &amp; pick on any iPhone. Scanning new cars needs a Pro iPhone (12 Pro–17 Pro)."</em></li>
         </ul>
         <div class="lbl">Why it works</div>
-        <ul><li>The <strong>only</strong> difference between Pro and non-Pro is the right niche's lit-vs-matte state + its mono caption — instantly legible, maximum split clarity.</li><li>Maximum design-system reuse (real <code>.niche</code> / floor-glow / mono placard / drive vocab / lightbar header) — the least-invasive, most on-direction swap for the two flat boxes.</li><li>Brings genuine layered depth (contact shadow, floor glow, glass edge) that kills the "two flat rectangles" problem, and is far more buildable in SwiftUI than a full perspective cabinet.</li></ul>
+        <ul><li>Maximum calm — one headline, one line, two buttons; the premium read comes from typographic hierarchy and whitespace, not from a built scene.</li><li>The capability split is a single factual sentence, so it never reads as a denial, a paywall, or a dead control — it just states what this device can do.</li><li>Far cheaper to build and far more robust across the 320 / 390 / large breakpoints than the retired niche pair.</li></ul>
         <div class="lbl">Guardrails</div>
-        <ul><li>Both niches stay the same size — non-Pro never reads as smaller or lesser.</li><li>Non-Pro copy frames scanning as "light this later by contributing", never a denial / never a greyed-disabled box.</li><li>Dark glow stays only inside the niches + the lightbar header; the chrome around them stays light paper.</li></ul>
+        <ul><li>No vitrine niches, no two-up grid, no lit/matte cells on the gate — those now live only on Home.</li><li>Non-Pro copy is purely informational ("needs a Pro iPhone"), never "disabled" / "unavailable" framing.</li><li>The gate is a light paper surface end-to-end; the single dark surface stays reserved for the 3D viewer / Museum cabinet.</li></ul>
         <div class="lbl">States</div>
-        <div class="stateline"><span class="st ns">not-supported = the right niche rendered as a matte recess (a state, not an error)</span><span class="st err">sign-in fail → inline retry</span><span class="st off">offline → continue, library tab dimmed later</span></div>
+        <div class="stateline"><span class="st ns">non-Pro = the capability line simply states scanning needs a Pro iPhone (a fact, not an error)</span><span class="st err">sign-in fail → inline retry</span><span class="st off">offline → continue, library tab dimmed later</span></div>
       </div>
     </div>
 
     <!-- 4.2 The Cabinet — realistic lit display cabinet -->
     <div class="screenrow">
       <div class="phone"><div class="notch"></div><div class="scr">
-        <svg viewBox="0 0 214 436" role="img" aria-label="Home — The Cabinet mockup, a realistic lit display cabinet rendered in pseudo-3D depth">
+        <svg viewBox="0 0 214 436" role="img" aria-label="Home — The Cabinet: a flat preview of the shipped real-time 3D cabinet scene">
           <defs>
             <linearGradient id="cab-lbg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#D8540F"/><stop offset=".5" stop-color="#FFE6CE"/><stop offset="1" stop-color="#D8540F"/></linearGradient>
             <!-- glossy graded backboard (infinity-cove) -->
@@ -933,7 +914,7 @@
       </div></div>
       <div class="specbox">
         <h4>Home · The Cabinet — a realistic lit display cabinet</h4>
-        <p class="purpose">The signature surface, rebuilt to read as a <strong>real wall-mounted display cabinet</strong> — physical depth, glass, internal lighting, shelves with cars sitting in lit niches — not a flat card grid. Ownership and capability are still read as luminance, never banners. v1 achieves this as <strong>layered pseudo-3D</strong> (see the engineering note below): real-time free-rotate 3D is reserved for the model viewer.</p>
+        <p class="purpose">The signature surface is a <strong>real-time 3D scene</strong> in the shipped app (RealityKit / SceneKit) — an actual cabinet model with frame, glass, shelves and lighting that the user can subtly orbit and tilt — not a flat card grid. Ownership and capability are still read as luminance, never banners. <strong>This mini-render (and the whole HTML mockup) is only a FLAT PREVIEW of that 3D scene;</strong> the build-fidelity commitment and Spike-1 go/no-go are in the engineering note below.</p>
         <div class="lbl">The shared niche anatomy (one z-stack, back → front)</div>
         <ul>
           <li><strong>L0 · Frame / carcass</strong> — the cabinet container carries the active style's frame as stacked-gradient borders + a drop shadow onto the paper wall, with slim mullions between cells so the grid reads as a real fronted case of niches, not gaps between cards. A top catch-light + bottom shade sell the extrusion.</li>
@@ -953,7 +934,7 @@
         <ul><li>The themeable <code>.niche</code> z-stack (frame · backboard · light · car+shadow+reflection · shelf · glass), mono catalog placard, colored drive decal, YOURS/COMMUNITY tag, the wide feature niche, the lightbar header + STYLE chip.</li></ul>
         <div class="lbl">States &amp; reduced-motion</div>
         <div class="stateline"><span class="st load">loading → niche skeletons (matte, faint pulse)</span><span class="st empty">empty → authored cabinet of unlit niches inviting a first pick</span><span class="st err">error → inline retry banner above the grid</span><span class="st off">offline → cached shelf works; Library tab dimmed</span></div>
-        <p class="small" style="margin-top:8px">Reduced-motion freezes the tilt / parallax and pins the glass specular, but keeps all the static light / glass / shadow gradients — the cabinet still reads 3D from its shadows alone.</p>
+        <p class="small" style="margin-top:8px">Reduced-motion pins the 3D camera to a fixed front-on framing — orbit / tilt / gyro are disabled — but the lit cabinet model, its glass and lighting still render, so the scene reads as the same physical case, just held still.</p>
       </div>
     </div>
 
@@ -1662,17 +1643,103 @@
       </div>
     </div>
 
-    <h3 class="serif" style="margin-top:26px">Engineering note — the cabinet's depth, v1</h3>
+    <h3 class="serif" style="margin-top:26px">Engineering note — the cabinet is a true 3D scene (v1)</h3>
     <div class="card">
-      <p class="eyebrow">Layered pseudo-3D · styles as theme swaps · free-rotate flagged for later</p>
+      <p class="eyebrow">Real-time RealityKit / SceneKit · hero USDZ + billboard LOD · styles = 3D material/lighting themes</p>
+      <p style="margin-top:2px"><strong>Decision (PM, 2026-06-18):</strong> the shipped Home cabinet is a <strong>real-time 3D scene</strong>, not a pseudo-3D CSS stack. The layered-depth "anatomy" earlier in this doc and the flat HTML mockup are a <strong>FLAT PREVIEW</strong> of what the app renders live in 3D.</p>
       <ul class="clean">
-        <li><strong>v1 = layered pseudo-3D, not real-time 3D.</strong> The "genuinely 3D, premium furniture" read is built in pure SwiftUI from: a <code>rotation3DEffect</code> on a perspective parent (small ~2–5° resting tilt + a device-tilt / scroll / press-driven parallax via CoreMotion or scroll offset); layered drop + inset shadows for extrusion and recess; <code>LinearGradient</code> / <code>RadialGradient</code> fills for frame / backboard / per-niche light wash / glass specular; a mirrored <code>scaleEffect(y:-1)</code> + masked reflection; and a dedicated blurred contact-shadow shape. Car / shelf / backboard separate in depth via SwiftUI offset+scale (SwiftUI lacks true per-child <code>translateZ</code>).</li>
-        <li><strong>Four styles, one structure.</strong> Lightbar White (default), Walnut Case, Museum Vitrine, and Garage / Pit are pure theme swaps over a single niche z-stack (frame → backboard → light → car+shadow+reflection → shelf → glass). A style scope (e.g. <code>style-lightbar</code> / <code>style-walnut</code> / <code>style-museum</code> / <code>style-garage</code>) overrides style-local CSS vars + the frame/backboard/glass fills only — the layer order, the markup, and every semantic token stay identical. No data or behavior changes per style.</li>
-        <li><strong>Light = state across every style.</strong> Toggling the per-niche light layer (L2) on/off is the lit-vs-empty state in all four; empty/known-unscanned skips the light, shelf-lit and glass-reflection layers and falls to the matte recess. Tungsten stays the warm "lit/present/owned/action" cue everywhere; Museum's cool spotlight deliberately does not borrow tungsten so warmth keeps its meaning.</li>
-        <li><strong>Compositor-friendly &amp; budgeted.</strong> All motion uses transform / opacity / shadow-glow only; <code>will-change:transform</code> is set only on the actively-tilting niche and removed after. Per niche stays within budget: ~3–4 gradient layers + 2–3 box-shadows + one blurred element. The glass pane is kept crisp (<strong>no backdrop-blur</strong>) so the lit interior stays legible — blur is reserved for the contact shadow and reflection.</li>
-        <li><strong>Reduced-motion safe.</strong> The SwiftUI reduced-motion environment and <code>@media(prefers-reduced-motion:reduce)</code> kill the tilt / parallax and freeze the glass specular, but keep all the static light / glass / shadow gradients — the cabinet still reads 3D from its shadows alone.</li>
-        <li><strong>Later (out of scope this pass):</strong> true free-rotate 3D niches / a RealityKit-or-WebGL volumetric cabinet, real per-niche LiDAR-lit depth, and gyroscope-continuous parallax — an upgrade path once the pseudo-3D look is validated. The single real-time 3D surface remains the RealityKit model viewer; custom Material-free glass keeps app chrome light.</li>
+        <li><strong>A real 3D cabinet model.</strong> One authored cabinet mesh — frame / carcass, glass panes, shelves, and scene lighting — is rendered live in RealityKit (SceneKit acceptable fallback). The user can <strong>subtly orbit and tilt</strong> it: a clamped drag gesture plus gyroscope (CoreMotion) parallax, with a gentle resting framing it always returns to. This is a contained physical object on the warm paper wall, not a free-flying scene — orbit is bounded so the case always reads front-on.</li>
+        <li><strong>Hero car = full USDZ; the rest = billboard / LOD.</strong> The focused / hero niche shows the <strong>full 3D USDZ scan</strong> at quality. Every other car on the shelf is a lightweight <strong>textured billboard / impostor</strong> (a pre-rendered card that faces the camera) or a low-LOD mesh, so a shelf of ~12–24 cars stays at frame budget. Scrolling / focusing a different niche promotes that car to the full USDZ and demotes the previous hero back to a billboard.</li>
+        <li><strong>Tap a niche → the full 3D viewer.</strong> Tapping any lit niche lifts that car out of the cabinet into the existing single dark <code>stage-0</code> 3D viewer (full USDZ, free-rotate, AR Quick Look hand-off). The cabinet scene itself stays the constrained orbit; unconstrained free-rotate lives only in the viewer.</li>
+        <li><strong>Four styles = 3D material &amp; lighting themes over ONE model.</strong> Lightbar White (default), Walnut Case, Museum Vitrine, and Garage / Pit are <strong>not</strong> separate models — each is a swap of PBR materials (frame finish, backboard, glass) + the scene's light rig (key/fill/rim color &amp; temperature) over the same cabinet mesh and the same niche layout. No geometry, data, or behavior changes per style. <strong>Default style tracks the PM's real unit: a black frame with glossy white cells and a glowing lightbar rail.</strong></li>
+        <li><strong>Light = state, now as real scene lighting.</strong> Lit / owned = the per-niche light is on and the USDZ-or-billboard is present; empty / known-unscanned = that niche's light is off and it falls to a dark matte recess in the mesh. Tungsten stays the warm "lit / present / owned / action" cue across every style; Museum's cool ~4000K spotlight deliberately does not borrow tungsten so warmth keeps its meaning.</li>
+        <li><strong>Reduced-motion safe.</strong> Reduced-motion pins the camera to the resting front-on framing and disables drag / gyro orbit, but the lit 3D cabinet, glass and lighting still render — the scene is held still, never flattened to a different surface.</li>
       </ul>
+
+      <div class="lbl" style="margin-top:18px">Anatomy → its 3D equivalent (the flat preview maps 1:1 onto the scene)</div>
+      <div class="fig" style="margin-top:8px">
+        <svg viewBox="0 0 1140 360" role="img" aria-label="Mapping the layered-depth pseudo-3D anatomy to its real-time 3D scene equivalents">
+          <defs>
+            <marker id="eng-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2B3A55"/></marker>
+            <radialGradient id="eng-glow" cx="50%" cy="120%" r="80%"><stop offset="0" stop-color="#FFE6CE"/><stop offset="70%" stop-color="#FFE6CE" stop-opacity="0"/></radialGradient>
+          </defs>
+          <text x="20" y="26" font-family="var(--mono)" font-size="13" font-weight="700" fill="#7C828E" style="letter-spacing:.08em">FLAT PREVIEW (anatomy)</text>
+          <text x="620" y="26" font-family="var(--mono)" font-size="13" font-weight="700" fill="#7C828E" style="letter-spacing:.08em">REAL-TIME 3D SCENE (shipped)</text>
+          <line x1="555" y1="44" x2="555" y2="344" stroke="#E4DECF" stroke-dasharray="5 4"/>
+
+          <!-- five mapping rows -->
+          <g font-family="var(--sans)" font-size="13">
+            <!-- niche -->
+            <rect x="20" y="48" width="500" height="46" rx="10" fill="#fff" stroke="#E4DECF"/>
+            <text x="40" y="70" font-weight="700" fill="#16181D">Niche (recess in the z-stack)</text>
+            <text x="40" y="86" font-size="11" fill="#7C828E">CSS inset shadow + matte fill</text>
+            <line x1="528" y1="71" x2="600" y2="71" stroke="#2B3A55" stroke-width="1.4" marker-end="url(#eng-arrow)"/>
+            <rect x="620" y="48" width="500" height="46" rx="10" fill="#F7F4EC" stroke="#E4DECF"/>
+            <text x="640" y="70" font-weight="700" fill="#16181D">A real cell in the cabinet mesh</text>
+            <text x="640" y="86" font-size="11" fill="#7C828E">geometry shelf compartment, depth-tested</text>
+
+            <!-- lighting -->
+            <rect x="20" y="104" width="500" height="46" rx="10" fill="#fff" stroke="#E4DECF"/>
+            <text x="40" y="126" font-weight="700" fill="#16181D">Per-niche light wash</text>
+            <text x="40" y="142" font-size="11" fill="#7C828E">RadialGradient floor-glow layer (L2)</text>
+            <line x1="528" y1="127" x2="600" y2="127" stroke="#2B3A55" stroke-width="1.4" marker-end="url(#eng-arrow)"/>
+            <rect x="620" y="104" width="500" height="46" rx="10" fill="#F7F4EC" stroke="#E4DECF"/>
+            <text x="640" y="126" font-weight="700" fill="#16181D">A real scene light per niche</text>
+            <text x="640" y="142" font-size="11" fill="#7C828E">toggled on=lit / off=matte; rig is the style theme</text>
+
+            <!-- glass -->
+            <rect x="20" y="160" width="500" height="46" rx="10" fill="#fff" stroke="#E4DECF"/>
+            <text x="40" y="182" font-weight="700" fill="#16181D">Glass specular edge</text>
+            <text x="40" y="198" font-size="11" fill="#7C828E">LinearGradient sheen that shifts on tilt</text>
+            <line x1="528" y1="183" x2="600" y2="183" stroke="#2B3A55" stroke-width="1.4" marker-end="url(#eng-arrow)"/>
+            <rect x="620" y="160" width="500" height="46" rx="10" fill="#F7F4EC" stroke="#E4DECF"/>
+            <text x="640" y="182" font-weight="700" fill="#16181D">A glass pane material</text>
+            <text x="640" y="198" font-size="11" fill="#7C828E">real Fresnel / specular reflecting the light rig</text>
+
+            <!-- contact shadow -->
+            <rect x="20" y="216" width="500" height="46" rx="10" fill="#fff" stroke="#E4DECF"/>
+            <text x="40" y="238" font-weight="700" fill="#16181D">Contact shadow + reflection</text>
+            <text x="40" y="254" font-size="11" fill="#7C828E">blurred shape + mirrored masked copy</text>
+            <line x1="528" y1="239" x2="600" y2="239" stroke="#2B3A55" stroke-width="1.4" marker-end="url(#eng-arrow)"/>
+            <rect x="620" y="216" width="500" height="46" rx="10" fill="#F7F4EC" stroke="#E4DECF"/>
+            <text x="640" y="238" font-weight="700" fill="#16181D">Grounded shadow + shelf reflection</text>
+            <text x="640" y="254" font-size="11" fill="#7C828E">cast by the light rig on the shelf surface</text>
+
+            <!-- parallax -->
+            <rect x="20" y="272" width="500" height="46" rx="10" fill="#fff" stroke="#E4DECF"/>
+            <text x="40" y="294" font-weight="700" fill="#16181D">Resting tilt + device parallax</text>
+            <text x="40" y="310" font-size="11" fill="#7C828E">rotation3DEffect ~2–5° via CoreMotion / scroll</text>
+            <line x1="528" y1="295" x2="600" y2="295" stroke="#2B3A55" stroke-width="1.4" marker-end="url(#eng-arrow)"/>
+            <rect x="620" y="272" width="500" height="46" rx="10" fill="#F7F4EC" stroke="#E4DECF"/>
+            <text x="640" y="294" font-weight="700" fill="#16181D">Clamped camera orbit + gyro</text>
+            <text x="640" y="310" font-size="11" fill="#7C828E">drag + CoreMotion move the real camera, bounded</text>
+          </g>
+        </svg>
+        <figcaption>Every layer the flat preview fakes with gradients and shadows becomes a real element of the 3D scene: niche → mesh compartment, light wash → scene light, glass sheen → glass material, contact shadow → cast shadow, parallax → a clamped camera orbit. The four styles ride on top as material + light-rig themes over this one model.</figcaption>
+      </div>
+
+      <div class="lbl" style="margin-top:18px">Go / no-go spikes (siblings, both before Gate 1 build commitment)</div>
+      <div class="grid c2" style="margin-top:8px">
+        <div class="speccard">
+          <div class="band"><span class="num">Spike-0</span><span style="font-family:var(--sans);font-weight:600;font-size:.86rem;color:var(--ink)">Scan quality</span></div>
+          <div class="body">
+            <p style="margin:0 0 8px;font-size:.86rem">Can Object Capture on a Pro iPhone produce a 1:64 diecast USDZ that's "good enough to show a friend"? Validates the contribution path's core asset.</p>
+            <div class="row"><span class="k">PROVES</span><span class="v">reconstruction fidelity</span></div>
+            <div class="row"><span class="k">GO IF</span><span class="v">livery + form read at niche + viewer scale</span></div>
+            <div class="row"><span class="k">NO-GO</span><span class="v">honest reduced-detail caveat / re-scan loop</span></div>
+          </div>
+        </div>
+        <div class="speccard">
+          <div class="band"><span class="num">Spike-1</span><span style="font-family:var(--sans);font-weight:600;font-size:.86rem;color:var(--ink)">3D cabinet</span></div>
+          <div class="body">
+            <p style="margin:0 0 8px;font-size:.86rem">Build the real-time 3D cabinet scene early — one cabinet model, hero USDZ + billboard LOD, clamped orbit + gyro — and load it with <strong>~12–24 cars</strong> to validate rendering and performance before committing the Home build.</p>
+            <div class="row"><span class="k">PROVES</span><span class="v">render + perf @ ~12–24 cars</span></div>
+            <div class="row"><span class="k">GO IF</span><span class="v">holds frame budget + thermals on target iPhones</span></div>
+            <div class="row"><span class="k">NO-GO</span><span class="v">fall back to the flat-preview pseudo-3D Home</span></div>
+          </div>
+        </div>
+      </div>
+      <p class="small" style="margin-top:10px">Spike-1 is a sibling to Spike-0: both are go/no-go probes gating the v1 build. If Spike-1 fails on target devices, the pseudo-3D layered Home (the flat preview, now upgraded to ship) is the documented fallback — the design degrades gracefully, it never blocks.</p>
     </div>
   </section>
 
@@ -1691,7 +1758,7 @@
   </section>
 
   <footer>
-    Diecast Vault · Design Document v1.1 · direction <strong>Vitrine — the lit display cabinet (light-as-state)</strong> · authored by the Designer for the SDD pipeline · 2026-06-17, v1.1 adds the <strong>Real-Car view</strong> (PRD v1.1 §6 F11 · PM request, 2026-06-18). Next: Gate 1 (Design + Spike-0 scan-quality go/no-go). Interactive mockup → <a href="./mockup/index.html" style="color:var(--tungsten-deep)">./mockup/index.html</a>.
+    Diecast Vault · Design Document v1.1 · direction <strong>Vitrine — the lit display cabinet (light-as-state)</strong> · authored by the Designer for the SDD pipeline · 2026-06-17, v1.1 adds the <strong>Real-Car view</strong> (PRD v1.1 §6 F11 · PM request, 2026-06-18). v1.1 also simplifies the first-run capability gate to a calm "Hero + one capability line" screen and commits the Home cabinet to a true real-time 3D scene (the HTML mockup is a flat preview). Next: Gate 1 (Design + Spike-0 scan-quality &amp; Spike-1 3D-cabinet go/no-go). Interactive mockup → <a href="./mockup/index.html" style="color:var(--tungsten-deep)">./mockup/index.html</a>.
   </footer>
 </div>
 </body>
