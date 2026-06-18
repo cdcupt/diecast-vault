@@ -784,71 +784,144 @@
     <h2><span class="n">4</span> Screen-by-screen specs</h2>
     <p>Every screen in the locked inventory, each with a styled mini-render, purpose, layout, key components, and all relevant states. State chips: <span class="st load">loading</span> <span class="st empty">empty</span> <span class="st err">error</span> <span class="st off">offline</span> <span class="st ns">not-supported</span>.</p>
 
-    <!-- 4.1 Capability gate -->
+    <!-- 4.1 Capability gate — "Two Lit Niches" -->
     <div class="screenrow">
       <div class="phone"><div class="notch"></div><div class="scr">
-        <svg viewBox="0 0 214 436" role="img" aria-label="First-run capability gate mockup">
+        <svg viewBox="0 0 214 436" role="img" aria-label="First-run capability gate mockup — the Two Lit Niches layout">
+          <defs>
+            <linearGradient id="gate-lbg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#D8540F"/><stop offset=".5" stop-color="#FFE6CE"/><stop offset="1" stop-color="#D8540F"/></linearGradient>
+            <radialGradient id="gate-litfloor" cx="50%" cy="128%" r="80%"><stop offset="0" stop-color="#F26B1F" stop-opacity=".34"/><stop offset="70%" stop-color="#F26B1F" stop-opacity="0"/></radialGradient>
+            <linearGradient id="gate-glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".28" stop-color="#fff" stop-opacity="0"/></linearGradient>
+            <radialGradient id="gate-toplight" cx="50%" cy="0%" r="80%"><stop offset="0" stop-color="#FFE6CE"/><stop offset="70%" stop-color="#FFE6CE" stop-opacity="0"/></radialGradient>
+          </defs>
           <rect width="214" height="436" fill="#F7F4EC"/>
-          <rect x="0" y="0" width="214" height="120" fill="url(#capglow)"/>
-          <defs><radialGradient id="capglow" cx="50%" cy="0%" r="90%"><stop offset="0%" stop-color="#FFE6CE"/><stop offset="70%" stop-color="#FFE6CE" stop-opacity="0"/></radialGradient></defs>
-          <rect x="20" y="36" width="9" height="9" rx="4.5" fill="#F26B1F"/><rect x="34" y="40" width="120" height="2" rx="1" fill="#F26B1F" opacity=".5"/>
-          <text x="20" y="80" font-family="serif" font-weight="700" font-size="22" fill="#16181D">Welcome to</text>
-          <text x="20" y="104" font-family="serif" font-weight="700" font-size="22" fill="#16181D">your vault.</text>
-          <rect x="20" y="140" width="174" height="78" rx="12" fill="#fff" stroke="#F26B1F"/>
-          <text x="34" y="164" font-family="sans-serif" font-size="11" font-weight="700" fill="#16181D">You can scan AND pick</text>
-          <text x="34" y="182" font-family="sans-serif" font-size="9" fill="#3F434D">This iPhone has LiDAR — you can</text>
-          <text x="34" y="194" font-family="sans-serif" font-size="9" fill="#3F434D">seed the library for everyone.</text>
-          <rect x="34" y="200" width="56" height="11" rx="3" fill="#FFF3EA"/><text x="40" y="209" font-family="monospace" font-size="7.5" fill="#a8530f">PRO PATH</text>
-          <rect x="20" y="228" width="174" height="70" rx="12" fill="#EAF0F8" stroke="#2B3A55"/>
-          <text x="34" y="250" font-family="sans-serif" font-size="11" font-weight="700" fill="#2B3A55">Browsing &amp; picking are yours</text>
-          <text x="34" y="268" font-family="sans-serif" font-size="9" fill="#3F434D">Scanning new cars needs a Pro</text>
-          <text x="34" y="280" font-family="sans-serif" font-size="9" fill="#3F434D">iPhone (12 Pro–17 Pro).</text>
-          <rect x="20" y="356" width="174" height="40" rx="11" fill="#16181D"/><text x="107" y="381" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="700" fill="#fff"> Sign in with Apple</text>
+          <rect x="0" y="28" width="214" height="84" fill="url(#gate-toplight)"/>
+          <!-- HEADER: locked dark lightbar valance -->
+          <rect x="16" y="34" width="182" height="30" rx="9" fill="#15181f"/>
+          <rect x="22" y="38" width="170" height="5" rx="2.5" fill="url(#gate-lbg)"/>
+          <text x="26" y="58" font-family="serif" font-weight="600" font-size="11" fill="#F2EFE8">Welcome to your vault</text>
+          <!-- THE NICHE PAIR (equal size / equal dignity) -->
+          <!-- LEFT: BROWSE & PICK — LIT -->
+          <rect x="16" y="80" width="86" height="120" rx="11" fill="#fff" stroke="#F3ECDD"/>
+          <rect x="16" y="80" width="86" height="120" rx="11" fill="url(#gate-litfloor)"/>
+          <ellipse cx="59" cy="150" rx="30" ry="6" fill="#16181D" opacity=".10"/>
+          <text x="59" y="146" text-anchor="middle" font-size="24">🏎️</text>
+          <rect x="22" y="86" width="20" height="10" rx="3" fill="#222730"/><text x="32" y="94" text-anchor="middle" font-family="monospace" font-size="6" font-weight="700" fill="#FFE6CE">748</text>
+          <text x="22" y="172" font-family="monospace" font-size="6.5" font-weight="700" fill="#2B3A55">BROWSE·PICK</text>
+          <text x="22" y="183" font-family="sans-serif" font-size="6.5" fill="#3F434D">Pick a scan, spin it in 3D</text>
+          <text x="22" y="194" font-family="monospace" font-size="6" font-weight="700" fill="#F26B1F">READY</text>
+          <rect x="16" y="80" width="86" height="120" rx="11" fill="url(#gate-glass)"/>
+          <!-- RIGHT: SCAN & SEED — Pro = LIT (foreground), shown as the supported state -->
+          <rect x="112" y="80" width="86" height="120" rx="11" fill="#fff" stroke="#F3ECDD"/>
+          <rect x="112" y="80" width="86" height="120" rx="11" fill="url(#gate-litfloor)"/>
+          <ellipse cx="155" cy="150" rx="30" ry="6" fill="#16181D" opacity=".10"/>
+          <text x="155" y="146" text-anchor="middle" font-size="24">🔦</text>
+          <text x="118" y="172" font-family="monospace" font-size="6.5" font-weight="700" fill="#2B3A55">SCAN·SEED</text>
+          <text x="118" y="183" font-family="sans-serif" font-size="6.5" fill="#3F434D">Scan to seed the library</text>
+          <text x="118" y="194" font-family="monospace" font-size="6" font-weight="700" fill="#F26B1F">PRO · 12–17</text>
+          <rect x="112" y="80" width="86" height="120" rx="11" fill="url(#gate-glass)"/>
+          <!-- non-Pro twin (inset, the matte recess the right niche becomes) -->
+          <rect x="118" y="210" width="74" height="44" rx="9" fill="#EAE4D6" stroke="#DED7C7"/>
+          <rect x="118" y="210" width="74" height="44" rx="9" fill="#16181D" opacity=".05"/>
+          <circle cx="155" cy="226" r="7" fill="none" stroke="#7C828E" stroke-width="1" stroke-dasharray="2 2"/><text x="155" y="230" text-anchor="middle" font-size="9" fill="#7C828E">+</text>
+          <text x="155" y="248" text-anchor="middle" font-family="monospace" font-size="5.5" font-weight="700" fill="#B8860B">LIGHTS UP ON 12–17 PRO</text>
+          <text x="118" y="206" font-family="monospace" font-size="5.5" fill="#7C828E">non-Pro: same niche, unlit ↓</text>
+          <!-- CONTRIBUTOR LINE -->
+          <text x="107" y="280" text-anchor="middle" font-family="monospace" font-size="7" fill="#7C828E">Each release captured once, for everyone.</text>
+          <!-- ACTIONS -->
+          <rect x="20" y="356" width="174" height="38" rx="11" fill="#000"/><text x="107" y="380" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="600" fill="#fff"> Sign in with Apple</text>
+          <text x="107" y="412" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="600" fill="#F26B1F">Maybe later — just browse</text>
         </svg>
       </div></div>
       <div class="specbox">
-        <h4>First-run capability gate</h4>
-        <p class="purpose">Detect LiDAR / Object Capture support and frame the result as a <em>contributor invitation</em>, never a denial. Plus the Sign in with Apple intro.</p>
-        <div class="lbl">Layout</div>
-        <ul><li>Warm-light hero with a soft top glow; serif welcome title.</li><li>Two designed capability cards (Pro path = tungsten-outlined; non-Pro = steel-outlined), shown by detection, not greyed.</li><li>Bottom: Sign in with Apple system button (ink), 44pt.</li></ul>
-        <div class="lbl">Capability copy</div>
-        <ul><li><strong>Pro:</strong> "You can scan AND pick — seed the library."</li><li><strong>non-Pro:</strong> "Browsing &amp; picking are fully yours; scanning new cars needs a Pro iPhone 12 Pro–17 Pro."</li></ul>
+        <h4>First-run capability gate — <em>Two Lit Niches</em></h4>
+        <p class="purpose">The capability split literally <em>becomes the product</em>: the two capabilities are rendered as two real vitrine niches lifted from the Home cabinet, so first run doubles as a wordless tutorial for light-as-state before the user reaches Home. Detection routes the result, framed as a <em>contributor invitation</em>, never a denial. Renders in whatever cabinet style is active (defaults to Lightbar White), so first run also previews the user's chosen vitrine.</p>
+        <div class="lbl">Layout (top → bottom)</div>
+        <ul>
+          <li><strong>Header:</strong> the locked dark glowing <code>lightbar</code> strip acts as the cabinet's top valance, with the serif headline <em>"Welcome to your vault"</em> seated just beneath. The only dark element — consistent with the "one dark surface = the case" rule.</li>
+          <li><strong>The niche pair:</strong> a 2-up grid of the exact <code>.niche</code> component at gate scale — equal size, equal dignity. <em>Left = BROWSE &amp; PICK</em>: a fully lit niche (tungsten floor-glow, glass edge, a community car), mono code <code>BROWSE·PICK</code>, placard "Find any release, pick a scan, spin it in 3D", mono tag <code>READY</code> (always yours, both user types). <em>Right = SCAN &amp; SEED</em>: <strong>Pro</strong> = a fully lit niche, mono code <code>SCAN·SEED</code>, placard "Scan your own cars to seed the shared library", tag <code>PRO · 12–17</code>; <strong>non-Pro</strong> = the same-size niche as a matte recess (locked <code>.niche.empty</code>) with a dashed plus and a warn-gold mono caption "LIGHTS UP ON iPhone 12 Pro–17 Pro" — visually identical to a Home known-but-unscanned slot, an unlit niche <em>waiting to be lit</em>.</li>
+          <li><strong>Contributor line:</strong> one quiet mono sentence beneath the pair — <em>"Each release captured once, for everyone."</em> (replaces the old steel spec-note block).</li>
+          <li><strong>Actions:</strong> preserved exactly — the <code>Sign in with Apple</code> system button and the centered <em>"Maybe later — just browse"</em>.</li>
+        </ul>
+        <div class="lbl">Why it works</div>
+        <ul><li>The <strong>only</strong> difference between Pro and non-Pro is the right niche's lit-vs-matte state + its mono caption — instantly legible, maximum split clarity.</li><li>Maximum design-system reuse (real <code>.niche</code> / floor-glow / mono placard / drive vocab / lightbar header) — the least-invasive, most on-direction swap for the two flat boxes.</li><li>Brings genuine layered depth (contact shadow, floor glow, glass edge) that kills the "two flat rectangles" problem, and is far more buildable in SwiftUI than a full perspective cabinet.</li></ul>
+        <div class="lbl">Guardrails</div>
+        <ul><li>Both niches stay the same size — non-Pro never reads as smaller or lesser.</li><li>Non-Pro copy frames scanning as "light this later by contributing", never a denial / never a greyed-disabled box.</li><li>Dark glow stays only inside the niches + the lightbar header; the chrome around them stays light paper.</li></ul>
         <div class="lbl">States</div>
-        <div class="stateline"><span class="st ns">not-supported = the framed non-Pro card (a state, not an error)</span><span class="st err">sign-in fail → inline retry</span><span class="st off">offline → continue, library tab dimmed later</span></div>
+        <div class="stateline"><span class="st ns">not-supported = the right niche rendered as a matte recess (a state, not an error)</span><span class="st err">sign-in fail → inline retry</span><span class="st off">offline → continue, library tab dimmed later</span></div>
       </div>
     </div>
 
-    <!-- 4.2 The Cabinet -->
+    <!-- 4.2 The Cabinet — realistic lit display cabinet -->
     <div class="screenrow">
       <div class="phone"><div class="notch"></div><div class="scr">
-        <svg viewBox="0 0 214 436" role="img" aria-label="Home — The Cabinet mockup">
+        <svg viewBox="0 0 214 436" role="img" aria-label="Home — The Cabinet mockup, a realistic lit display cabinet rendered in pseudo-3D depth">
+          <defs>
+            <linearGradient id="cab-lbg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#D8540F"/><stop offset=".5" stop-color="#FFE6CE"/><stop offset="1" stop-color="#D8540F"/></linearGradient>
+            <!-- glossy graded backboard (infinity-cove) -->
+            <linearGradient id="cab-board" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FAF7F1"/></linearGradient>
+            <!-- warm floor-pool light in a lit niche -->
+            <radialGradient id="cab-floor" cx="50%" cy="130%" r="80%"><stop offset="0" stop-color="#F26B1F" stop-opacity=".34"/><stop offset="70%" stop-color="#F26B1F" stop-opacity="0"/></radialGradient>
+            <!-- one diagonal glass specular streak -->
+            <linearGradient id="cab-glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".26" stop-color="#fff" stop-opacity="0"/></linearGradient>
+            <!-- frame extrusion top catch-light -->
+            <linearGradient id="cab-frame" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".5" stop-color="#F2EEE4"/><stop offset="1" stop-color="#E2DBCB"/></linearGradient>
+          </defs>
           <rect width="214" height="436" fill="#F7F4EC"/>
-          <!-- lightbar header -->
-          <rect x="0" y="28" width="214" height="46" fill="#fff"/>
-          <rect x="0" y="74" width="214" height="1" fill="#E4DECF"/>
-          <text x="16" y="52" font-family="serif" font-weight="700" font-size="19" fill="#16181D">The Cabinet</text>
-          <rect x="14" y="58" width="9" height="6" rx="3" fill="#F26B1F"/><text x="28" y="64" font-family="monospace" font-size="8" fill="#2B3A55">14 LIT · 3 EMPTY · 9 BY YOU</text>
-          <!-- segmented + search -->
-          <rect x="14" y="84" width="186" height="20" rx="7" fill="#EFEAE0"/><rect x="14" y="84" width="62" height="20" rx="7" fill="#fff" stroke="#E4DECF"/><text x="45" y="98" text-anchor="middle" font-family="sans-serif" font-size="8.5" font-weight="700" fill="#16181D">Shelves</text><text x="107" y="98" text-anchor="middle" font-family="sans-serif" font-size="8.5" fill="#7C828E">All</text><text x="169" y="98" text-anchor="middle" font-family="sans-serif" font-size="8.5" fill="#7C828E">Empty</text>
-          <!-- bento niches -->
-          <defs><radialGradient id="ng" cx="50%" cy="116%" r="80%"><stop offset="0%" stop-color="#FFE6CE"/><stop offset="60%" stop-color="#FFE6CE" stop-opacity="0"/></radialGradient></defs>
-          <!-- wide feature niche -->
-          <rect x="14" y="116" width="186" height="74" rx="9" fill="url(#ng)" stroke="#E4DECF"/>
-          <rect x="20" y="122" width="18" height="11" rx="3" fill="#F1ECE1"/><text x="29" y="130.5" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#2B3A55">748</text>
-          <rect x="180" y="122" width="14" height="14" rx="3" fill="#1F7A8C"/><text x="187" y="133" text-anchor="middle" font-family="monospace" font-size="9" font-weight="800" fill="#fff">L</text>
-          <ellipse cx="107" cy="170" rx="40" ry="6" fill="#16181D" opacity=".08"/><text x="107" y="166" text-anchor="middle" font-size="22">🏎️</text>
-          <text x="20" y="184" font-family="serif" font-weight="700" font-size="11" fill="#16181D">GR Supra</text>
-          <!-- row of small niches -->
+          <!-- nav row -->
+          <text x="16" y="48" font-family="serif" font-weight="600" font-size="17" fill="#16181D">The Vault</text>
+          <!-- LIGHTBAR header — the single warm light source + STYLE chip -->
+          <rect x="14" y="58" width="186" height="34" rx="10" fill="#15181f"/>
+          <rect x="14" y="58" width="186" height="5" rx="2.5" fill="url(#cab-lbg)"/>
+          <text x="22" y="76" font-family="serif" font-weight="600" font-size="11" fill="#F2EFE8">Erik's Cabinet</text>
+          <text x="22" y="87" font-family="monospace" font-size="6.5" fill="#cfd4dd">14 LIT · 3 EMPTY · 9 BY YOU</text>
+          <rect x="160" y="68" width="34" height="14" rx="7" fill="#222730" stroke="#3a4150"/><text x="177" y="78" text-anchor="middle" font-family="monospace" font-size="6.5" font-weight="700" fill="#FFE6CE">STYLE</text>
+          <!-- THE CABINET CARCASS (extruded white frame + drop shadow onto wall) -->
+          <rect x="12" y="100" width="190" height="256" rx="14" fill="#16181D" opacity=".10"/>
+          <rect x="12" y="98" width="190" height="256" rx="14" fill="url(#cab-frame)" stroke="#E2DBCB"/>
+          <rect x="14" y="100" width="186" height="3" rx="2" fill="#fff" opacity=".8"/>
+          <!-- WIDE feature niche: backboard recess → floor light → car+shadow+reflection → shelf → glass -->
           <g>
-            <rect x="14" y="198" width="58" height="64" rx="8" fill="url(#ng)" stroke="#E4DECF"/><rect x="60" y="203" width="9" height="9" rx="2" fill="#9A4B17"/><text x="64.5" y="210" text-anchor="middle" font-family="monospace" font-size="6" font-weight="800" fill="#fff">R</text><text x="43" y="240" text-anchor="middle" font-size="15">🚗</text>
-            <rect x="78" y="198" width="58" height="64" rx="8" fill="#EAE4D6" stroke="#E4DECF"/><text x="107" y="232" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#7C828E">no scan</text>
-            <rect x="142" y="198" width="58" height="64" rx="8" fill="url(#ng)" stroke="#E4DECF"/><text x="171" y="236" text-anchor="middle" font-size="15">🏎️</text>
+            <rect x="22" y="108" width="170" height="86" rx="9" fill="url(#cab-board)"/>
+            <rect x="22" y="108" width="170" height="86" rx="9" fill="#16181D" opacity=".06"/>            <!-- recess top-shadow -->
+            <rect x="22" y="108" width="170" height="86" rx="9" fill="url(#cab-floor)"/>
+            <rect x="26" y="113" width="20" height="10" rx="3" fill="#222730"/><text x="36" y="121" text-anchor="middle" font-family="monospace" font-size="6" font-weight="700" fill="#FFE6CE">748</text>
+            <rect x="172" y="113" width="14" height="14" rx="3" fill="#1F7A8C"/><text x="179" y="124" text-anchor="middle" font-family="monospace" font-size="9" font-weight="800" fill="#fff">L</text>
+            <text x="107" y="166" text-anchor="middle" font-size="22" opacity=".22" transform="scale(1,-1) translate(0,-322)">🏎️</text>     <!-- faint mirrored reflection -->
+            <ellipse cx="107" cy="160" rx="38" ry="5" fill="#16181D" opacity=".12"/>                  <!-- contact shadow -->
+            <text x="107" y="156" text-anchor="middle" font-size="22">🏎️</text>
+            <text x="26" y="180" font-family="serif" font-weight="600" font-size="11" fill="#16181D">GR Supra</text>
+            <rect x="22" y="186" width="170" height="3" rx="1.5" fill="#fff"/><rect x="22" y="189" width="170" height="2" fill="#16181D" opacity=".10"/>   <!-- shelf lip + drop -->
+            <rect x="22" y="108" width="170" height="86" rx="9" fill="url(#cab-glass)"/>            <!-- glass pane -->
           </g>
-          <rect x="14" y="270" width="186" height="1" fill="#E4DECF"/><text x="14" y="284" font-family="sans-serif" font-size="7.5" letter-spacing="2" fill="#7C828E">SHELF · GR SERIES</text>
+          <!-- shelf nameplate -->
+          <rect x="22" y="200" width="170" height="1" fill="#D8D0BE"/><text x="22" y="211" font-family="sans-serif" font-size="6.5" letter-spacing="1.5" fill="#7C828E">SHELF · GR SERIES</text>
+          <!-- row of 3 niches: lit · empty(matte recess) · lit -->
           <g>
-            <rect x="14" y="292" width="58" height="64" rx="8" fill="url(#ng)" stroke="#E4DECF"/><text x="43" y="330" text-anchor="middle" font-size="15">🏎️</text>
-            <rect x="78" y="292" width="58" height="64" rx="8" fill="url(#ng)" stroke="#E4DECF"/><text x="107" y="330" text-anchor="middle" font-size="15">🚙</text>
-            <rect x="142" y="292" width="58" height="64" rx="8" fill="#EAE4D6" stroke="#E4DECF"/><text x="171" y="328" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#7C828E">no scan</text>
+            <!-- lit -->
+            <rect x="22" y="216" width="53" height="64" rx="8" fill="url(#cab-board)"/><rect x="22" y="216" width="53" height="64" rx="8" fill="#16181D" opacity=".06"/><rect x="22" y="216" width="53" height="64" rx="8" fill="url(#cab-floor)"/>
+            <rect x="62" y="220" width="9" height="9" rx="2" fill="#9A4B17"/><text x="66.5" y="227" text-anchor="middle" font-family="monospace" font-size="6" font-weight="800" fill="#fff">R</text>
+            <ellipse cx="48" cy="256" rx="18" ry="3.5" fill="#16181D" opacity=".12"/><text x="48" y="252" text-anchor="middle" font-size="15">🚗</text>
+            <rect x="22" y="272" width="53" height="2" fill="#fff"/><rect x="22" y="216" width="53" height="64" rx="8" fill="url(#cab-glass)"/>
+            <!-- empty matte recess -->
+            <rect x="80" y="216" width="53" height="64" rx="8" fill="#EAE4D6" stroke="#DED7C7"/><rect x="80" y="216" width="53" height="64" rx="8" fill="#16181D" opacity=".06"/>
+            <circle cx="106" cy="242" r="7" fill="none" stroke="#7C828E" stroke-width="1" stroke-dasharray="2 2"/><text x="106" y="246" text-anchor="middle" font-size="9" fill="#7C828E">+</text>
+            <text x="106" y="266" text-anchor="middle" font-family="monospace" font-size="5.5" fill="#7C828E">no scan</text>
+            <!-- lit -->
+            <rect x="138" y="216" width="54" height="64" rx="8" fill="url(#cab-board)"/><rect x="138" y="216" width="54" height="64" rx="8" fill="#16181D" opacity=".06"/><rect x="138" y="216" width="54" height="64" rx="8" fill="url(#cab-floor)"/>
+            <ellipse cx="165" cy="256" rx="18" ry="3.5" fill="#16181D" opacity=".12"/><text x="165" y="252" text-anchor="middle" font-size="15">🏎️</text>
+            <rect x="138" y="272" width="54" height="2" fill="#fff"/><rect x="138" y="216" width="54" height="64" rx="8" fill="url(#cab-glass)"/>
+          </g>
+          <!-- second shelf row -->
+          <g>
+            <rect x="22" y="288" width="53" height="60" rx="8" fill="url(#cab-board)"/><rect x="22" y="288" width="53" height="60" rx="8" fill="#16181D" opacity=".06"/><rect x="22" y="288" width="53" height="60" rx="8" fill="url(#cab-floor)"/>
+            <ellipse cx="48" cy="326" rx="18" ry="3.5" fill="#16181D" opacity=".12"/><text x="48" y="322" text-anchor="middle" font-size="15">🏎️</text>
+            <rect x="22" y="288" width="53" height="60" rx="8" fill="url(#cab-glass)"/>
+            <rect x="80" y="288" width="53" height="60" rx="8" fill="url(#cab-board)"/><rect x="80" y="288" width="53" height="60" rx="8" fill="#16181D" opacity=".06"/><rect x="80" y="288" width="53" height="60" rx="8" fill="url(#cab-floor)"/>
+            <ellipse cx="106" cy="326" rx="18" ry="3.5" fill="#16181D" opacity=".12"/><text x="106" y="322" text-anchor="middle" font-size="15">🚙</text>
+            <rect x="80" y="288" width="53" height="60" rx="8" fill="url(#cab-glass)"/>
+            <rect x="138" y="288" width="54" height="60" rx="8" fill="#EAE4D6" stroke="#DED7C7"/><rect x="138" y="288" width="54" height="60" rx="8" fill="#16181D" opacity=".06"/>
+            <circle cx="165" cy="312" r="7" fill="none" stroke="#7C828E" stroke-width="1" stroke-dasharray="2 2"/><text x="165" y="316" text-anchor="middle" font-size="9" fill="#7C828E">+</text>
           </g>
           <!-- tab bar -->
           <rect x="0" y="402" width="214" height="34" fill="#fff"/><rect x="0" y="402" width="214" height="1" fill="#E4DECF"/>
@@ -859,14 +932,140 @@
         </svg>
       </div></div>
       <div class="specbox">
-        <h4>Home · The Cabinet</h4>
-        <p class="purpose">The backlit-vitrine bento collection — the app's signature surface. Ownership and capability are read as luminance, not banners.</p>
-        <div class="lbl">Layout</div>
-        <ul><li>Lightbar header: collapsing large serif title + mono telemetry count ("14 LIT · 3 EMPTY · 9 BY YOU") with odometer roll on sync/pick.</li><li>Segmented <em>Shelves / All / Empty</em> + large-title-collapsing search.</li><li>UICollectionView compositional bento: lit niches interleaved with one wide feature niche per ~5–6, shelf-edge hairlines grouping rows. Recessed niches, NOT elevated cards.</li></ul>
+        <h4>Home · The Cabinet — a realistic lit display cabinet</h4>
+        <p class="purpose">The signature surface, rebuilt to read as a <strong>real wall-mounted display cabinet</strong> — physical depth, glass, internal lighting, shelves with cars sitting in lit niches — not a flat card grid. Ownership and capability are still read as luminance, never banners. v1 achieves this as <strong>layered pseudo-3D</strong> (see the engineering note below): real-time free-rotate 3D is reserved for the model viewer.</p>
+        <div class="lbl">The shared niche anatomy (one z-stack, back → front)</div>
+        <ul>
+          <li><strong>L0 · Frame / carcass</strong> — the cabinet container carries the active style's frame as stacked-gradient borders + a drop shadow onto the paper wall, with slim mullions between cells so the grid reads as a real fronted case of niches, not gaps between cards. A top catch-light + bottom shade sell the extrusion.</li>
+          <li><strong>L1 · Backboard</strong> — the niche interior, recessed ~8–10px behind the glass plane via an inset top shadow so the car floats in front of it (the parallax gap). A per-style material texture (glossy lacquer / suede / brushed graphite / pegboard) sits here; it is also the recess fill when empty.</li>
+          <li><strong>L2 · Per-niche lighting (the STATE layer)</strong> — a radial light wash that pools light into the niche; the locked <code>.niche.lit</code> floor-glow <code>radial-gradient(80% 130% at 50% 130%, rgba(242,107,31,.30), transparent 70%)</code>. <strong>Toggling this layer on/off IS the lit-vs-empty state for every style.</strong> Lit = on; empty/known-unscanned = off → matte recess (<code>--cell-recess</code> + <code>--shadow-recess</code>), skipping the light, shelf-lit, and glass-reflection work.</li>
+          <li><strong>L3 · Car + contact shadow + reflection</strong> — the existing car SVG with a drop-shadow; a tight elliptical contact shadow under the wheels; and a faint inverted reflection (the car duplicated, <code>scaleY(-1)</code>, blurred 1–3px, ~6–14% opacity, masked by a vertical fade, clipped to the shelf line). The serif name, mono catalog placard, drive decal and provenance tag live here.</li>
+          <li><strong>L4 · Shelf</strong> — a thin horizontal bar the car rests on, between rows: a lit front lip + a soft drop shadow onto the row below, giving stacked-shelf depth. The shelf label becomes an engraved nameplate on the frame rail per style.</li>
+          <li><strong>L5 · Glass pane</strong> — the front sheet: a near-transparent tint + one clipped diagonal specular streak + inset bevel edge-lights for pane thickness + a top-left corner reflection pip. Kept crisp (<strong>no backdrop-blur</strong>) so the lit interior stays legible; blur is reserved for the contact shadow / reflection only.</li>
+        </ul>
+        <div class="lbl">Depth · tilt · parallax</div>
+        <ul><li>The cabinet sits in a <code>perspective</code> parent; each niche carries a small resting tilt and a press / scroll / device-tilt-driven <code>rotation3DEffect</code> of ~2–5°. The car layer sits forward of the backboard so car / shelf / backboard separate in real depth, and the glass specular shifts <em>opposite</em> the tilt so the reflection feels physical. Animate transform / opacity / shadow-glow only — never layout props.</li></ul>
+        <div class="lbl">Header &amp; controls</div>
+        <ul><li>Lightbar header: the single warm light source — its tungsten warmth spills into the top of the cabinet. Collapsing serif title + mono telemetry ("14 LIT · 3 EMPTY · 9 BY YOU") with odometer roll on sync/pick, plus a mono <code>STYLE</code> chip on the right of the telemetry row.</li><li>Segmented <em>Shelves / All / Empty</em> + large-title-collapsing search.</li></ul>
+        <div class="lbl">Cabinet styles &amp; the style picker</div>
+        <ul><li>The cabinet is <strong>themeable across four shipped styles</strong> (Lightbar White default · Walnut Case · Museum Vitrine · Garage / Pit) — see the <em>Cabinet styles</em> subsection below. Each is a pure theme swap over this one z-stack: light-as-state, drive decals, mono codes, serif names and the data are identical.</li><li>A "Choose your cabinet" bottom sheet (reachable from Settings + the lightbar <code>STYLE</code> chip) shows each style as a <em>live mini-cabinet swatch</em> (one lit + one empty niche), not a flat color chip. The current selection carries the locked tungsten <code>.niche.sel</code> ring; confirm cross-dissolves the whole Home cabinet (opacity/transform only). Selection persists per-user.</li></ul>
         <div class="lbl">Key components</div>
-        <ul><li>Cabinet cell (lit / empty), mono catalog placard, colored drive decal, YOURS/COMMUNITY tag, single contact shadow.</li></ul>
-        <div class="lbl">States</div>
-        <div class="stateline"><span class="st load">loading → niche skeletons (matte, faint pulse)</span><span class="st empty">empty → authored cabinet of dark niches inviting a first pick</span><span class="st err">error → inline retry banner above the grid</span><span class="st off">offline → cached shelf works; Library tab dimmed</span></div>
+        <ul><li>The themeable <code>.niche</code> z-stack (frame · backboard · light · car+shadow+reflection · shelf · glass), mono catalog placard, colored drive decal, YOURS/COMMUNITY tag, the wide feature niche, the lightbar header + STYLE chip.</li></ul>
+        <div class="lbl">States &amp; reduced-motion</div>
+        <div class="stateline"><span class="st load">loading → niche skeletons (matte, faint pulse)</span><span class="st empty">empty → authored cabinet of unlit niches inviting a first pick</span><span class="st err">error → inline retry banner above the grid</span><span class="st off">offline → cached shelf works; Library tab dimmed</span></div>
+        <p class="small" style="margin-top:8px">Reduced-motion freezes the tilt / parallax and pins the glass specular, but keeps all the static light / glass / shadow gradients — the cabinet still reads 3D from its shadows alone.</p>
+      </div>
+    </div>
+
+    <!-- 4.2b Cabinet styles -->
+    <div class="screenrow" style="display:block">
+      <div class="card" style="padding:clamp(16px,2vw,24px)">
+        <p class="eyebrow">Cabinet styles · one structure, four theme swaps</p>
+        <h3 class="serif" style="margin-top:2px">Choose your cabinet</h3>
+        <p style="margin-top:6px">Every style is the same per-niche z-stack — frame → backboard → light → car+shadow+reflection → shelf → glass. Styles only swap CSS-variable values and the frame / backboard / glass fills; the layer order, the markup, and every semantic (light = state, drive decals, mono catalog codes, serif names, the data) are identical. The picker frames it as <em>"the same shelves, dressed differently"</em> — purely cosmetic, never a feature unlock.</p>
+        <div class="grid c2" style="margin-top:16px">
+
+          <!-- Lightbar White (default) -->
+          <div class="tile" style="padding:14px">
+            <svg viewBox="0 0 240 120" role="img" aria-label="Lightbar White swatch — one lit niche, one empty niche" style="display:block;width:100%;height:auto;border-radius:10px;overflow:hidden">
+              <defs>
+                <linearGradient id="sw-lbw-board" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FAF7F1"/></linearGradient>
+                <radialGradient id="sw-lbw-floor" cx="50%" cy="130%" r="80%"><stop offset="0" stop-color="#F26B1F" stop-opacity=".32"/><stop offset="70%" stop-color="#F26B1F" stop-opacity="0"/></radialGradient>
+                <linearGradient id="sw-glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".26" stop-color="#fff" stop-opacity="0"/></linearGradient>
+                <linearGradient id="sw-lbw-bar" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#D8540F"/><stop offset=".5" stop-color="#FFE6CE"/><stop offset="1" stop-color="#D8540F"/></linearGradient>
+              </defs>
+              <rect width="240" height="120" fill="#F2EEE4"/>
+              <rect x="4" y="6" width="232" height="108" rx="11" fill="#FFFFFF" stroke="#E2DBCB"/>
+              <rect x="4" y="6" width="232" height="6" rx="3" fill="url(#sw-lbw-bar)"/>
+              <!-- lit -->
+              <rect x="16" y="22" width="98" height="82" rx="8" fill="url(#sw-lbw-board)"/><rect x="16" y="22" width="98" height="82" rx="8" fill="#16181D" opacity=".05"/><rect x="16" y="22" width="98" height="82" rx="8" fill="url(#sw-lbw-floor)"/>
+              <ellipse cx="65" cy="88" rx="26" ry="4" fill="#16181D" opacity=".12"/><text x="65" y="84" text-anchor="middle" font-size="26">🏎️</text>
+              <rect x="16" y="22" width="98" height="82" rx="8" fill="url(#sw-glass)"/>
+              <!-- empty -->
+              <rect x="126" y="22" width="98" height="82" rx="8" fill="#EAE4D6" stroke="#DED7C7"/><rect x="126" y="22" width="98" height="82" rx="8" fill="#16181D" opacity=".06"/>
+              <circle cx="175" cy="58" r="9" fill="none" stroke="#7C828E" stroke-width="1.2" stroke-dasharray="3 3"/><text x="175" y="63" text-anchor="middle" font-size="13" fill="#7C828E">+</text>
+            </svg>
+            <h4 style="font-family:var(--serif);margin:10px 0 2px">Lightbar White <span class="mtag yours" style="vertical-align:middle">DEFAULT</span></h4>
+            <p class="mono" style="font-size:.72rem;color:var(--steel);margin:0">LIGHTBAR WHITE · bright showroom vitrine</p>
+            <p style="font-size:.82rem;margin-top:6px">Powder-coated bright-white aluminium carcass, low-iron "starphire" glass, glossy graded backboard reading as an infinity-cove. The lightbar header is the single warm source; each lit niche pools warm light at the floor. Lightest, airiest, most retail — keeps app chrome fully light. The recommended ship default (PM light-chrome preference).</p>
+          </div>
+
+          <!-- Walnut Case -->
+          <div class="tile" style="padding:14px">
+            <svg viewBox="0 0 240 120" role="img" aria-label="Walnut Case swatch — one lit niche, one empty niche" style="display:block;width:100%;height:auto;border-radius:10px;overflow:hidden">
+              <defs>
+                <linearGradient id="sw-wal-frame" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6B4A2E"/><stop offset=".5" stop-color="#4E331E"/><stop offset="1" stop-color="#3A2614"/></linearGradient>
+                <linearGradient id="sw-wal-board" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6EEDD"/><stop offset="1" stop-color="#EFE2CB"/></linearGradient>
+                <radialGradient id="sw-wal-floor" cx="50%" cy="6%" r="95%"><stop offset="0" stop-color="#FFD9A0" stop-opacity=".55"/><stop offset="60%" stop-color="#F2A24B" stop-opacity=".10"/><stop offset="100%" stop-color="#F2A24B" stop-opacity="0"/></radialGradient>
+              </defs>
+              <rect width="240" height="120" fill="url(#sw-wal-frame)"/>
+              <rect x="3" y="3" width="234" height="6" fill="#C9A24A"/>            <!-- brass cap-strip -->
+              <rect x="3" y="3" width="10" height="10" fill="#C9A24A"/><rect x="227" y="3" width="10" height="10" fill="#C9A24A"/>  <!-- brass L-brackets -->
+              <!-- lit (LED wash from top lip) -->
+              <rect x="16" y="22" width="98" height="82" rx="6" fill="url(#sw-wal-board)"/><rect x="16" y="22" width="98" height="82" rx="6" fill="url(#sw-wal-floor)"/>
+              <rect x="16" y="22" width="98" height="3" fill="#FFE9C2" opacity=".8"/>
+              <ellipse cx="65" cy="88" rx="26" ry="4" fill="#3A2614" opacity=".22"/><text x="65" y="84" text-anchor="middle" font-size="26">🏎️</text>
+              <!-- empty (strip off) -->
+              <rect x="126" y="22" width="98" height="82" rx="6" fill="#E4D6BC"/><rect x="126" y="22" width="98" height="82" rx="6" fill="#3A2614" opacity=".08"/>
+              <circle cx="175" cy="58" r="9" fill="none" stroke="#8A7350" stroke-width="1.2" stroke-dasharray="3 3"/><text x="175" y="63" text-anchor="middle" font-size="13" fill="#8A7350">+</text>
+            </svg>
+            <h4 style="font-family:var(--serif);margin:10px 0 2px">Walnut Case</h4>
+            <p class="mono" style="font-size:.72rem;color:var(--steel);margin:0">WALNUT CASE · warm collector's study</p>
+            <p style="font-size:.82rem;margin-top:6px">American-black-walnut case with brass corner L-brackets and cap-strips; concealed 2700K warm LED strips wash down-and-forward into each niche over a warm-cream suede backboard behind bevelled glass. Warmer and more tactile, still obeying the locked system — a richer dress over the same skeleton, never a dark-mode reskin. LED on = lit; off = flat cream recess.</p>
+          </div>
+
+          <!-- Museum Vitrine -->
+          <div class="tile" style="padding:14px">
+            <svg viewBox="0 0 240 120" role="img" aria-label="Museum Vitrine swatch — one lit niche, one empty niche" style="display:block;width:100%;height:auto;border-radius:10px;overflow:hidden">
+              <defs>
+                <linearGradient id="sw-mv-frame" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2A2C30"/><stop offset="1" stop-color="#161719"/></linearGradient>
+                <radialGradient id="sw-mv-spot" cx="50%" cy="30%" r="70%"><stop offset="0" stop-color="#D9E6F2" stop-opacity=".42"/><stop offset="70%" stop-color="#9FB4C8" stop-opacity="0"/></radialGradient>
+                <linearGradient id="sw-mv-glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#cfe0f2" stop-opacity=".4"/><stop offset=".22" stop-color="#cfe0f2" stop-opacity="0"/></linearGradient>
+              </defs>
+              <rect width="240" height="120" fill="#F2EEE4"/>            <!-- chrome around it stays light paper -->
+              <rect x="14" y="8" width="212" height="104" rx="4" fill="url(#sw-mv-frame)"/>
+              <!-- lit (cool spotlight) -->
+              <rect x="24" y="20" width="92" height="80" rx="3" fill="#26282C"/><rect x="24" y="20" width="92" height="80" rx="3" fill="url(#sw-mv-spot)"/>
+              <ellipse cx="70" cy="84" rx="25" ry="4" fill="#000" opacity=".4"/><text x="70" y="80" text-anchor="middle" font-size="25">🏎️</text>
+              <rect x="24" y="20" width="92" height="80" rx="3" fill="url(#sw-mv-glass)"/>
+              <!-- empty (downlight off → near-black graphite recess) -->
+              <rect x="124" y="20" width="92" height="80" rx="3" fill="#1B1D20"/><rect x="124" y="20" width="92" height="80" rx="3" fill="#000" opacity=".25"/>
+              <circle cx="170" cy="56" r="9" fill="none" stroke="#5a6068" stroke-width="1.2" stroke-dasharray="3 3"/><text x="170" y="61" text-anchor="middle" font-size="13" fill="#5a6068">+</text>
+            </svg>
+            <h4 style="font-family:var(--serif);margin:10px 0 2px">Museum Vitrine</h4>
+            <p class="mono" style="font-size:.72rem;color:var(--steel);margin:0">MUSEUM VITRINE · a dark, contained case — like the 3D stage</p>
+            <p style="font-size:.82rem;margin-top:6px">A furniture-grade matte-black anodized case set into the warm paper wall — the only dark cabinet, justified exactly like the 3D viewer (a contained physical object, not the app chrome). Per-niche focused ~4000K <em>cool</em> spotlight (deliberately not tungsten — warmth stays reserved for accent/state) grazes a dark-graphite backboard. Lit = spotlight on; empty = downlight off → near-black recess. Tungsten retained only on the lightbar header + YOURS provenance tag.</p>
+          </div>
+
+          <!-- Garage / Pit -->
+          <div class="tile" style="padding:14px">
+            <svg viewBox="0 0 240 120" role="img" aria-label="Garage / Pit swatch — one lit niche, one empty niche" style="display:block;width:100%;height:auto;border-radius:10px;overflow:hidden">
+              <defs>
+                <linearGradient id="sw-gar-frame" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9CDD2"/><stop offset=".5" stop-color="#9AA0A8"/><stop offset="1" stop-color="#7A8088"/></linearGradient>
+                <linearGradient id="sw-gar-board" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EFE6D2"/><stop offset="1" stop-color="#E4D8BE"/></linearGradient>
+                <radialGradient id="sw-gar-top" cx="50%" cy="18%" r="60%"><stop offset="0" stop-color="#FFE6CE" stop-opacity=".6"/><stop offset="70%" stop-color="#F26B1F" stop-opacity="0"/></radialGradient>
+                <radialGradient id="sw-gar-floor" cx="50%" cy="128%" r="70%"><stop offset="0" stop-color="#F26B1F" stop-opacity=".26"/><stop offset="70%" stop-color="#F26B1F" stop-opacity="0"/></radialGradient>
+              </defs>
+              <rect width="240" height="120" fill="url(#sw-gar-frame)"/>
+              <circle cx="10" cy="10" r="3" fill="#5e646c"/><circle cx="230" cy="10" r="3" fill="#5e646c"/><circle cx="10" cy="110" r="3" fill="#5e646c"/><circle cx="230" cy="110" r="3" fill="#5e646c"/>  <!-- allen bolts -->
+              <!-- lit (top hotspot + floor bounce, pegboard board, rubber mat) -->
+              <rect x="18" y="20" width="96" height="80" rx="3" fill="url(#sw-gar-board)"/>
+              <g fill="#cdbf9c"><circle cx="34" cy="34" r="1.4"/><circle cx="50" cy="34" r="1.4"/><circle cx="66" cy="34" r="1.4"/><circle cx="82" cy="34" r="1.4"/><circle cx="98" cy="34" r="1.4"/></g>
+              <rect x="18" y="20" width="96" height="80" rx="3" fill="url(#sw-gar-top)"/><rect x="18" y="20" width="96" height="80" rx="3" fill="url(#sw-gar-floor)"/>
+              <rect x="22" y="92" width="88" height="6" rx="2" fill="#1c1e22"/>            <!-- ribbed rubber mat -->
+              <ellipse cx="66" cy="88" rx="25" ry="4" fill="#1c1e22" opacity=".5"/><text x="66" y="84" text-anchor="middle" font-size="25">🏎️</text>
+              <!-- empty (lamp off) -->
+              <rect x="124" y="20" width="98" height="80" rx="3" fill="#D9CCB0"/><rect x="124" y="20" width="98" height="80" rx="3" fill="#1c1e22" opacity=".10"/>
+              <g fill="#c2b48f"><circle cx="140" cy="34" r="1.4"/><circle cx="156" cy="34" r="1.4"/><circle cx="172" cy="34" r="1.4"/><circle cx="188" cy="34" r="1.4"/><circle cx="204" cy="34" r="1.4"/></g>
+              <circle cx="173" cy="60" r="9" fill="none" stroke="#7a705a" stroke-width="1.2" stroke-dasharray="3 3"/><text x="173" y="65" text-anchor="middle" font-size="13" fill="#7a705a">+</text>
+            </svg>
+            <h4 style="font-family:var(--serif);margin:10px 0 2px">Garage / Pit</h4>
+            <p class="mono" style="font-size:.72rem;color:var(--steel);margin:0">GARAGE · PIT · lived-in workshop energy</p>
+            <p style="font-size:.82rem;margin-top:6px">A brushed-stainless tool cabinet (steel frame, hairline grain, countersunk allen-bolt heads) repurposed as a lit trophy case: zinc-cream pegboard backboard, ribbed black-rubber shelf mat, and a clamp-on work lamp doing the drama — a directional top hotspot plus a warm floor-bounce (two-bounce shop lighting). Honest industrial materials, disciplined and tasteful; warm tungsten still = lit/present/owned.</p>
+          </div>
+
+        </div>
+        <p class="callout" style="margin-top:18px"><b>Default = Lightbar White</b> on first launch (PM light-chrome preference). Museum Vitrine carries the mono note <em>"a dark, contained case — like the 3D stage"</em> so picking the one dark option reads as intentional, not a theme accident. No style changes any data or behavior.</p>
       </div>
     </div>
 
@@ -1461,6 +1660,19 @@
           <li><strong>Capability without dead ends:</strong> non-Pro states are informational steel notes with the same VoiceOver dignity as actions — no "disabled, dimmed" announcements that read as failure.</li>
         </ul>
       </div>
+    </div>
+
+    <h3 class="serif" style="margin-top:26px">Engineering note — the cabinet's depth, v1</h3>
+    <div class="card">
+      <p class="eyebrow">Layered pseudo-3D · styles as theme swaps · free-rotate flagged for later</p>
+      <ul class="clean">
+        <li><strong>v1 = layered pseudo-3D, not real-time 3D.</strong> The "genuinely 3D, premium furniture" read is built in pure SwiftUI from: a <code>rotation3DEffect</code> on a perspective parent (small ~2–5° resting tilt + a device-tilt / scroll / press-driven parallax via CoreMotion or scroll offset); layered drop + inset shadows for extrusion and recess; <code>LinearGradient</code> / <code>RadialGradient</code> fills for frame / backboard / per-niche light wash / glass specular; a mirrored <code>scaleEffect(y:-1)</code> + masked reflection; and a dedicated blurred contact-shadow shape. Car / shelf / backboard separate in depth via SwiftUI offset+scale (SwiftUI lacks true per-child <code>translateZ</code>).</li>
+        <li><strong>Four styles, one structure.</strong> Lightbar White (default), Walnut Case, Museum Vitrine, and Garage / Pit are pure theme swaps over a single niche z-stack (frame → backboard → light → car+shadow+reflection → shelf → glass). A style scope (e.g. <code>style-lightbar</code> / <code>style-walnut</code> / <code>style-museum</code> / <code>style-garage</code>) overrides style-local CSS vars + the frame/backboard/glass fills only — the layer order, the markup, and every semantic token stay identical. No data or behavior changes per style.</li>
+        <li><strong>Light = state across every style.</strong> Toggling the per-niche light layer (L2) on/off is the lit-vs-empty state in all four; empty/known-unscanned skips the light, shelf-lit and glass-reflection layers and falls to the matte recess. Tungsten stays the warm "lit/present/owned/action" cue everywhere; Museum's cool spotlight deliberately does not borrow tungsten so warmth keeps its meaning.</li>
+        <li><strong>Compositor-friendly &amp; budgeted.</strong> All motion uses transform / opacity / shadow-glow only; <code>will-change:transform</code> is set only on the actively-tilting niche and removed after. Per niche stays within budget: ~3–4 gradient layers + 2–3 box-shadows + one blurred element. The glass pane is kept crisp (<strong>no backdrop-blur</strong>) so the lit interior stays legible — blur is reserved for the contact shadow and reflection.</li>
+        <li><strong>Reduced-motion safe.</strong> The SwiftUI reduced-motion environment and <code>@media(prefers-reduced-motion:reduce)</code> kill the tilt / parallax and freeze the glass specular, but keep all the static light / glass / shadow gradients — the cabinet still reads 3D from its shadows alone.</li>
+        <li><strong>Later (out of scope this pass):</strong> true free-rotate 3D niches / a RealityKit-or-WebGL volumetric cabinet, real per-niche LiDAR-lit depth, and gyroscope-continuous parallax — an upgrade path once the pseudo-3D look is validated. The single real-time 3D surface remains the RealityKit model viewer; custom Material-free glass keeps app chrome light.</li>
+      </ul>
     </div>
   </section>
 
