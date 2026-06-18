@@ -750,30 +750,86 @@
       <figcaption>(b) Scanning never blocks identity: bonding is a separate, deterministic step after reconstruction. Spike-0 honesty is built in — coverage telemetry during capture, a keep/re-scan verdict card with a brass <code>--warn</code> reduced-detail note, and a re-scan loop. Sharing is offered afterward and is always opt-in.</figcaption>
     </div>
 
-    <h3>(c) SHARE / opt-in upload — per-model consent, attribution, one canonical per (number, drive)</h3>
+    <h3>(c) SHARE / opt-in upload — starts at the post-scan prompt, then per-model consent, one canonical per (number, drive)</h3>
     <div class="card fig">
-      <svg viewBox="0 0 1140 210" role="img" aria-label="Share and opt-in upload flow">
+      <svg viewBox="0 0 1140 320" role="img" aria-label="Share and opt-in upload flow, beginning at the post-scan share prompt then consent, presigned upload, and appearing in the community library">
         <defs><marker id="s-stl" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#2B3A55"/></marker>
-        <marker id="s-ok" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#1F9D62"/></marker></defs>
-        <text x="20" y="24" font-family="var(--mono)" font-size="11" font-weight="700" fill="#2B3A55" style="letter-spacing:.08em">SHARE · explicit per-model opt-in · presigned PUT to R2 · revocable</text>
+        <marker id="s-ok" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#1F9D62"/></marker>
+        <marker id="s-tun" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#F26B1F"/></marker>
+        <marker id="s-mut" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#7C828E"/></marker></defs>
+        <text x="20" y="22" font-family="var(--mono)" font-size="11" font-weight="700" fill="#2B3A55" style="letter-spacing:.08em">SHARE · post-scan prompt → explicit per-model opt-in → presigned PUT to R2 · revocable</text>
+
+        <!-- ENTRY: the post-scan share prompt (highest-leverage growth surface) -->
         <g font-family="var(--sans)" font-size="10.5">
-          <rect x="20" y="48" width="166" height="64" rx="11" fill="#fff" stroke="#2B3A55"/><text x="103" y="72" text-anchor="middle" font-weight="700">Tap "Share" on a bonded model</text><text x="103" y="92" text-anchor="middle" font-size="9" fill="#7C828E">from Release detail / Library</text>
-          <rect x="210" y="48" width="176" height="64" rx="11" fill="#fff" stroke="#2B3A55"/><text x="298" y="68" text-anchor="middle" font-weight="700">Consent sheet</text><text x="298" y="86" text-anchor="middle" font-size="9" fill="#3F434D">attribution (Apple handle)</text><text x="298" y="100" text-anchor="middle" font-size="9" fill="#3F434D">non-commercial license note</text>
-          <rect x="410" y="48" width="176" height="64" rx="11" fill="#fff" stroke="#2B3A55"/><text x="498" y="68" text-anchor="middle" font-weight="700">Uploader attestation</text><text x="498" y="86" text-anchor="middle" font-size="9" fill="#3F434D">"I own this copy &amp; scanned it"</text><text x="498" y="100" text-anchor="middle" font-size="9" fill="#7C828E">revocable any time</text>
-          <rect x="610" y="48" width="190" height="64" rx="11" fill="#EAF0F8" stroke="#2B3A55"/><text x="705" y="66" text-anchor="middle" font-weight="700" fill="#2B3A55">Dedup check (no., drive)</text><text x="705" y="84" text-anchor="middle" font-size="9" fill="#3F434D">"one canonical per slot"</text><text x="705" y="99" text-anchor="middle" font-size="9" fill="#7C828E">already present? → contribute alt</text>
-          <rect x="824" y="48" width="146" height="64" rx="11" fill="#fff" stroke="#F26B1F"/><text x="897" y="72" text-anchor="middle" font-weight="700">Presigned upload</text><text x="897" y="92" text-anchor="middle" font-size="9" fill="#a8530f">progress · bytes → R2</text>
-          <rect x="994" y="48" width="126" height="64" rx="11" fill="#fff" stroke="#1F9D62"/><text x="1057" y="72" text-anchor="middle" font-weight="700" fill="#0d6b3f">In library</text><text x="1057" y="92" text-anchor="middle" font-size="9" fill="#0d6b3f">tagged COMMUNITY</text>
-          <line x1="186" y1="80" x2="208" y2="80" stroke="#2B3A55" stroke-width="1.8" marker-end="url(#s-stl)"/>
-          <line x1="386" y1="80" x2="408" y2="80" stroke="#2B3A55" stroke-width="1.8" marker-end="url(#s-stl)"/>
-          <line x1="586" y1="80" x2="608" y2="80" stroke="#2B3A55" stroke-width="1.8" marker-end="url(#s-stl)"/>
-          <line x1="800" y1="80" x2="822" y2="80" stroke="#2B3A55" stroke-width="1.8" marker-end="url(#s-stl)"/>
-          <line x1="970" y1="80" x2="992" y2="80" stroke="#1F9D62" stroke-width="1.8" marker-end="url(#s-ok)"/>
+          <rect x="20" y="40" width="170" height="58" rx="11" fill="#fff" stroke="#F26B1F"/><text x="105" y="60" text-anchor="middle" font-size="9" fill="#7C828E">after scan-verdict + bond</text><text x="105" y="76" text-anchor="middle" font-weight="700" fill="#a8530f">Bonded → onto shelf</text><text x="105" y="90" text-anchor="middle" font-family="var(--mono)" font-size="8.5" fill="#7C828E">#s-bond</text>
+          <rect x="214" y="34" width="196" height="70" rx="11" fill="#FFF3EA" stroke="#F26B1F" stroke-width="1.6"/><text x="312" y="54" text-anchor="middle" font-weight="700" fill="#a8530f">Post-scan share prompt</text><text x="312" y="70" text-anchor="middle" font-size="9" fill="#3F434D">"You're the first to light MGT00748"</text><text x="312" y="84" text-anchor="middle" font-size="9" fill="#3F434D">[Share to community] · [Not now]</text><text x="312" y="97" text-anchor="middle" font-family="var(--mono)" font-size="8.5" fill="#a8530f">opens #s-share</text>
+          <line x1="190" y1="69" x2="212" y2="69" stroke="#F26B1F" stroke-width="1.8" marker-end="url(#s-tun)"/>
+          <!-- Not now branch -->
+          <rect x="214" y="124" width="196" height="34" rx="9" fill="#fff" stroke="#E4DECF"/><text x="312" y="139" text-anchor="middle" font-size="9.5" fill="#3F434D">"Not now" → stays private</text><text x="312" y="151" text-anchor="middle" font-size="8.5" fill="#7C828E">re-offer later from Release detail · never nags</text>
+          <line x1="312" y1="104" x2="312" y2="122" stroke="#7C828E" stroke-width="1.3" stroke-dasharray="3 3" marker-end="url(#s-mut)"/>
         </g>
+
+        <!-- alternate entry: tap Share later -->
+        <g font-family="var(--sans)" font-size="9.5">
+          <text x="20" y="128" font-family="var(--mono)" font-size="9" font-weight="700" fill="#7C828E" style="letter-spacing:.05em">ALSO REACHED LATER</text>
+          <rect x="20" y="136" width="170" height="40" rx="10" fill="#fff" stroke="#2B3A55"/><text x="105" y="153" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2B3A55">Tap "Share" on a model</text><text x="105" y="167" text-anchor="middle" font-size="8.5" fill="#7C828E">Release detail · gap-nudge CTA</text>
+          <line x1="190" y1="150" x2="218" y2="150" stroke="#2B3A55" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#s-stl)"/>
+        </g>
+
+        <!-- CONSENT → DEDUP → UPLOAD → LIBRARY -->
+        <g font-family="var(--sans)" font-size="10.5">
+          <rect x="438" y="40" width="156" height="64" rx="11" fill="#fff" stroke="#2B3A55"/><text x="516" y="58" text-anchor="middle" font-weight="700">Consent sheet</text><text x="516" y="74" text-anchor="middle" font-size="9" fill="#3F434D">attribution (Apple handle)</text><text x="516" y="87" text-anchor="middle" font-size="9" fill="#3F434D">non-commercial license</text><text x="516" y="100" text-anchor="middle" font-family="var(--mono)" font-size="8.5" fill="#7C828E">#s-share</text>
+          <rect x="610" y="40" width="156" height="64" rx="11" fill="#fff" stroke="#2B3A55"/><text x="688" y="62" text-anchor="middle" font-weight="700">Uploader attestation</text><text x="688" y="80" text-anchor="middle" font-size="9" fill="#3F434D">"I own &amp; scanned it"</text><text x="688" y="94" text-anchor="middle" font-size="9" fill="#7C828E">revocable any time</text>
+          <rect x="782" y="40" width="160" height="64" rx="11" fill="#EAF0F8" stroke="#2B3A55"/><text x="862" y="60" text-anchor="middle" font-weight="700" fill="#2B3A55">Dedup (no., drive)</text><text x="862" y="78" text-anchor="middle" font-size="9" fill="#3F434D">one canonical per slot</text><text x="862" y="93" text-anchor="middle" font-size="9" fill="#7C828E">present? → contribute alt</text>
+          <rect x="958" y="40" width="162" height="64" rx="11" fill="#fff" stroke="#F26B1F"/><text x="1039" y="64" text-anchor="middle" font-weight="700">Presigned upload</text><text x="1039" y="84" text-anchor="middle" font-size="9" fill="#a8530f">progress · bytes → R2</text>
+          <line x1="410" y1="69" x2="436" y2="69" stroke="#2B3A55" stroke-width="1.8" marker-end="url(#s-stl)"/>
+          <line x1="594" y1="72" x2="608" y2="72" stroke="#2B3A55" stroke-width="1.8" marker-end="url(#s-stl)"/>
+          <line x1="766" y1="72" x2="780" y2="72" stroke="#2B3A55" stroke-width="1.8" marker-end="url(#s-stl)"/>
+          <line x1="942" y1="72" x2="956" y2="72" stroke="#F26B1F" stroke-width="1.8" marker-end="url(#s-tun)"/>
+        </g>
+
+        <!-- result: appears in community library + contributor recognition -->
+        <g font-family="var(--sans)" font-size="10.5">
+          <rect x="782" y="206" width="160" height="62" rx="11" fill="#fff" stroke="#1F9D62"/><text x="862" y="228" text-anchor="middle" font-weight="700" fill="#0d6b3f">Appears in Library</text><text x="862" y="246" text-anchor="middle" font-size="9" fill="#0d6b3f">tagged COMMUNITY</text><text x="862" y="260" text-anchor="middle" font-family="var(--mono)" font-size="8.5" fill="#7C828E">#s-community</text>
+          <rect x="958" y="206" width="162" height="62" rx="11" fill="#FFF3EA" stroke="#F26B1F"/><text x="1039" y="226" text-anchor="middle" font-weight="700" fill="#a8530f">Contributor credit</text><text x="1039" y="244" text-anchor="middle" font-size="9" fill="#a8530f">"scanned by you" · BY YOU +1</text><text x="1039" y="258" text-anchor="middle" font-size="9" fill="#7C828E">light badge · reciprocity copy</text>
+          <line x1="1039" y1="104" x2="1039" y2="204" stroke="#F26B1F" stroke-width="1.6" marker-end="url(#s-tun)"/>
+          <line x1="956" y1="237" x2="944" y2="237" stroke="#1F9D62" stroke-width="1.6" marker-end="url(#s-ok)"/>
+        </g>
+
         <g font-family="var(--sans)" font-size="10" fill="#3F434D">
-          <text x="20" y="160" font-style="italic" fill="#7C828E">DMCA: a report/takedown entry point lives in Settings; flagged uploads route to status(flagged) and are rapidly delisted. Repeat-infringer policy enforced.</text>
+          <text x="20" y="240" font-style="italic" fill="#7C828E">Personal models never auto-upload. DMCA: a report/takedown entry point lives in Settings;</text>
+          <text x="20" y="256" font-style="italic" fill="#7C828E">flagged uploads route to status(flagged) and are rapidly delisted. Repeat-infringer policy enforced.</text>
         </g>
       </svg>
-      <figcaption>(c) Upload is never automatic. Consent, license, and an ownership attestation precede any byte leaving the device; the dedup check enforces one canonical per (number, drive). Bytes go directly to R2 via presigned PUT (the VPS only brokers metadata). The result is tagged COMMUNITY and is revocable.</figcaption>
+      <figcaption>(c) Growth-aligned but opt-in. The path <em>begins</em> at the friendly <strong>post-scan share prompt</strong> (one tap right after <code>#s-bond</code>), or is reached later via a Share action / gap-nudge CTA on <strong>Release detail</strong>. <strong>"Not now" keeps the model private</strong> and is re-offered later without nagging. Consent, license, and an ownership attestation precede any byte leaving the device; the dedup check enforces one canonical per (number, drive). Bytes go directly to R2 via presigned PUT (the VPS only brokers metadata). The result appears in the <strong>Community library</strong> (<code>#s-community</code>) tagged COMMUNITY, credits the scanner ("scanned by you", BY-YOU stat +1), and is revocable. Personal models are <strong>never</strong> auto-uploaded.</figcaption>
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- 3d · CONTRIBUTION / GROW-THE-LIBRARY -->
+    <!-- ============================================================= -->
+    <h3 class="serif" style="margin-top:30px" id="contribute">Contribution — growing the shared library, opt-in by design</h3>
+    <div class="card">
+      <p class="eyebrow">The community library is the durable treasure · grow it by making contributing easy &amp; rewarding · sharing stays opt-in</p>
+      <p style="margin-top:2px"><strong>Decision (PM, 2026-06-18):</strong> the deduped community library on the VPS is the product's lasting value, and the goal is to <strong>grow</strong> it — but <strong>sharing is always opt-in</strong>. Consent, attribution, the non-commercial license, and the DMCA path stay intact; <strong>personal models are never auto-uploaded</strong>. We grow the library not by forcing uploads but by making the act of contributing easy and rewarding, and by framing each scan as a gift that saves the next owner the work.</p>
+
+      <div class="callout"><b>The policy in one line.</b> Encourage contribution at every natural moment, never coerce it. Every byte that leaves the device is preceded by explicit, revocable per-model consent (see flow&nbsp;(c)); the IP guardrails — attribution, non-commercial license, ownership attestation, dedup to one canonical per&nbsp;(number,&nbsp;drive), and the Settings takedown contact — are unchanged.</div>
+
+      <div class="grid c3" style="margin-top:16px">
+        <div class="tile">
+          <h4 style="font-size:.95rem">1 · Post-scan share prompt</h4>
+          <p style="font-size:.86rem">The highest-leverage moment: right after a successful scan + bond (<code>#s-bond</code>), a warm one-tap invite to share the new model to the community. The model is fresh, the pride is high, and the friction is one tap. <strong>"Not now" keeps it private</strong> and is quietly re-offered later from Release detail — never a nag. See <a href="#s-share-prompt" style="color:var(--tungsten-deep)">§4 the post-scan share prompt</a>.</p>
+        </div>
+        <div class="tile">
+          <h4 style="font-size:.95rem">2 · "Be the first to scan" gap nudges</h4>
+          <p style="font-size:.86rem">Unscanned releases become active contribution invites: on a matte recess (Release detail <code>#s-release-noscan</code>) and across the wishlist, a Pro owner sees a tungsten <em>"Be the first to light this for the community"</em> CTA into the scan flow. On non-Pro it stays a calm steel note — an invitation, never a dead-greyed control. See <a href="#s-gap-nudge" style="color:var(--tungsten-deep)">§4 the gap-nudge invite</a>.</p>
+        </div>
+        <div class="tile">
+          <h4 style="font-size:.95rem">3 · Contributor recognition + reciprocity</h4>
+          <p style="font-size:.86rem">Credit the work: a per-model <em>"scanned by you"</em> line on community models you seeded, the lightbar <strong>BY YOU</strong> stat reframed as <em>"you've lit N releases for the community,"</em> and light badges at milestones. Reciprocity framing closes the loop — <em>"every scan you share saves another owner the work."</em> See <a href="#s-recognition" style="color:var(--tungsten-deep)">§4 contributor recognition surfaces</a>.</p>
+        </div>
+      </div>
+
+      <div class="callout steel"><b>Opt-in, encouraged, guardrails intact.</b> These three mechanisms only ever <em>raise the invitation</em>; none of them upload anything on their own. The consent sheet, attribution, non-commercial license, ownership attestation, dedup, revocation, and DMCA takedown remain exactly as specified in flow&nbsp;(c) and Settings. Recognition is computed from a contributor's own opted-in uploads — never from private models.</div>
     </div>
   </section>
 
@@ -1386,6 +1442,118 @@
       </div>
     </div>
 
+    <!-- 4.11b Post-scan share prompt — growth surface #1 -->
+    <div class="screenrow">
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <svg viewBox="0 0 214 436" role="img" aria-label="Post-scan share prompt mockup — a friendly one-tap invite to share the newly scanned model to the community">
+          <rect width="214" height="436" fill="#F7F4EC"/>
+          <!-- celebratory lit niche of the model just bonded -->
+          <rect x="16" y="40" width="182" height="150" rx="14" fill="#FFE6CE"/>
+          <rect x="16" y="40" width="182" height="150" rx="14" fill="#fff" fill-opacity=".0" stroke="#E4DECF"/>
+          <rect x="26" y="52" width="26" height="15" rx="3" fill="#F1ECE1"/><text x="39" y="63" text-anchor="middle" font-family="monospace" font-size="8" fill="#2B3A55">748</text>
+          <rect x="174" y="52" width="18" height="18" rx="4" fill="#1F7A8C"/><text x="183" y="65" text-anchor="middle" font-family="monospace" font-size="10" font-weight="800" fill="#fff">L</text>
+          <ellipse cx="107" cy="132" rx="40" ry="8" fill="#16181D" opacity=".08"/>
+          <rect x="60" y="96" width="94" height="34" rx="6" fill="#D8540F" opacity=".82"/><rect x="56" y="104" width="102" height="22" rx="5" fill="#F26B1F"/>
+          <text x="30" y="180" font-family="serif" font-weight="700" font-size="13" fill="#16181D">GR Supra</text>
+          <text x="190" y="180" text-anchor="end" font-family="monospace" font-size="8" font-weight="700" fill="#1F9D62">● YOURS</text>
+          <!-- prompt card -->
+          <rect x="16" y="206" width="182" height="124" rx="14" fill="#FFF3EA" stroke="#F26B1F"/>
+          <text x="28" y="230" font-family="monospace" font-size="8" letter-spacing="1" fill="#a8530f">FIRST TO SCAN THIS</text>
+          <text x="28" y="252" font-family="serif" font-weight="700" font-size="14" fill="#16181D">Share it with the</text><text x="28" y="270" font-family="serif" font-weight="700" font-size="14" fill="#16181D">community?</text>
+          <text x="28" y="290" font-family="sans-serif" font-size="8" fill="#3F434D">You're the first to light MGT00748. Sharing</text><text x="28" y="301" font-family="sans-serif" font-size="8" fill="#3F434D">saves the next owner the work.</text>
+          <rect x="28" y="310" width="158" height="14" rx="4" fill="none"/>
+          <text x="28" y="320" font-family="sans-serif" font-size="7.5" fill="#7C828E">opt-in · attribution · non-commercial</text>
+          <!-- actions -->
+          <rect x="16" y="346" width="182" height="38" rx="11" fill="#F26B1F"/><text x="107" y="370" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="700" fill="#fff">Share to community</text>
+          <text x="107" y="404" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#7C828E">Not now</text>
+        </svg>
+      </div></div>
+      <div class="specbox">
+        <h4 id="s-share-prompt">Post-scan share prompt — the highest-leverage growth surface</h4>
+        <p class="purpose">Shown <strong>once</strong>, right after a successful scan + bond (continues from <code>#s-bond</code>), as a warm one-tap invite to share the just-created model to the community. The model is fresh and the pride is high — so the ask is a single tap, never a wall of legalese. It is an <em>encouragement</em> layered on top of the always-opt-in flow&nbsp;(c); nothing uploads until consent is given.</p>
+        <div class="lbl">Layout (top → bottom)</div>
+        <ul><li>A celebratory lit niche of the model just bonded (tagged <code>● Yours</code>) — the reward made visible.</li><li>A tungsten share-prompt card: a mono eyebrow (<code>FIRST TO SCAN THIS</code>), a serif headline ("Share it with the community?"), one line of reciprocity copy, and a quiet opt-in / attribution / non-commercial sub-line.</li><li>Primary tungsten <strong>Share to community</strong> → opens the consent sheet (<code>#s-share</code>); a ghost <strong>Not now</strong> below.</li></ul>
+        <div class="lbl">States</div>
+        <ul>
+          <li><strong>First-scan</strong> (shown) — "You're the first to light MGT00748" + the reciprocity framing; this seed becomes canonical.</li>
+          <li><strong>Already-scanned / alternate</strong> — a canonical already exists for this (number, drive); the prompt softens to "A scan already exists — share yours as an alternate?" and routes to the contribute-alternate path, not the canonical slot.</li>
+          <li><strong>"Not now"</strong> — dismisses cleanly, the model stays <strong>private</strong>, and the offer is re-surfaced later as a calm Share action on Release detail — <em>never</em> a repeated nag.</li>
+        </ul>
+        <div class="stateline"><span class="st">first-scan → becomes canonical</span><span class="st off">alternate → a canonical exists; contribute-as-alternate</span><span class="st empty">not now → private, re-offer later (no nag)</span><span class="st ns">non-Pro → prompt never appears (no local scan to share)</span></div>
+      </div>
+    </div>
+
+    <!-- 4.11c Gap-nudge invite — growth surface #2 -->
+    <div class="screenrow">
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <svg viewBox="0 0 214 436" role="img" aria-label="Gap-nudge invite mockup — an unscanned release framed as a Be the first to scan contribution invite">
+          <rect width="214" height="436" fill="#F7F4EC"/>
+          <rect x="0" y="28" width="214" height="30" fill="#fff"/><text x="16" y="48" font-family="sans-serif" font-size="10" fill="#7C828E">‹ Catalog</text><text x="107" y="48" text-anchor="middle" font-family="monospace" font-size="9" font-weight="700" fill="#2B3A55">MGT00219 · L</text>
+          <!-- matte recess (no scan yet) -->
+          <rect x="16" y="72" width="182" height="150" rx="14" fill="#EAE4D6" stroke="#E4DECF"/>
+          <rect x="16" y="72" width="182" height="150" rx="14" fill="#16181D" opacity=".05"/>
+          <text x="107" y="142" text-anchor="middle" font-family="monospace" font-size="9" fill="#7C828E">no community scan yet</text>
+          <text x="107" y="158" text-anchor="middle" font-family="serif" font-weight="700" font-size="14" fill="#3F434D">Honda NSX</text>
+          <!-- Pro: tungsten contribution CTA -->
+          <rect x="16" y="238" width="182" height="58" rx="12" fill="#FFF3EA" stroke="#F26B1F"/>
+          <text x="28" y="260" font-family="monospace" font-size="8" letter-spacing="1" fill="#a8530f">GAP · NEEDS A SEED</text>
+          <text x="28" y="280" font-family="sans-serif" font-size="10" font-weight="700" fill="#16181D">Be the first to light this</text><text x="28" y="291" font-family="sans-serif" font-size="8" fill="#a8530f">for the community →</text>
+          <rect x="16" y="306" width="182" height="38" rx="11" fill="#F26B1F"/><text x="107" y="330" text-anchor="middle" font-family="sans-serif" font-size="11.5" font-weight="700" fill="#fff">Scan it yourself</text>
+          <!-- non-Pro alternative line -->
+          <rect x="16" y="356" width="182" height="40" rx="11" fill="#EAF0F8" stroke="#2B3A55"/><rect x="28" y="370" width="8" height="8" rx="4" fill="#2B3A55"/><text x="44" y="377" font-family="sans-serif" font-size="8.5" fill="#2B3A55">non-Pro: "Notify me when scanned"</text><text x="44" y="389" font-family="sans-serif" font-size="7.5" fill="#3F434D">steel invite — never a dead button</text>
+        </svg>
+      </div></div>
+      <div class="specbox">
+        <h4 id="s-gap-nudge">Gap-nudge invite — "Be the first to scan"</h4>
+        <p class="purpose">Turns an unscanned release into an active contribution invite. It surfaces on the matte-recess Release detail (<code>#s-release-noscan</code>) and across the wishlist, framing a library gap as an opportunity rather than an absence. Pure encouragement — it routes into the always-opt-in scan flow; it never uploads anything itself.</p>
+        <div class="lbl">Layout</div>
+        <ul><li>The matte recess for the unscanned (number, drive), with the existing steel "no community scan yet" reading.</li><li><strong>Pro owners</strong> — a tungsten gap-nudge CTA: a mono eyebrow (<code>GAP · NEEDS A SEED</code>), the line "Be the first to light this for the community," and a primary <strong>Scan it yourself</strong> → the guided scan flow (then bond, then the post-scan share prompt).</li><li><strong>Non-Pro</strong> — the same gap is framed as a calm steel "Notify me when scanned" invite — an invitation, never a greyed-out dead control.</li></ul>
+        <div class="lbl">Key components</div>
+        <ul><li>Gap-nudge CTA (tungsten, Pro) reusing the primary-button + lightbar idiom; steel-note variant for non-Pro; the matte recess from Release detail.</li></ul>
+        <div class="lbl">States</div>
+        <div class="stateline"><span class="st">Pro → tungsten "Scan it yourself" into scan flow</span><span class="st ns">non-Pro → steel "Notify me when scanned" invite</span><span class="st empty">no gaps in wishlist → nudge collapses, no empty CTA</span><span class="st off">offline → CTA dims with steel "reconnect to contribute" note</span></div>
+      </div>
+    </div>
+
+    <!-- 4.11d Contributor recognition surfaces — growth surface #3 -->
+    <div class="screenrow">
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <svg viewBox="0 0 214 436" role="img" aria-label="Contributor recognition surfaces mockup — the you've-lit-N-releases stat, a light badge, and per-model scanned-by-you credit">
+          <rect width="214" height="436" fill="#F7F4EC"/>
+          <rect x="0" y="28" width="214" height="30" fill="#fff"/><text x="107" y="48" text-anchor="middle" font-family="serif" font-size="14" font-weight="700" fill="#16181D">Your contributions</text>
+          <!-- lightbar stat reframed -->
+          <rect x="16" y="72" width="182" height="56" rx="12" fill="#fff" stroke="#E4DECF"/>
+          <circle cx="32" cy="100" r="5" fill="#F26B1F"/><circle cx="32" cy="100" r="9" fill="none" stroke="#FFE6CE" stroke-width="3"/>
+          <text x="48" y="96" font-family="monospace" font-size="14" font-weight="800" fill="#D8540F">9</text><text x="64" y="96" font-family="sans-serif" font-size="10" fill="#16181D">releases lit for</text><text x="48" y="110" font-family="sans-serif" font-size="10" fill="#16181D">the community</text>
+          <text x="48" y="123" font-family="sans-serif" font-size="7.5" fill="#7C828E">every scan you share saves another owner the work</text>
+          <!-- badge row -->
+          <text x="16" y="152" font-family="sans-serif" font-size="8" letter-spacing="1.5" fill="#7C828E">BADGES</text>
+          <rect x="16" y="158" width="56" height="56" rx="12" fill="#FFF3EA" stroke="#F26B1F"/><text x="44" y="188" text-anchor="middle" font-size="20">🔦</text><text x="44" y="206" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#a8530f">SEEDER</text>
+          <rect x="80" y="158" width="56" height="56" rx="12" fill="#fff" stroke="#E4DECF"/><text x="108" y="188" text-anchor="middle" font-size="20" opacity=".4">✦</text><text x="108" y="206" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#7C828E">10 · next</text>
+          <rect x="144" y="158" width="54" height="56" rx="12" fill="#fff" stroke="#E4DECF"/><text x="171" y="188" text-anchor="middle" font-size="20" opacity=".25">✦</text><text x="171" y="206" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#7C828E">25 · later</text>
+          <!-- per-model credit row -->
+          <text x="16" y="240" font-family="sans-serif" font-size="8" letter-spacing="1.5" fill="#7C828E">CREDITED TO YOU</text>
+          <rect x="16" y="246" width="182" height="40" rx="10" fill="#fff" stroke="#E4DECF"/><rect x="26" y="256" width="20" height="20" rx="4" fill="#FFE6CE"/><text x="54" y="262" font-family="monospace" font-size="8" fill="#2B3A55">MGT00748 · L</text><text x="54" y="276" font-family="sans-serif" font-size="9" fill="#16181D">GR Supra — <tspan fill="#a8530f" font-weight="700">scanned by you</tspan></text>
+          <rect x="16" y="292" width="182" height="40" rx="10" fill="#fff" stroke="#E4DECF"/><rect x="26" y="302" width="20" height="20" rx="4" fill="#FFE6CE"/><text x="54" y="308" font-family="monospace" font-size="8" fill="#2B3A55">MGT00612 · R</text><text x="54" y="322" font-family="sans-serif" font-size="9" fill="#16181D">911 GT3 RS — <tspan fill="#a8530f" font-weight="700">scanned by you</tspan></text>
+          <text x="16" y="362" font-family="sans-serif" font-size="8" fill="#7C828E">Credit is computed only from models you opted to share —</text><text x="16" y="374" font-family="sans-serif" font-size="8" fill="#7C828E">never from private models.</text>
+        </svg>
+      </div></div>
+      <div class="specbox">
+        <h4 id="s-recognition">Contributor recognition surfaces — credit, stat, badges, reciprocity</h4>
+        <p class="purpose">Make contribution rewarding by reflecting it back. Recognition is computed <strong>only</strong> from a contributor's own opted-in uploads — never from private models — and reuses existing idioms (the lightbar telemetry counter, provenance tags) rather than inventing chrome.</p>
+        <div class="lbl">Surfaces</div>
+        <ul>
+          <li><strong>Contributor stat</strong> — the lightbar <strong>BY YOU</strong> counter reframed as "you've lit <em>N</em> releases for the community," carrying the reciprocity line "every scan you share saves another owner the work." Tabular-figure odometer-roll on each new contribution.</li>
+          <li><strong>Light badges</strong> — restrained milestone badges (e.g. Seeder at first share, then 10 / 25) in the warm system; tungsten when earned, muted/locked otherwise. A flourish, never a leaderboard.</li>
+          <li><strong>Per-model credit</strong> — a <em>"scanned by you"</em> line on community models you seeded, shown on Release detail and in the Community library (<code>#s-community</code>) next to the mono catalog code and <code>☁ Community</code> tag.</li>
+        </ul>
+        <div class="lbl">Key components</div>
+        <ul><li>Contributor stat (lightbar counter variant), light milestone badge, per-model "scanned by you" credit chip.</li></ul>
+        <div class="lbl">States</div>
+        <div class="stateline"><span class="st empty">no contributions yet → "share your first scan to light the library" invite, not a 0-stat</span><span class="st">earned → tungsten badge + credited list</span><span class="st off">offline → last-known stat/badges from cache</span><span class="st ns">non-Pro → encouraged to pick &amp; share when they can scan; stat hidden until first contribution</span></div>
+      </div>
+    </div>
+
     <!-- 4.12 Settings -->
     <div class="screenrow">
       <div class="phone"><div class="notch"></div><div class="scr">
@@ -1523,6 +1691,9 @@
           <tr><td>Bond flow [Pro]</td><td class="yes">●</td><td class="na">—</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td><td class="na">—</td></tr>
           <tr><td>Community library browse</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td></tr>
           <tr><td>Share / opt-in upload</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td></tr>
+          <tr><td>Post-scan share prompt</td><td class="key">★</td><td class="na">—</td><td class="yes">●</td><td class="na">—</td><td class="yes">●</td><td class="yes">●</td></tr>
+          <tr><td>Gap-nudge invite ("be the first")</td><td class="yes">●</td><td class="na">—</td><td class="yes">●</td><td class="na">—</td><td class="yes">●</td><td class="key">★</td></tr>
+          <tr><td>Contributor recognition surfaces</td><td class="yes">●</td><td class="na">—</td><td class="yes">●</td><td class="na">—</td><td class="yes">●</td><td class="yes">●</td></tr>
           <tr><td>Settings</td><td class="yes">●</td><td class="na">—</td><td class="na">—</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td></tr>
           <tr><td>Settings — Language control</td><td class="yes">●</td><td class="na">—</td><td class="na">—</td><td class="yes">●</td><td class="yes">●</td><td class="na">—</td></tr>
         </tbody>
@@ -1593,6 +1764,42 @@
         <div class="eyebrow">Capability badge</div>
         <div class="capbadge"><span class="dot"></span> Scanning: not available on this iPhone — picking is fully yours</div>
         <p style="font-size:.78rem;margin-top:10px">A designed steel spec-note, framed as a contributor invitation. Never a modal warning.</p>
+      </div>
+
+      <div class="ds">
+        <div class="eyebrow">Post-scan share-prompt card</div>
+        <div class="callout" style="margin:0">
+          <div style="font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;color:var(--tungsten-deep)">FIRST TO SCAN THIS</div>
+          <div style="font-family:var(--serif);font-weight:700;font-size:1.05rem;color:var(--ink);margin:2px 0 4px">Share it with the community?</div>
+          <div style="font-size:.78rem">You're the first to light MGT00748. Sharing saves the next owner the work.</div>
+          <div class="btn-row" style="margin-top:10px"><span class="btn primary" style="min-height:36px;padding:8px 14px">Share to community</span><span class="btn ghost" style="min-height:36px;padding:8px 12px">Not now</span></div>
+        </div>
+        <p style="font-size:.78rem;margin-top:10px">Shown once after scan + bond. A tungsten encouragement on top of the always-opt-in flow&nbsp;(c); "Not now" keeps the model private and re-offers later without nagging. Never uploads on its own.</p>
+      </div>
+
+      <div class="ds">
+        <div class="eyebrow">Gap-nudge CTA — "be the first"</div>
+        <div class="callout" style="margin:0">
+          <div style="font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;color:var(--tungsten-deep)">GAP · NEEDS A SEED</div>
+          <div style="font-size:.84rem;font-weight:700;color:var(--ink);margin:2px 0 8px">Be the first to light this for the community →</div>
+          <div class="btn-row"><span class="btn primary" style="min-height:36px;padding:8px 14px">Scan it yourself</span></div>
+        </div>
+        <div class="capbadge" style="margin-top:10px"><span class="dot"></span> non-Pro: "Notify me when it's scanned"</div>
+        <p style="font-size:.78rem;margin-top:10px">An unscanned (number, drive) framed as an opportunity. Tungsten CTA into the scan flow for Pro; a calm steel invite for non-Pro — never a dead-greyed control.</p>
+      </div>
+
+      <div class="ds">
+        <div class="eyebrow">Contributor stat &amp; credit / badge</div>
+        <div style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.95rem;color:var(--steel);font-variant-numeric:tabular-nums">
+          <span style="width:9px;height:9px;border-radius:50%;background:var(--tungsten);box-shadow:0 0 0 4px var(--tungsten-glow)"></span>
+          <b style="color:var(--tungsten-deep)">9</b> RELEASES LIT FOR THE COMMUNITY
+        </div>
+        <p style="font-size:.72rem;margin:4px 0 0;color:var(--muted);font-style:italic">every scan you share saves another owner the work</p>
+        <div class="btn-row" style="margin-top:10px">
+          <span class="mtag" style="background:var(--tungsten-glow);color:var(--tungsten-deep)">🔦 Seeder</span>
+          <span class="mtag comm">☁ scanned by you</span>
+        </div>
+        <p style="font-size:.78rem;margin-top:10px">The lightbar counter reframed as a contribution stat, with reciprocity copy. A light milestone badge + a per-model "scanned by you" credit chip. Computed only from opted-in uploads, never private models.</p>
       </div>
 
       <div class="ds">
