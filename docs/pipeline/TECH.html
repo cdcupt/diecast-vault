@@ -261,7 +261,7 @@
           <rect x="360" y="226" width="430" height="118" rx="13" fill="#fff" stroke="#2B3A55" stroke-width="2"/>
           <text x="376" y="250" font-family="ui-monospace,monospace" font-size="11" font-weight="700" fill="#7C828E">SHARED BWH VPS · behind Caddy (new tenant)</text>
           <rect x="376" y="262" width="190" height="40" rx="8" fill="#EAF0F8" stroke="#2B3A55"/><text x="471" y="279" text-anchor="middle" font-size="10.5" font-weight="700">Thin REST API</text><text x="471" y="293" text-anchor="middle" font-size="9" fill="#2B3A55">:8110 · presigned URLs</text>
-          <rect x="580" y="262" width="194" height="40" rx="8" fill="#EAF0F8" stroke="#2B3A55"/><text x="677" y="279" text-anchor="middle" font-size="10.5" font-weight="700">Postgres (shared)</text><text x="677" y="293" text-anchor="middle" font-size="9" fill="#2B3A55">own DB+role · metadata only</text>
+          <rect x="580" y="262" width="194" height="40" rx="8" fill="#EAF0F8" stroke="#2B3A55"/><text x="677" y="279" text-anchor="middle" font-size="10.5" font-weight="700">Postgres (own)</text><text x="677" y="293" text-anchor="middle" font-size="9" fill="#2B3A55">dedicated · metadata only</text>
           <text x="376" y="324" font-size="9.5" fill="#7C828E">coexists w/ 9relay + BillMind · resource caps · official APIs only</text>
 
           <!-- R2 -->
@@ -346,7 +346,7 @@
         <text x="420" y="202" text-anchor="middle" font-family="-apple-system,Segoe UI,sans-serif" font-size="9" fill="#7C828E">mem_limit + cpus caps</text>
         <!-- postgres -->
         <rect x="560" y="146" width="210" height="70" rx="10" fill="#fff" stroke="#2B3A55" stroke-width="1.6"/>
-        <text x="665" y="166" text-anchor="middle" font-family="-apple-system,Segoe UI,sans-serif" font-size="11" font-weight="700" fill="#2B3A55">9relay-postgres (shared)</text>
+        <text x="665" y="166" text-anchor="middle" font-family="-apple-system,Segoe UI,sans-serif" font-size="11" font-weight="700" fill="#2B3A55">diecast-postgres (own)</text>
         <text x="665" y="183" text-anchor="middle" font-family="-apple-system,Segoe UI,sans-serif" font-size="9" fill="#7C828E">db: diecast_vault</text>
         <text x="665" y="198" text-anchor="middle" font-family="-apple-system,Segoe UI,sans-serif" font-size="9" fill="#7C828E">role: diecast_app · metadata only</text>
         <!-- co-tenants -->
@@ -390,7 +390,7 @@
         <line x1="520" y1="200" x2="858" y2="250" stroke="#2B3A55" stroke-width="1.4" marker-end="url(#d_s)"/>
         <text x="640" y="232" font-family="-apple-system,Segoe UI,sans-serif" font-size="8.5" fill="#7C828E">enrichment (outbound)</text>
       </svg>
-      <figcaption>Deployment topology. The new <code>diecast-vault-api</code> is a fresh tenant on the shared BWH box: own Postgres DB+role on the existing <code>9relay-postgres</code>, own localhost port (8110), an appended Caddy vhost (restart, don’t reload), resource caps, and an off-box GHA→GHCR build. Model bytes never pass through the VPS — the client transfers them straight to/from R2 with server-issued presigned URLs.</figcaption>
+      <figcaption>Deployment topology. The new <code>diecast-vault-api</code> is a fresh tenant on the shared BWH box: its own dedicated <code>diecast-postgres</code> container (isolated from <code>9relay-postgres</code>), own localhost port (8110), an appended Caddy vhost (restart, don’t reload), resource caps, and an off-box GHA→GHCR build. Model bytes never pass through the VPS — the client transfers them straight to/from R2 with server-issued presigned URLs.</figcaption>
     </div>
 
     <h3 class="serif">1.2 R2 key scheme</h3>
@@ -428,7 +428,7 @@
   <!-- ═══════════════ 2 · DATA MODEL ═══════════════ -->
   <section id="data">
     <h2><span class="n">2</span> Data model &amp; entity relationships</h2>
-    <p>Postgres stores <strong>metadata, keys, and provenance only</strong> — no blobs, no file paths to local disk. The device-only <code>OwnedCopy</code> is intentionally absent from the server. Reuse the shared Postgres instance with a dedicated DB + role.</p>
+    <p>Postgres stores <strong>metadata, keys, and provenance only</strong> — no blobs, no file paths to local disk. The device-only <code>OwnedCopy</code> is intentionally absent from the server. Diecast Vault runs its <strong>own dedicated <code>diecast-postgres</code> container</strong>, isolated from <code>9relay-postgres</code> — BillMind-style deploy, but with separate data.</p>
     <div class="card fig">
       <svg viewBox="0 0 1120 460" role="img" aria-label="Entity relationship diagram keyed by (mgtNumber, drive)">
         <defs><marker id="er" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#2B3A55"/></marker>
@@ -929,7 +929,7 @@
     <h3 class="serif">6.3 Test-type coverage</h3>
     <div class="grid c2">
       <div class="tile"><h4>Unit (≥ 80%, pure logic, AAA)</h4><p>Dedup key <code>(mgtNumber, drive)</code> — same no.+diff drive = two keys; same no.+same drive = collision; edition serial is per-copy, not in key; normalization round-trips. Catalog parse + versioned merge (skips malformed, consumes <code>removed[]</code>). Locale cache keying (en/zh-Hans separate; images shared; names stay proper nouns; unknown→en). Bonding validation (drive mandatory; serial optional; independent of scan). Lit-count semantics (owned only); origin enum; ~25 MB cap pre-check.</p></div>
-      <div class="tile"><h4>Integration (staging tenant)</h4><p>Presigned R2 round-trip: download bytes bypass VPS, sha256 matches; upload → metadata-only in Postgres; expired/forged URL rejected; cap enforced both sides; dedup routes 2nd upload to “contribute alternative”. Auth (Apple sub → user, expiry/refresh/revoke). Enrichment (Wikidata/Wikipedia/Commons; cited history; AI fallback badged; cache hit no re-spend; official OpenAI not 9relay; no-match graceful). Takedown (report → flag → rapid-delist; repeat-infringer; revoke). VPS tenancy (own DB+role/port/vhost; <code>docker restart</code> caddy; co-tenants unaffected). iCloud two-device no-loss; <strong>zero VPS calls on local save</strong>.</p></div>
+      <div class="tile"><h4>Integration (staging tenant)</h4><p>Presigned R2 round-trip: download bytes bypass VPS, sha256 matches; upload → metadata-only in Postgres; expired/forged URL rejected; cap enforced both sides; dedup routes 2nd upload to “contribute alternative”. Auth (Apple sub → user, expiry/refresh/revoke). Enrichment (Wikidata/Wikipedia/Commons; cited history; AI fallback badged; cache hit no re-spend; official OpenAI not 9relay; no-match graceful). Takedown (report → flag → rapid-delist; repeat-infringer; revoke). VPS tenancy (own dedicated Postgres + port + vhost; <code>docker restart</code> caddy; co-tenants unaffected). iCloud two-device no-loss; <strong>zero VPS calls on local save</strong>.</p></div>
     </div>
     <h4 style="margin:18px 0 6px">E2E critical flows (deterministic waits)</h4>
     <ol class="clean" style="list-style:decimal">
@@ -974,7 +974,7 @@
     <h2><span class="n">7</span> Build / deploy &amp; launch-blocker checklist</h2>
     <h3 class="serif">7.1 Deploy &amp; CI</h3>
     <div class="grid c2">
-      <div class="tile"><span class="tag srv">server</span><h4>Thin tenant on shared BWH</h4><p>Own DB+role on existing <code>9relay-postgres</code> (no new Postgres). Own localhost port (e.g. <code>127.0.0.1:8110</code>, confirm free vs 9relay/BillMind:8099/scenario:8101). Append a Caddy vhost for <code>api.diecast-vault.&lt;domain&gt;</code> → <code>docker restart 9relay-caddy</code> (NOT reload — stale-inode bind mount). Resource caps (<code>mem_limit</code>, <code>cpus</code>). Unique names (<code>diecast-vault-api</code>), own compose project + <code>deploy.env</code>.</p></div>
+      <div class="tile"><span class="tag srv">server</span><h4>Thin tenant on shared BWH (BillMind-style)</h4><p>Own <strong>dedicated <code>diecast-postgres</code> container</strong> (isolated from <code>9relay-postgres</code>) in Diecast Vault's own compose project. Own localhost port (e.g. <code>127.0.0.1:8110</code>, confirm free vs 9relay/BillMind:8099/scenario:8101). Append a Caddy vhost for <code>api.diecast-vault.&lt;domain&gt;</code> → <code>docker restart 9relay-caddy</code> (NOT reload — stale-inode bind mount). Resource caps (<code>mem_limit</code>, <code>cpus</code>). Unique names (<code>diecast-vault-api</code>), own compose project + <code>deploy.env</code>.</p></div>
       <div class="tile"><span class="tag dev">build</span><h4>Off-box GHA → GHCR</h4><p>If Swift (to share Core-style models), build via GitHub Actions on <code>swift:6.2</code> → push to GHCR; the box pulls &amp; runs (the BillMind pattern — the budget VPS doesn’t compile Swift). Go/Node images build in GHA either way. Deploy = <code>docker compose pull &amp;&amp; up -d</code> from <code>/opt/diecast-vault/app</code>. Secrets in <code>~/.diecast-vault/deploy.env</code> (chmod 600): DATABASE_URL, R2 creds, Apple keys, SESSION_JWT_SECRET, official OPENAI_API_KEY, IP_HASH_SALT — never in repo/memory/chat. Health → Gatus at <code>status.daichenlab.com</code>.</p></div>
     </div>
     <div class="src">Build env: this Mac builds/runs iOS via the <code>DEVELOPER_DIR</code> override + xcodegen + iPhone 17 Pro simulator. Add Swift code to existing files where practical (avoid Xcode target-membership churn). Pure domain → <code>DiecastVaultCore</code>, tested via <code>swift test</code> (no simulator). Hooks order if wired: format → lint → type-check (<code>--incremental</code> + <code>timeout</code>) → build verification.</div>
@@ -993,7 +993,7 @@
       <li><b>Real-car attribution shown</b> per photo (CC-BY/BY-SA · Wikimedia Commons) + <code>Source: Wikipedia</code> on history; AI images badged “Illustration”, never passed off as real.</li>
       <li><b>Spike-0 + Spike-1 verdicts recorded</b> in the Gate-1 packet (each with its documented fallback) before committing the v1 Home/Scan build.</li>
       <li><b>Both beta-testers sign “ship”</b> before Gate 3.</li>
-      <li><b>VPS deploy coexists</b> with 9relay + BillMind (own DB/role/port/vhost; caddy restarted; co-tenant health smoke-checked).</li>
+      <li><b>VPS deploy coexists</b> with 9relay + BillMind (own dedicated Postgres + port + vhost; caddy restarted; co-tenant health smoke-checked).</li>
     </ul>
   </section>
 
