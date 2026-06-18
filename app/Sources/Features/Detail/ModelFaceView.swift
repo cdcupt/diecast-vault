@@ -82,7 +82,8 @@ struct ModelFaceView: View {
     }
 
     private var ownershipTag: some View {
-        Text(isOwned ? "YOURS" : "COMMUNITY")
+        Text(isOwned ? "detail.tag.yours" : "detail.tag.community")
+            .textCase(.uppercase)
             .font(Voice.mono(9, weight: .semibold))
             .tracking(0.5)
             .padding(.horizontal, 8).padding(.vertical, 3)
@@ -96,7 +97,7 @@ struct ModelFaceView: View {
     private var ctas: some View {
         VStack(spacing: 10) {
             Button(action: onPick) {
-                ctaLabel(isOwned ? "On your shelf" : "Pick to shelf",
+                ctaLabel(isOwned ? "detail.cta.onShelf" : "detail.cta.pick",
                          systemImage: isOwned ? "checkmark" : "plus")
                     .foregroundStyle(.white)
                     .background(isOwned ? Ink.ok : Ink.tungsten,
@@ -106,7 +107,7 @@ struct ModelFaceView: View {
             .disabled(isOwned)
 
             NavigationLink(value: ViewerRoute(release: release)) {
-                ctaLabel("View in 3D", systemImage: "cube.transparent")
+                ctaLabel("detail.cta.view3D", systemImage: "cube.transparent")
                     .foregroundStyle(Ink.primary)
                     .background(
                         RoundedRectangle(cornerRadius: 11, style: .continuous)
@@ -117,7 +118,7 @@ struct ModelFaceView: View {
         }
     }
 
-    private func ctaLabel(_ title: String, systemImage: String) -> some View {
+    private func ctaLabel(_ title: LocalizedStringKey, systemImage: String) -> some View {
         HStack(spacing: 8) {
             Image(systemName: systemImage)
             Text(title).font(.system(size: 15, weight: .semibold))
@@ -135,12 +136,14 @@ struct ModelFaceView: View {
         return VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 8) {
                 Image(systemName: isTungsten ? "camera.viewfinder" : "info.circle")
-                Text(isTungsten ? "Be the first to light this" : "No community scan yet")
+                Text(isTungsten ? "detail.invite.proTitle" : "detail.invite.basicTitle")
                     .font(.system(size: 14, weight: .semibold))
             }
             .foregroundStyle(isTungsten ? Ink.tungstenDeep : Ink.steel)
 
-            Text(scanState.contributionNote ?? "")
+            // The note is localized in the view layer (keyed by scan state) so the
+            // pure Core `ScanState.contributionNote` stays free of locale concerns.
+            Text(isTungsten ? "detail.invite.proNote" : "detail.invite.basicNote")
                 .font(.callout)
                 .foregroundStyle(Ink.soft)
         }

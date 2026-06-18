@@ -3,9 +3,9 @@ import SwiftUI
 /// Styled "coming soon" surface in the locked light chrome. Used by the
 /// non-Cabinet tabs in slice 1 so the shell reads as intentional, not empty.
 struct PlaceholderScreen: View {
-    let eyebrow: String
-    let title: String
-    let blurb: String
+    let eyebrow: LocalizedStringKey
+    let title: LocalizedStringKey
+    let blurb: LocalizedStringKey
     let symbol: String
 
     var body: some View {

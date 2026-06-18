@@ -26,6 +26,12 @@ final class StageScene {
     /// the car sits centered on the dark stage rather than down by the controls.
     private var focusHeight: Float = 0.04
 
+    /// Target on-stage size (metres) the car is normalized to, so framing/lighting
+    /// are reliable regardless of the source USDF's units. Tuned so the car fills
+    /// most of the dark stage (DESIGN §4.6 — the model is the brightest, largest
+    /// thing on screen) while leaving headroom for the title + control bars.
+    private let targetStageSize: Float = 0.34
+
     func build(in content: RealityViewCameraContent, modelURL: URL?, reduceMotion: Bool) {
         let root = Entity()
         content.add(root)
@@ -77,23 +83,32 @@ final class StageScene {
             didLoadModel = false
             return 0.12
         }
-        // Frame the loaded model: recenter on its bounds and scale the camera
-        // distance so it fills the stage regardless of source units.
+        // Normalize the model to a consistent on-stage size so framing and lighting
+        // are reliable regardless of the source USDZ's units (the prior version
+        // framed off raw bounds, which left the procedural sample car tiny + dim).
+        let rawBounds = model.visualBounds(relativeTo: nil)
+        let rawMax = max(rawBounds.extents.x, max(rawBounds.extents.y, rawBounds.extents.z))
+        if rawMax > 0 {
+            model.scale = SIMD3(repeating: targetStageSize / rawMax)
+        }
+
+        // Re-measure after scaling, then recenter on the (now stage-sized) bounds.
         let bounds = model.visualBounds(relativeTo: nil)
         let extent = bounds.extents
-        let maxDim = max(extent.x, max(extent.y, extent.z))
-        if maxDim > 0 {
-            // Tight framing: the USDZ should be the brightest, largest thing on
-            // the stage (DESIGN §4.6), leaving headroom for the title/control bar.
-            baseDistance = maxDim * 1.9 + 0.06
-        }
+        let horizontalSpan = max(extent.x, extent.z)
+        // Framing: distance keyed to the model's diagonal (it sits at a 3/4 angle,
+        // so the diagonal — not a single axis — is what must fit) with breathing
+        // room for the title + control bars. The car fills most of the stage
+        // (DESIGN §4.6) without cropping at any idle-orbit angle.
+        let diagonal = (extent.x * extent.x + extent.z * extent.z).squareRoot()
+        baseDistance = max(diagonal, extent.y) * 2.2 + 0.06
         // Sit the car on the plinth (y=0) and centered in x/z.
         model.position = SIMD3(-bounds.center.x, -bounds.center.y + extent.y / 2, -bounds.center.z)
         focusHeight = extent.y / 2
         pivot.addChild(model)
         self.modelRoot = model
         didLoadModel = true
-        return max(extent.x, extent.z)
+        return horizontalSpan
     }
 
     /// Spin the turntable to `angle` radians (yaw) and tilt the car slightly.
@@ -105,50 +120,58 @@ final class StageScene {
     }
 
     /// Dolly the camera in/out for pinch zoom (clamped multiplier applied by view).
+    /// Keeps the same slight downward tilt and look-target (`focusHeight`) as the
+    /// initial framing so the car stays centered on the stage while zooming.
     func zoom(_ factor: Float) {
         guard let cam = cameraEntity else { return }
         let distance = baseDistance / factor
-        cam.position = SIMD3(0, baseDistance * 0.22, distance)
-        cam.look(at: SIMD3(0, 0.02, 0), from: cam.position, relativeTo: nil)
+        cam.position = SIMD3(0, focusHeight + baseDistance * 0.12, distance)
+        cam.look(at: SIMD3(0, focusHeight, 0), from: cam.position, relativeTo: nil)
     }
 
     // MARK: Lights
 
     private func makeKeyLight() -> Entity {
+        // Warm tungsten "spotlight" from front-above. Positions scale with the
+        // stage size, and intensity is raised so the (now larger) car reads
+        // clearly and brightly against stage-0 instead of dim.
         let e = Entity()
         var spot = SpotLightComponent(
             color: color(Palette.tungstenGlow),
-            intensity: 9000,
-            innerAngleInDegrees: 32,
-            outerAngleInDegrees: 66,
-            attenuationRadius: 4
+            intensity: 60000,
+            innerAngleInDegrees: 38,
+            outerAngleInDegrees: 78,
+            attenuationRadius: 12
         )
-        spot.attenuationRadius = 4
+        spot.attenuationRadius = 12
         e.components.set(spot)
-        e.position = SIMD3(0.18, 0.5, 0.42)
-        e.look(at: SIMD3(0, 0.02, 0), from: e.position, relativeTo: nil)
+        e.position = SIMD3(targetStageSize * 0.5, targetStageSize * 1.5, targetStageSize * 1.2)
+        e.look(at: SIMD3(0, focusHeight, 0), from: e.position, relativeTo: nil)
         return e
     }
 
     private func makeFillLight() -> Entity {
+        // Cool, soft fill so the shadowed far side isn't black — brightened
+        // markedly (directional intensity is in lux) to lift the body.
         let e = Entity()
-        let dir = DirectionalLightComponent(color: .white, intensity: 600)
+        let dir = DirectionalLightComponent(color: color(Palette.steelSoft), intensity: 2600)
         e.components.set(dir)
-        e.look(at: SIMD3(0, 0, 0), from: SIMD3(-0.4, 0.2, 0.5), relativeTo: nil)
+        e.look(at: SIMD3(0, focusHeight, 0), from: SIMD3(-targetStageSize, targetStageSize * 0.7, targetStageSize), relativeTo: nil)
         return e
     }
 
     private func makeRimLight() -> Entity {
+        // Tungsten rim from behind + below, raking a warm brand edge along the car
+        // (the horizon glow). Scaled + brightened for the larger stage.
         let e = Entity()
         var point = PointLightComponent(
             color: color(Palette.stageRim),
-            intensity: 1400,
-            attenuationRadius: 2
+            intensity: 14000,
+            attenuationRadius: 6
         )
-        point.attenuationRadius = 2
+        point.attenuationRadius = 6
         e.components.set(point)
-        // Behind + below so it rakes a tungsten edge along the car (the horizon).
-        e.position = SIMD3(0, -0.05, -0.32)
+        e.position = SIMD3(0, focusHeight * 0.4, -targetStageSize * 1.1)
         return e
     }
 

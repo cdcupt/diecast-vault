@@ -5,9 +5,9 @@ import SwiftUI
 struct LibraryView: View {
     var body: some View {
         PlaceholderScreen(
-            eyebrow: "Library",
-            title: "Library",
-            blurb: "Reuse scans the community has shared, and contribute your own. Browse and upload arrive once the backend lands.",
+            eyebrow: "tab.library",
+            title: "tab.library",
+            blurb: "library.blurb",
             symbol: "cloud"
         )
     }

@@ -1,0 +1,427 @@
+{
+  "sourceLanguage" : "en",
+  "version" : "1.0",
+  "strings" : {
+    "tab.cabinet" : {
+      "comment" : "Cabinet tab label / navigation title",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Cabinet" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "陈列柜" } }
+      }
+    },
+    "tab.catalog" : {
+      "comment" : "Catalog tab label / navigation title",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Catalog" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "目录" } }
+      }
+    },
+    "tab.library" : {
+      "comment" : "Library (community) tab label / navigation title",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Library" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "社区库" } }
+      }
+    },
+    "tab.me" : {
+      "comment" : "Me tab label / navigation title",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Me" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "我的" } }
+      }
+    },
+
+    "cabinet.lightbar" : {
+      "comment" : "Cabinet section lightbar eyebrow (rendered uppercase)",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "The Cabinet" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "陈列柜" } }
+      }
+    },
+    "cabinet.litCount %lld" : {
+      "comment" : "Lit-of-total count next to the big serif number, e.g. '/ 12 lit'. %lld is the total shelf size.",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "/ %lld lit" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "/ 共 %lld 件点亮" } }
+      }
+    },
+    "cabinet.open3D" : {
+      "comment" : "Button to open the real-time 3D cabinet (Spike-1)",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Open 3D cabinet (Spike-1)" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "打开 3D 陈列柜（Spike-1）" } }
+      }
+    },
+    "cabinet.empty.title" : {
+      "comment" : "Empty cabinet heading",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Your cabinet is dark" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "你的陈列柜还未点亮" } }
+      }
+    },
+    "cabinet.empty.blurb" : {
+      "comment" : "Empty cabinet helper text",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Pick a release from the Catalog to light its first niche." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "从目录中挑选一款车，点亮它的第一格展位。" } }
+      }
+    },
+
+    "catalog.search.prompt" : {
+      "comment" : "Catalog search field placeholder",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Number, name, or livery" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "编号、名称或涂装" } }
+      }
+    },
+    "catalog.chooseDrive" : {
+      "comment" : "Label above the LHD/RHD drive toggle (rendered uppercase)",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Choose drive" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "选择驾驶位" } }
+      }
+    },
+    "catalog.continueWith %@" : {
+      "comment" : "Continue CTA once a drive is chosen. %@ is the drive code (LHD/RHD).",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Continue with %@" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "以 %@ 继续" } }
+      }
+    },
+    "catalog.continuePrompt" : {
+      "comment" : "Disabled CTA prompting the user to pick a drive first",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Choose a drive to continue" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "选择驾驶位以继续" } }
+      }
+    },
+    "catalog.empty.title %@" : {
+      "comment" : "No-match heading. %@ is the search query.",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "No match for “%@”" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "未找到“%@”" } }
+      }
+    },
+    "catalog.empty.blurb" : {
+      "comment" : "No-match helper text",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Try the catalog number or the livery." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "试试用目录编号或涂装名称搜索。" } }
+      }
+    },
+
+    "library.blurb" : {
+      "comment" : "Library placeholder blurb",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Reuse scans the community has shared, and contribute your own. Browse and upload arrive once the backend lands." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "复用社区共享的扫描模型，也可贡献你自己的。浏览与上传将在后端上线后开放。" } }
+      }
+    },
+
+    "detail.face.model" : {
+      "comment" : "Detail segmented control — the diecast model face",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Model" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "模型" } }
+      }
+    },
+    "detail.face.realCar" : {
+      "comment" : "Detail segmented control — the full-size real-car face",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Real Car" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "真车" } }
+      }
+    },
+    "detail.tag.yours" : {
+      "comment" : "Ownership tag — you own a model (rendered uppercase)",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Yours" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "我的" } }
+      }
+    },
+    "detail.tag.community" : {
+      "comment" : "Ownership tag — community model, not yet owned (rendered uppercase)",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Community" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "社区" } }
+      }
+    },
+    "detail.cta.pick" : {
+      "comment" : "Add this release to your shelf",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Pick to shelf" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "收入陈列柜" } }
+      }
+    },
+    "detail.cta.onShelf" : {
+      "comment" : "Already-owned state of the pick button",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "On your shelf" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "已在陈列柜" } }
+      }
+    },
+    "detail.cta.view3D" : {
+      "comment" : "Open the dark-stage 3D viewer",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "View in 3D" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "查看 3D" } }
+      }
+    },
+    "detail.invite.proTitle" : {
+      "comment" : "Contribution invite title on a Pro device (no scan yet)",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Be the first to light this" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "成为第一个点亮它的人" } }
+      }
+    },
+    "detail.invite.proNote" : {
+      "comment" : "Contribution invite note on a Pro device",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Be the first to light this for the community." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "成为第一个为社区点亮它的人。" } }
+      }
+    },
+    "detail.invite.basicTitle" : {
+      "comment" : "Contribution invite title on a non-Pro device",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "No community scan yet" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "社区尚无扫描" } }
+      }
+    },
+    "detail.invite.basicNote" : {
+      "comment" : "Contribution invite note on a non-Pro device",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "No community scan yet — needs a Pro iPhone to seed it." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "社区尚无扫描 — 需要一台 Pro 机型的 iPhone 来发起。" } }
+      }
+    },
+
+    "realcar.sampleBanner" : {
+      "comment" : "Honest banner flagging that the Real-Car profile is local sample data",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Sample reference profile — server-backed enrichment lands later" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "样例参考资料 — 服务器端内容增强稍后上线" } }
+      }
+    },
+    "realcar.history.heading %@" : {
+      "comment" : "Real-Car history section heading. %@ is the short model name.",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "The real %@" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%@ 车史" } }
+      }
+    },
+    "realcar.source %@" : {
+      "comment" : "Source/citation chip. %@ is the source name (e.g. Wikipedia).",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Source: %@" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "来源：%@" } }
+      }
+    },
+    "realcar.gallery.heading" : {
+      "comment" : "Reference gallery heading (rendered uppercase)",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Reference gallery" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "参考图库" } }
+      }
+    },
+    "realcar.compare.heading" : {
+      "comment" : "Side-by-side compare heading (rendered uppercase)",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Your model vs the real car" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "与你的模型对比" } }
+      }
+    },
+    "realcar.compare.yours" : {
+      "comment" : "Compare pane label — the user's model (rendered uppercase)",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Yours" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "你的模型" } }
+      }
+    },
+    "realcar.compare.realCar" : {
+      "comment" : "Compare pane label — the full-size car (rendered uppercase)",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Real car" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "真车" } }
+      }
+    },
+    "realcar.attribution.ai" : {
+      "comment" : "Caption under an AI illustration",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "AI illustration — not a real photo" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "AI 插画 — 并非真实照片" } }
+      }
+    },
+    "realcar.attribution.photo %@ %@" : {
+      "comment" : "Photo attribution line. %1$@ is the photographer, %2$@ is the license.",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Photo: %1$@ · %2$@ · Wikimedia Commons" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "照片：%1$@ · %2$@ · 维基共享资源" } }
+      }
+    },
+    "realcar.illustrationBadge" : {
+      "comment" : "Badge marking an image as an illustration, never a photo",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Illustration" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "插画" } }
+      }
+    },
+
+    "viewer.close" : {
+      "comment" : "Accessibility label for the close-viewer button",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Close 3D viewer" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "关闭 3D 查看器" } }
+      }
+    },
+    "viewer.viewInAR" : {
+      "comment" : "Button / accessibility label to hand off to AR Quick Look",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "View in AR" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "AR 查看" } }
+      }
+    },
+    "viewer.fallback.title" : {
+      "comment" : "Title shown when live 3D needs a newer iOS",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Live 3D needs iOS 18" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "实时 3D 需要 iOS 18" } }
+      }
+    },
+    "viewer.fallback.blurb %@" : {
+      "comment" : "Fallback blurb. %@ is the car model name.",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Tap View in AR to place %@ in your space." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "点按「AR 查看」将 %@ 放置到你的空间中。" } }
+      }
+    },
+    "viewer.stage.a11y %@" : {
+      "comment" : "Accessibility label for the 3D stage. %@ is the car model name.",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "%@ on the 3D stage. Drag to rotate, pinch to zoom." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%@ 位于 3D 展台。拖动旋转，捏合缩放。" } }
+      }
+    },
+
+    "me.signedIn" : {
+      "comment" : "Subtitle under the username",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Signed in with Apple" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "已通过 Apple 登录" } }
+      }
+    },
+    "me.tier.pro" : {
+      "comment" : "Device capability tier badge (rendered uppercase)",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Pro" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "Pro" } }
+      }
+    },
+    "me.contribution.heading" : {
+      "comment" : "Contribution summary section heading (rendered uppercase)",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Your contribution" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "你的贡献" } }
+      }
+    },
+    "me.contribution.litReleases" : {
+      "comment" : "Sits after the big '9' — releases lit for the community",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "releases lit for the community" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "款车已为社区点亮" } }
+      }
+    },
+    "me.contribution.stats" : {
+      "comment" : "Mono stats line of contribution metrics",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "9 SCANS SHARED · ↓ 614 DOWNLOADS · 3 WORLD-FIRSTS" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "9 个共享扫描 · ↓ 614 次下载 · 3 个全球首发" } }
+      }
+    },
+    "me.contribution.note" : {
+      "comment" : "Framing note for the contribution summary",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Every release you share saves another owner the work of scanning their own." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "你每分享一款，就为另一位车主省去亲自扫描的功夫。" } }
+      }
+    },
+    "me.settings.heading" : {
+      "comment" : "Settings section heading (rendered uppercase)",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Settings" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "设置" } }
+      }
+    },
+    "me.row.language" : {
+      "comment" : "Settings row title — language; also the Language screen title",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Language" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "语言" } }
+      }
+    },
+    "me.row.icloud" : {
+      "comment" : "Settings row title — iCloud sync",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "iCloud sync" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "iCloud 同步" } }
+      }
+    },
+    "me.row.icloud.value" : {
+      "comment" : "iCloud sync row value — off by default",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Off" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "关闭" } }
+      }
+    },
+    "me.row.device" : {
+      "comment" : "Settings row title — device model",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Device" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "设备" } }
+      }
+    },
+    "me.footer" : {
+      "comment" : "App version + legal footnote",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Diecast Vault · v1.0 · catalog numbers are descriptive metadata only." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "Diecast Vault · v1.0 · 目录编号仅为描述性元数据。" } }
+      }
+    },
+
+    "language.displayLanguage" : {
+      "comment" : "Section heading on the Language screen (rendered uppercase)",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Display language" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "显示语言" } }
+      }
+    },
+    "language.selected" : {
+      "comment" : "Badge marking the currently active language",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Selected" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "已选" } }
+      }
+    },
+    "language.liveNote" : {
+      "comment" : "Note that switching applies live across the whole app",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Switching applies live across the whole app — no relaunch." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "切换语言会即时刷新整个界面，无需重启应用。" } }
+      }
+    },
+    "language.whatLocalizes.title" : {
+      "comment" : "Heading for the 'what localizes' explainer",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "What localizes" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "哪些内容会本地化" } }
+      }
+    },
+    "language.whatLocalizes.body" : {
+      "comment" : "Explainer body — car model names stay as proper nouns",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "UI strings, tabs and the real-car history all switch. Car model names stay as proper nouns (e.g. Porsche 911 GT3 RS). Traditional Chinese comes later." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "界面文字、标签页与真车车史都会切换。车款名称保留为专有名词（如 Porsche 911 GT3 RS）。繁體中文稍后推出。" } }
+      }
+    }
+  }
+}

@@ -72,37 +72,58 @@ public struct RealCarProfile: Hashable, Codable, Sendable {
     }
 }
 
+/// The display locale for sample Real-Car copy. The real pipeline resolves a
+/// grounded extract per `(release, locale)`; the local stub mirrors that contract
+/// with two hand-written samples so the zh build reads natively (DESIGN F4 —
+/// "AI real-car history is localized and cached per release"). Kept as a small
+/// enum here so Core stays free of any UI / `Locale` dependency.
+public enum SampleLocale: String, Sendable {
+    case english
+    case simplifiedChinese
+}
+
 public extension RealCarProfile {
     /// Local STUB used by the Real-Car view until the enrichment backend lands.
     /// Returns a sample profile keyed loosely off the release name so the screen
-    /// has believable content; everything is marked `isSample`.
-    static func sample(for release: Release) -> RealCarProfile {
+    /// has believable content; everything is marked `isSample`. The `locale`
+    /// selects English or Simplified-Chinese sample prose so the zh build reads
+    /// natively (the HISTORY prose stays a local sample per the slice-3 brief).
+    static func sample(for release: Release, locale: SampleLocale = .english) -> RealCarProfile {
         let model = release.name
+        let zh = locale == .simplifiedChinese
+        let drivetrain: String = zh
+            ? (release.drive == .lhd ? "左舵布局" : "右舵布局")
+            : (release.drive == .lhd ? "LHD layout" : "RHD layout")
         return RealCarProfile(
             mgtNumber: release.mgtNumber,
-            history: [
-                "The \(model) is the full-size car this 1:64 release replicates. This write-up is bundled sample copy so the Real-Car view is reviewable offline.",
-                "When the enrichment backend lands, these paragraphs come from a grounded, cited Wikipedia extract resolved per (release, locale)."
-            ],
-            historySource: "Wikipedia (sample)",
+            history: zh
+                ? [
+                    "\(model) 是这款 1:64 模型所复刻的真车。此段文字为内置样例，便于在离线状态下查看真车页面。",
+                    "待内容增强后端上线后，这些段落将来自按（车款、语言）解析的、有据可查且带引用的维基百科摘要。"
+                ]
+                : [
+                    "The \(model) is the full-size car this 1:64 release replicates. This write-up is bundled sample copy so the Real-Car view is reviewable offline.",
+                    "When the enrichment backend lands, these paragraphs come from a grounded, cited Wikipedia extract resolved per (release, locale)."
+                ],
+            historySource: zh ? "维基百科（样例）" : "Wikipedia (sample)",
             specs: [
-                RealCarSpec(key: "MAKER", value: String(model.split(separator: " ").first ?? "—")),
-                RealCarSpec(key: "ENGINE", value: "— (sample)"),
-                RealCarSpec(key: "POWER", value: "— (sample)"),
-                RealCarSpec(key: "0–100", value: "— (sample)"),
-                RealCarSpec(key: "DRIVETRAIN", value: release.drive == .lhd ? "LHD layout" : "RHD layout")
+                RealCarSpec(key: zh ? "厂商" : "MAKER", value: String(model.split(separator: " ").first ?? "—")),
+                RealCarSpec(key: zh ? "引擎" : "ENGINE", value: zh ? "—（样例）" : "— (sample)"),
+                RealCarSpec(key: zh ? "马力" : "POWER", value: zh ? "—（样例）" : "— (sample)"),
+                RealCarSpec(key: "0–100", value: zh ? "—（样例）" : "— (sample)"),
+                RealCarSpec(key: zh ? "驱动" : "DRIVETRAIN", value: drivetrain)
             ],
             hero: RealCarImage(
-                caption: "Reference photo placeholder",
-                attribution: "Sample — Wikimedia Commons later",
-                license: "CC-BY-SA (sample)",
+                caption: zh ? "参考照片占位" : "Reference photo placeholder",
+                attribution: zh ? "样例 — 后续来自维基共享资源" : "Sample — Wikimedia Commons later",
+                license: zh ? "CC-BY-SA（样例）" : "CC-BY-SA (sample)",
                 origin: .commons
             ),
             gallery: [
-                RealCarImage(caption: "front 3/4", attribution: "sample", license: "CC-BY", origin: .commons),
-                RealCarImage(caption: "rear", attribution: "sample", license: "CC-BY", origin: .commons),
-                RealCarImage(caption: "interior", attribution: "sample", license: "CC-BY-SA", origin: .commons),
-                RealCarImage(caption: "illustration", attribution: "AI illustration", license: "—", origin: .ai)
+                RealCarImage(caption: zh ? "前 3/4" : "front 3/4", attribution: "sample", license: "CC-BY", origin: .commons),
+                RealCarImage(caption: zh ? "尾部" : "rear", attribution: "sample", license: "CC-BY", origin: .commons),
+                RealCarImage(caption: zh ? "内饰" : "interior", attribution: "sample", license: "CC-BY-SA", origin: .commons),
+                RealCarImage(caption: zh ? "插画" : "illustration", attribution: "AI illustration", license: "—", origin: .ai)
             ],
             isSample: true
         )

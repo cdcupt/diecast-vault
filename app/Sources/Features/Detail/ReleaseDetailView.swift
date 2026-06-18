@@ -65,12 +65,12 @@ struct ReleaseDetailView: View {
     }
 }
 
-/// The two faces of the detail screen.
+/// The two faces of the detail screen. Titles localize to 模型 | 真车 for zh-Hans.
 enum DetailFace: String, CaseIterable, Identifiable {
     case model
     case realCar
     var id: String { rawValue }
-    var title: String { self == .model ? "Model" : "Real Car" }
+    var title: LocalizedStringKey { self == .model ? "detail.face.model" : "detail.face.realCar" }
 }
 
 /// Typed route so "View in 3D" pushes the dark-stage viewer.

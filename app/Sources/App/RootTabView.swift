@@ -1,8 +1,8 @@
 import SwiftUI
 
 /// The four tabs of the native shell. Labels follow the locked design
-/// (Cabinet · Catalog · Library · Me); Chinese localization maps these to
-/// 陈列柜 / 目录 / 社区库 / 我的 in a later slice.
+/// (Cabinet · Catalog · Library · Me); the String Catalog maps these to
+/// 陈列柜 / 目录 / 社区库 / 我的 for zh-Hans, re-resolved live via `\.locale`.
 enum AppTab: Int, CaseIterable, Identifiable {
     case cabinet
     case catalog
@@ -11,12 +11,14 @@ enum AppTab: Int, CaseIterable, Identifiable {
 
     var id: Int { rawValue }
 
-    var title: String {
+    /// Localized tab label — a `LocalizedStringKey` so it re-resolves against the
+    /// environment locale (the live language switch) without a relaunch.
+    var title: LocalizedStringKey {
         switch self {
-        case .cabinet: return "Cabinet"
-        case .catalog: return "Catalog"
-        case .library: return "Library"
-        case .me: return "Me"
+        case .cabinet: return "tab.cabinet"
+        case .catalog: return "tab.catalog"
+        case .library: return "tab.library"
+        case .me: return "tab.me"
         }
     }
 

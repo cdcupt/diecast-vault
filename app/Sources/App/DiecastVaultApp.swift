@@ -25,6 +25,10 @@ struct DiecastVaultApp: App {
         name: "Toyota GR Supra", edition: "1510/2022", isLit: true
     )
 
+    /// Owns the live in-app language override; injected as `\.locale` so the whole
+    /// tree re-resolves its String Catalog entries the instant the choice changes.
+    @StateObject private var localeManager = LocaleManager()
+
     var body: some Scene {
         WindowGroup {
             Group {
@@ -37,6 +41,10 @@ struct DiecastVaultApp: App {
                 }
             }
             .tint(Ink.tungsten)
+            .environmentObject(localeManager)
+            // Live language switch: re-rendering against this locale is what makes
+            // every localized `Text` flip without a relaunch (see LocaleManager).
+            .environment(\.locale, localeManager.locale)
         }
         // Local-first SwiftData store, seeded on first run; iCloud sync OFF for now.
         .modelContainer(PersistenceController.shared)
@@ -51,6 +59,10 @@ struct DiecastVaultApp: App {
             ReleaseDetailView(release: routeSample, initialFace: .realCar)
         case "catalog":
             CatalogView()
+        case "me":
+            MeView()
+        case "language":
+            LanguageView()
         default:
             ReleaseDetailView(release: routeSample)
         }

@@ -2,9 +2,11 @@ import SwiftUI
 import DiecastVaultCore
 
 /// The signature "lightbar" eyebrow from the design — a lit bulb, a mono label,
-/// and a tungsten light-spill segment. Sits above section content.
+/// and a tungsten light-spill segment. Sits above section content. The label is a
+/// `LocalizedStringKey` so it re-resolves against the live language; `.uppercase`
+/// is applied via `textCase` (a no-op for CJK, which has no upper/lower distinction).
 struct Lightbar: View {
-    let label: String
+    let label: LocalizedStringKey
 
     var body: some View {
         HStack(spacing: 10) {
@@ -15,7 +17,8 @@ struct Lightbar: View {
                     Circle()
                         .stroke(Ink.tungstenGlow, lineWidth: 4)
                 )
-            Text(label.uppercased())
+            Text(label)
+                .textCase(.uppercase)
                 .font(Voice.mono(11, weight: .semibold))
                 .tracking(2)
                 .foregroundStyle(Ink.steel)
@@ -31,7 +34,7 @@ struct Lightbar: View {
                 .clipShape(Capsule())
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(label)
+        .accessibilityLabel(Text(label))
     }
 }
 

@@ -10,7 +10,16 @@ import DiecastVaultCore
 struct RealCarFaceView: View {
     let release: Release
 
-    private var profile: RealCarProfile { RealCarProfile.sample(for: release) }
+    @EnvironmentObject private var localeManager: LocaleManager
+
+    /// Sample profile in the active language — the HISTORY prose stays a local
+    /// sample (per the slice-3 brief) but is provided in zh too so the zh build
+    /// reads natively. Real (server-backed) enrichment is a drop-in later.
+    private var profile: RealCarProfile {
+        let sampleLocale: SampleLocale =
+            localeManager.language == .simplifiedChinese ? .simplifiedChinese : .english
+        return RealCarProfile.sample(for: release, locale: sampleLocale)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
@@ -27,7 +36,7 @@ struct RealCarFaceView: View {
     private var sampleBanner: some View {
         HStack(spacing: 8) {
             Image(systemName: "flask")
-            Text("Sample reference profile — server-backed enrichment lands later")
+            Text("realcar.sampleBanner")
                 .font(Voice.mono(10, weight: .medium))
         }
         .foregroundStyle(Ink.warn)
@@ -50,11 +59,11 @@ struct RealCarFaceView: View {
     private var history: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text("The real \(shortName)")
+                Text("realcar.history.heading \(shortName)")
                     .font(Voice.serif(18))
                     .foregroundStyle(Ink.primary)
                 Spacer()
-                SourceChip(label: "Source: \(profile.historySource)")
+                SourceChip(label: Text("realcar.source \(profile.historySource)"))
             }
             ForEach(profile.history, id: \.self) { paragraph in
                 Text(paragraph)
@@ -101,7 +110,8 @@ struct RealCarFaceView: View {
 
     private var gallery: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("REFERENCE GALLERY")
+            Text("realcar.gallery.heading")
+                .textCase(.uppercase)
                 .font(Voice.mono(10, weight: .semibold))
                 .tracking(1.2)
                 .foregroundStyle(Ink.muted)
@@ -111,7 +121,7 @@ struct RealCarFaceView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             ReferenceImagePlaceholder(image: image, height: 72)
                                 .frame(width: 96)
-                            SourceChip(label: image.license, compact: true)
+                            SourceChip(label: Text(verbatim: image.license), compact: true)
                         }
                     }
                 }
@@ -123,14 +133,15 @@ struct RealCarFaceView: View {
 
     private var compare: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("YOUR MODEL vs THE REAL CAR")
+            Text("realcar.compare.heading")
+                .textCase(.uppercase)
                 .font(Voice.mono(10, weight: .semibold))
                 .tracking(1.2)
                 .foregroundStyle(Ink.muted)
             HStack(spacing: 0) {
-                comparePane(title: "yours", lit: true)
+                comparePane(title: "realcar.compare.yours", lit: true)
                 Rectangle().fill(Ink.line).frame(width: 1)
-                comparePane(title: "real car", lit: false)
+                comparePane(title: "realcar.compare.realCar", lit: false)
             }
             .frame(height: 110)
             .background(Ink.cellSurface)
@@ -141,7 +152,7 @@ struct RealCarFaceView: View {
         }
     }
 
-    private func comparePane(title: String, lit: Bool) -> some View {
+    private func comparePane(title: LocalizedStringKey, lit: Bool) -> some View {
         ZStack {
             if lit {
                 RadialGradient(colors: [Ink.tungstenGlow, .clear],
@@ -156,7 +167,8 @@ struct RealCarFaceView: View {
                 .foregroundStyle(lit ? Ink.primary.opacity(0.85) : .white.opacity(0.9))
             VStack {
                 HStack {
-                    Text(title.uppercased())
+                    Text(title)
+                        .textCase(.uppercase)
                         .font(Voice.mono(8, weight: .semibold))
                         .foregroundStyle(lit ? Ink.muted : .white.opacity(0.9))
                     Spacer()
@@ -173,9 +185,9 @@ struct RealCarFaceView: View {
     private func attribution(_ image: RealCarImage) -> some View {
         Group {
             if image.origin == .ai {
-                Text("AI illustration — not a real photo")
+                Text("realcar.attribution.ai")
             } else {
-                Text("Photo: \(image.attribution) · \(image.license) · Wikimedia Commons")
+                Text("realcar.attribution.photo \(image.attribution) \(image.license)")
             }
         }
         .font(Voice.mono(9))
@@ -209,7 +221,7 @@ private struct ReferenceImagePlaceholder: View {
                     HStack {
                         HStack(spacing: 3) {
                             Image(systemName: "exclamationmark.triangle.fill")
-                            Text("Illustration")
+                            Text("realcar.illustrationBadge")
                         }
                         .font(Voice.mono(8, weight: .heavy))
                         .foregroundStyle(.white)
@@ -233,11 +245,11 @@ private struct ReferenceImagePlaceholder: View {
 
 /// A small steel source/license cite chip.
 private struct SourceChip: View {
-    let label: String
+    let label: Text
     var compact = false
 
     var body: some View {
-        Text(label)
+        label
             .font(Voice.mono(compact ? 7 : 9, weight: .semibold))
             .foregroundStyle(Ink.steel)
             .padding(.horizontal, compact ? 5 : 8).padding(.vertical, compact ? 2 : 3)

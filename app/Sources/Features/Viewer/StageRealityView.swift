@@ -42,7 +42,7 @@ struct StageRealityView: View {
             guard !reduceMotion, !hasInteracted else { return }
             idleSpin += 0.004   // ~7°/s drift
         }
-        .accessibilityLabel("\(release.name) on the 3D stage. Drag to rotate, pinch to zoom.")
+        .accessibilityLabel(Text("viewer.stage.a11y \(release.name)"))
     }
 
     private var orbitGesture: some Gesture {

@@ -56,10 +56,10 @@ struct ModelViewerView: View {
             Image(systemName: "arkit")
                 .font(.system(size: 46, weight: .light))
                 .foregroundStyle(Color(Palette.stageRim))
-            Text("Live 3D needs iOS 18")
+            Text("viewer.fallback.title")
                 .font(Voice.serif(20))
                 .foregroundStyle(.white)
-            Text("Tap View in AR to place \(release.name) in your space.")
+            Text("viewer.fallback.blurb \(release.name)")
                 .font(.callout)
                 .foregroundStyle(.white.opacity(0.7))
                 .multilineTextAlignment(.center)
@@ -80,7 +80,7 @@ struct ModelViewerView: View {
                     .frame(width: 36, height: 36)
                     .background(Color(Palette.stage1).opacity(0.7), in: Circle())
             }
-            .accessibilityLabel("Close 3D viewer")
+            .accessibilityLabel(Text("viewer.close"))
 
             Spacer()
 
@@ -116,7 +116,7 @@ struct ModelViewerView: View {
             } label: {
                 HStack(spacing: 6) {
                     Image(systemName: "arkit")
-                    Text("View in AR")
+                    Text("viewer.viewInAR")
                         .font(.system(size: 13, weight: .semibold))
                 }
                 .foregroundStyle(.white)
@@ -126,7 +126,7 @@ struct ModelViewerView: View {
             }
             .disabled(SampleModel.url == nil)
             .opacity(SampleModel.url == nil ? 0.4 : 1)
-            .accessibilityLabel("View in AR")
+            .accessibilityLabel(Text("viewer.viewInAR"))
         }
         .padding(12)
         .background(

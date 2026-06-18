@@ -31,14 +31,14 @@ struct CabinetView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
-                Lightbar(label: "The Cabinet")
+                Lightbar(label: "cabinet.lightbar")
 
                 // Scale-contrast hierarchy: a big lit count towering over mono meta.
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
                     Text("\(litCount)")
                         .font(Voice.serif(48))
                         .foregroundStyle(Ink.primary)
-                    Text("/ \(shelf.count) lit")
+                    Text("cabinet.litCount \(shelf.count)")
                         .font(Voice.mono(13))
                         .foregroundStyle(Ink.muted)
                     Spacer()
@@ -49,7 +49,7 @@ struct CabinetView: View {
                 } label: {
                     HStack(spacing: 8) {
                         Image(systemName: "cube.transparent")
-                        Text("Open 3D cabinet (Spike-1)")
+                        Text("cabinet.open3D")
                             .font(Voice.mono(12, weight: .semibold))
                         Spacer()
                         Image(systemName: "chevron.right")
@@ -80,7 +80,7 @@ struct CabinetView: View {
             .padding(.bottom, 24)
         }
         .background(Ink.paper)
-        .navigationTitle("Cabinet")
+        .navigationTitle(Text("tab.cabinet"))
         .navigationBarTitleDisplayMode(.large)
         .navigationDestination(for: Release.self) { release in
             ReleaseDetailView(release: release)
@@ -94,10 +94,10 @@ struct CabinetView: View {
 
     private var emptyState: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Your cabinet is dark")
+            Text("cabinet.empty.title")
                 .font(Voice.serif(22))
                 .foregroundStyle(Ink.primary)
-            Text("Pick a release from the Catalog to light its first niche.")
+            Text("cabinet.empty.blurb")
                 .font(.callout)
                 .foregroundStyle(Ink.soft)
         }

@@ -5,6 +5,15 @@ options:
     iOS: "17.0"
   createIntermediateGroups: true
   generateEmptyDirectories: true
+  developmentLanguage: en
+
+# Languages the String Catalog (Localizable.xcstrings) ships — Xcode writes the
+# matching CFBundleLocalizations so the zh-Hans build is selectable. (Base is the
+# Interface-Builder/strings fallback region.)
+knownRegions:
+  - en
+  - zh-Hans
+  - Base
 
 settings:
   base:
@@ -41,3 +50,17 @@ targets:
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+
+  # UI test proving the runtime language switch flips the whole app live.
+  DiecastVaultUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: UITests
+    dependencies:
+      - target: DiecastVault
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.daichenlab.diecastvault.uitests
+        GENERATE_INFOPLIST_FILE: YES

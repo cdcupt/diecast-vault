@@ -17,7 +17,7 @@ struct CatalogView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
-                Lightbar(label: "Catalog")
+                Lightbar(label: "tab.catalog")
 
                 if hits.isEmpty {
                     emptyState
@@ -39,10 +39,10 @@ struct CatalogView: View {
             .padding(.bottom, 24)
         }
         .background(Ink.paper)
-        .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always), prompt: "Number, name, or livery")
+        .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always), prompt: Text("catalog.search.prompt"))
         .autocorrectionDisabled()
         .textInputAutocapitalization(.never)
-        .navigationTitle("Catalog")
+        .navigationTitle(Text("tab.catalog"))
         .navigationBarTitleDisplayMode(.large)
         .navigationDestination(for: Release.self) { release in
             ReleaseDetailView(release: release)
@@ -61,10 +61,10 @@ struct CatalogView: View {
 
     private var emptyState: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("No match for “\(query)”")
+            Text("catalog.empty.title \(query)")
                 .font(Voice.serif(20))
                 .foregroundStyle(Ink.primary)
-            Text("Try the catalog number or the livery.")
+            Text("catalog.empty.blurb")
                 .font(.callout)
                 .foregroundStyle(Ink.soft)
         }
@@ -90,7 +90,8 @@ private struct CatalogRow: View {
 
             if isExpanded {
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("CHOOSE DRIVE")
+                    Text("catalog.chooseDrive")
+                        .textCase(.uppercase)
                         .font(Voice.mono(10, weight: .semibold))
                         .tracking(1.5)
                         .foregroundStyle(Ink.muted)
@@ -142,7 +143,7 @@ private struct CatalogRow: View {
             NavigationLink(value: release(drive)) {
                 HStack {
                     Spacer()
-                    Text("Continue with \(drive == .lhd ? "LHD" : "RHD")")
+                    Text("catalog.continueWith \(drive == .lhd ? "LHD" : "RHD")")
                         .font(.system(size: 14, weight: .semibold))
                     Image(systemName: "chevron.right")
                         .font(.system(size: 11, weight: .semibold))
@@ -156,7 +157,7 @@ private struct CatalogRow: View {
         } else {
             HStack {
                 Spacer()
-                Text("Choose a drive to continue")
+                Text("catalog.continuePrompt")
                     .font(.system(size: 14, weight: .semibold))
                 Spacer()
             }
