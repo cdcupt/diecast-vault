@@ -69,7 +69,10 @@ final class LocaleManager: ObservableObject {
             return
         }
         let stored = UserDefaults.standard.string(forKey: Self.storageKey)
-        self.language = stored.flatMap(AppLanguage.init(rawValue:)) ?? Self.systemDefault()
+        // No persisted choice → default to English (DESIGN F4). The device/system
+        // language is intentionally NOT consulted; only an explicit in-app pick
+        // (persisted below) moves the app off English.
+        self.language = stored.flatMap(AppLanguage.init(rawValue:)) ?? .english
     }
 
     /// Switch the whole app live and persist the choice.
@@ -80,13 +83,5 @@ final class LocaleManager: ObservableObject {
         // Keep the OS preference in lock-step so any framework UI (share sheets,
         // system alerts) presented after the switch also picks the language up.
         UserDefaults.standard.set([language.rawValue], forKey: "AppleLanguages")
-    }
-
-    /// First-launch default: honour the device language when it is one we ship,
-    /// otherwise fall back to English.
-    private static func systemDefault() -> AppLanguage {
-        let preferred = Locale.preferredLanguages.first ?? "en"
-        if preferred.hasPrefix("zh") { return .simplifiedChinese }
-        return .english
     }
 }
