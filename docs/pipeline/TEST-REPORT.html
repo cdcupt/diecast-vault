@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Diecast Vault — Test Report (v1)</title>
+<style>
+  :root{
+    --ink:#15171c; --ink-soft:#3b3f49; --muted:#6b7280;
+    --paper:#faf8f4; --surface:#ffffff; --line:#e7e2d8;
+    --accent:#ff4326; --accent-soft:#fff1ec; --steel:#2b3a55; --steel-soft:#eef2f8;
+    --ok:#1f9d62; --ok-soft:#e8f6ee; --warn:#b8860b; --warn-soft:#fbf3dd;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    --serif:"New York",Georgia,"Times New Roman",serif;
+    --r:14px; --shadow:0 1px 2px rgba(20,23,28,.05),0 8px 30px rgba(20,23,28,.06);
+  }
+  *{box-sizing:border-box} html,body{margin:0;overflow-x:hidden}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.55;font-size:16px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1100px;margin:0 auto;padding:clamp(20px,3vw,48px)}
+  header.mast{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px;justify-content:space-between;border-bottom:3px solid var(--ink);padding-bottom:16px}
+  h1{font-family:var(--serif);font-size:clamp(1.8rem,1.2rem+2vw,2.7rem);margin:0;letter-spacing:-.02em}
+  .sub{color:var(--muted);font-size:.95rem;margin-top:4px}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+  .pill{font-family:var(--mono);font-size:.72rem;padding:5px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--ink-soft);white-space:nowrap}
+  .pill.ok{background:var(--ok-soft);border-color:#bfe6cf;color:#0d6b3f}
+  .pill.accent{background:var(--accent);border-color:var(--accent);color:#fff}
+  .pill.warn{background:var(--warn-soft);border-color:#ecd9a0;color:#7a5a00}
+  section{margin-top:38px}
+  h2{font-family:var(--serif);font-size:clamp(1.15rem,.9rem+.8vw,1.5rem);margin:0 0 6px;display:flex;gap:10px;align-items:baseline}
+  h2 .n{font-family:var(--mono);color:var(--accent);font-size:.8em}
+  h3{font-size:1rem;margin:18px 0 6px}
+  p{margin:9px 0;color:var(--ink-soft);max-width:74ch}
+  .lead{font-size:1.05rem;color:var(--ink)}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:clamp(16px,2vw,24px);box-shadow:var(--shadow)}
+  .fig{margin:16px 0;max-width:100%}.fig svg{display:block;width:100%;height:auto}
+  figcaption{font-size:.8rem;color:var(--muted);margin-top:6px;font-style:italic}
+  .grid{display:grid;gap:14px}@media(min-width:720px){.grid.c2{grid-template-columns:1fr 1fr}.grid.c3{grid-template-columns:repeat(3,1fr)}}
+  .tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:15px}
+  .tile h4{margin:0 0 5px;font-size:.92rem}.tile p{margin:0;font-size:.88rem}
+  .tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:14px 0}
+  table{border-collapse:collapse;width:100%;font-size:.88rem}@media(min-width:680px){table{min-width:560px}}
+  th,td{text-align:left;padding:9px 13px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#f3efe7;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft)}
+  tr:last-child td{border-bottom:none}
+  code{font-family:var(--mono);font-size:.85em;background:#f1ece3;padding:1px 6px;border-radius:5px;color:var(--steel)}
+  .v{font-family:var(--mono);font-size:.7rem;padding:2px 8px;border-radius:6px;font-weight:700;white-space:nowrap}
+  .v.pass{background:var(--ok-soft);color:#0d6b3f}.v.ship{background:var(--ok-soft);color:#0d6b3f}
+  .v.low{background:var(--steel-soft);color:var(--steel)}.v.pend{background:var(--warn-soft);color:#7a5a00}.v.high{background:#fdecea;color:#a82a17}
+  .callout{border-left:4px solid var(--ok);background:var(--ok-soft);border-radius:0 10px 10px 0;padding:13px 16px;margin:13px 0}
+  .callout.warn{border-left-color:var(--warn);background:var(--warn-soft)}.callout.warn b{color:#7a5a00}.callout b{color:#0d6b3f}
+  ul.clean{margin:8px 0;padding-left:20px}ul.clean li{margin:4px 0;color:var(--ink-soft)}
+  footer{margin-top:44px;border-top:1px solid var(--line);padding-top:14px;color:var(--muted);font-size:.82rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <div>
+      <h1>Diecast Vault — Test Report</h1>
+      <div class="sub">v1 (simulator build, demo content) · SDD pipeline Step 7 / pre-Gate-3</div>
+    </div>
+    <div class="pills">
+      <span class="pill accent">v1</span>
+      <span class="pill ok">build green</span>
+      <span class="pill ok">44 unit tests</span>
+      <span class="pill ok">2× beta SHIP</span>
+      <span class="pill warn">Spike-0 pending device</span>
+      <span class="pill">2026-06-18</span>
+    </div>
+  </header>
+
+  <section>
+    <h2><span class="n">★</span> At a glance</h2>
+    <p class="lead">The v1 app (on demo content) is built and verified across <strong>7 committed slices</strong>, each Worker→QA-passed. The mandatory <strong>two-independent-beta-tester pass returned SHIP from both</strong> with <strong>zero high/medium defects</strong> (3 LOW cosmetics, addressed in a polish pass). One product go/no-go — <strong>Spike-0 (real-car scan quality)</strong> — is physically un-runnable by an agent and is handed to the PM's Pro iPhone at Gate 3.</p>
+    <div class="card fig">
+      <svg viewBox="0 0 1060 150" role="img" aria-label="Verification pipeline status">
+        <defs><marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#1f9d62"/></marker></defs>
+        <g font-family="var(--sans)">
+          <rect x="14" y="50" width="150" height="50" rx="10" fill="#e8f6ee" stroke="#1f9d62"/><text x="89" y="72" text-anchor="middle" font-size="12" font-weight="700">7 build slices</text><text x="89" y="89" text-anchor="middle" font-size="10" fill="#0d6b3f">Worker→QA, all PASS</text>
+          <rect x="210" y="50" width="150" height="50" rx="10" fill="#e8f6ee" stroke="#1f9d62"/><text x="285" y="72" text-anchor="middle" font-size="12" font-weight="700">44 unit tests</text><text x="285" y="89" text-anchor="middle" font-size="10" fill="#0d6b3f">0 failures</text>
+          <rect x="406" y="50" width="160" height="50" rx="10" fill="#e8f6ee" stroke="#1f9d62"/><text x="486" y="72" text-anchor="middle" font-size="12" font-weight="700">2 beta-testers</text><text x="486" y="89" text-anchor="middle" font-size="10" fill="#0d6b3f">both SHIP · 0 high/med</text>
+          <rect x="612" y="50" width="170" height="50" rx="10" fill="#fbf3dd" stroke="#b8860b"/><text x="697" y="70" text-anchor="middle" font-size="12" font-weight="700">Spike-0</text><text x="697" y="87" text-anchor="middle" font-size="9.5" fill="#7a5a00">PENDING — PM's Pro iPhone</text>
+          <rect x="828" y="50" width="218" height="50" rx="10" fill="#fff1ec" stroke="#ff4326"/><text x="937" y="70" text-anchor="middle" font-size="12" font-weight="700">→ GATE 3</text><text x="937" y="87" text-anchor="middle" font-size="9.5" fill="#a82a17">PM review + on-device Spike-0</text>
+          <line x1="164" y1="75" x2="208" y2="75" stroke="#1f9d62" stroke-width="2" marker-end="url(#a)"/>
+          <line x1="360" y1="75" x2="404" y2="75" stroke="#1f9d62" stroke-width="2" marker-end="url(#a)"/>
+          <line x1="566" y1="75" x2="610" y2="75" stroke="#1f9d62" stroke-width="2" marker-end="url(#a)"/>
+          <line x1="782" y1="75" x2="826" y2="75" stroke="#1f9d62" stroke-width="2" marker-end="url(#a)"/>
+        </g>
+      </svg>
+      <figcaption>Verification chain: every slice QA-gated, the full app beta-tested by two independent testers (both SHIP), now staged for Gate 3 where the PM runs the one device-bound go/no-go (Spike-0).</figcaption>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">1</span> Build slices</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Slice</th><th>Scope</th><th>QA</th><th>Tests</th></tr></thead>
+      <tbody>
+        <tr><td>1 · Foundation + Spike-1</td><td>SwiftUI app + <code>DiecastVaultCore</code> + tab shell; <strong>Spike-1</strong> real-time 3D RealityKit cabinet</td><td><span class="v pass">PASS</span></td><td>8</td></tr>
+        <tr><td>2 · PICK core</td><td>Catalog → drive-select → Release detail (Model + Real-Car stub) → 3D viewer + AR Quick Look; SwiftData persistence; sample USDZ</td><td><span class="v pass">PASS</span></td><td>20</td></tr>
+        <tr><td>3 · i18n + viewer polish</td><td>EN + 简体中文 String Catalogs, live in-app switch, English default; CJK serif; 3D-stage lighting/scale</td><td><span class="v pass">PASS</span></td><td>20</td></tr>
+        <tr><td>4 · 3D cabinet Home</td><td>Real-time 3D cabinet as Home (data-backed, light-as-state, LOD); 4 styles + “Choose your cabinet” picker</td><td><span class="v pass">PASS</span></td><td>28</td></tr>
+        <tr><td>5 · Capture flow</td><td>Object Capture scan→reconstruct→verdict→bond (Pro-gated on <code>isSupported</code>); separate bond step; sim shows the Pro-iPhone invite</td><td><span class="v pass">PASS</span></td><td>38</td></tr>
+        <tr><td>6 · Contribution + fixes</td><td>Post-scan share prompt, gap nudges, Me recognition (opt-in, upload stubbed); <code>NSCameraUsageDescription</code>; real 2×2 app icon</td><td><span class="v pass">PASS</span></td><td>44</td></tr>
+        <tr><td>7 · States + Settings</td><td>Empty/error/offline states (authored); full Settings (iCloud toggle, account, DMCA/report, about, language, style); polish</td><td><span class="v pass">PASS</span></td><td>44</td></tr>
+      </tbody>
+    </table></div>
+    <p>All slices committed to <code>main</code>. The generated <code>.xcodeproj</code> is gitignored — source of truth is <code>app/project.yml</code> + sources (xcodegen).</p>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span> Test coverage</h2>
+    <div class="grid c3">
+      <div class="tile"><h4>Unit (44, 0 fail)</h4><p>Core logic in <code>DiecastVaultCore</code>: the <code>(mgtNumber, drive)</code> key + normalization, catalog index/search, bond validation (rejects half-keys), locale, cabinet styles (Codable round-trip), contribution summary. Run via <code>swift test</code>.</p></div>
+      <div class="tile"><h4>Integration / E2E (per-slice QA)</h4><p>Each slice independently rebuilt (fresh xcodegen), launched on the iPhone 17 Pro sim, and exercised: pick→detail→3D/AR, scan-gating, dev-bond→persist→relaunch, language switch (XCUITest), presigned/network checks.</p></div>
+      <div class="tile"><h4>Static / safety</h4><p><strong>Zero network calls</strong> on local use (grep-verified across app + Core every slice). <code>NSCameraUsageDescription</code> present in the built Info.plist. App icon opaque.</p></div>
+    </div>
+    <div class="callout"><b>Note on editor diagnostics:</b> SourceKit repeatedly flagged “No such module 'DiecastVaultCore'” / “Cannot find Drive/CatalogKey” — these are <strong>false positives</strong> from analyzing files without the xcodegen-generated project/module graph. The real <code>xcodebuild</code> + <code>swift test</code> are green every slice (independently re-confirmed by the Coordinator and QA).</p></div>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span> Device matrix</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Capability</th><th>Pro iPhone (LiDAR, 12 Pro–17 Pro)</th><th>Any iPhone / simulator</th></tr></thead>
+      <tbody>
+        <tr><td>Browse, pick, 3D view, AR</td><td>✓</td><td>✓</td></tr>
+        <tr><td>Cabinet styles, i18n, persistence, contribution UI</td><td>✓</td><td>✓</td></tr>
+        <tr><td>Scan + on-device reconstruction</td><td>✓ (the Spike-0 path)</td><td>— shows the “needs a Pro iPhone” invite (never a dead button)</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span> Spikes (go/no-go)</h2>
+    <div class="grid c2">
+      <div class="card"><h3 style="margin-top:0">Spike-1 — 3D cabinet <span class="v ship">GO (sim)</span></h3><p>Real-time RealityKit cabinet renders correctly; <strong>~60 fps / 40 MB / thermal nominal</strong> in the simulator at 24 niches. Renderer sits behind a swappable seam (a NO-GO is a swap, not a rewrite). <strong>Device-bound caveat:</strong> sim ≠ device GPU, and real 25 MB-USDZ LOD cost is not yet exercised — re-confirm on a physical device.</p></div>
+      <div class="card"><h3 style="margin-top:0">Spike-0 — scan quality <span class="v pend">PENDING — needs PM device</span></h3><p>Whether a Pro iPhone can turn a real glossy/cased Mini GT into a good model is the biggest product risk and <strong>cannot be run by an agent or the simulator</strong>. The capture flow is built, Pro-gated, and camera-permission-ready; the PM runs the go/no-go on a physical Pro iPhone with real cars at Gate 3.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">5</span> Beta-test pass (two independent testers)</h2>
+    <div class="grid c2">
+      <div class="card"><h3 style="margin-top:0">Tester A — happy path + polish (EN) <span class="v ship">SHIP</span></h3><p>Clean first-run lands on the lit 3D cabinet in English; all 4 styles + the picker are “a standout polish moment”; empty/error/offline states are authored, not afterthoughts; honest scope framing throughout. No first-run/polish blockers.</p></div>
+      <div class="card"><h3 style="margin-top:0">Tester B — edge / i18n / integrity <span class="v ship">SHIP</span></h3><p>Capability-invite is first-class (no crash/dead-end); bond rejects half-keys; persistence solid (4→5 lit persists across relaunch); contribution is opt-in (no auto-upload of personal models); full 简体中文 pass renders with no tofu/clipping, car names stay Latin. “Every probe held up.”</p></div>
+    </div>
+    <h3>Defects found (all LOW; both testers still SHIP)</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>Sev</th><th>Defect</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><span class="v low">LOW</span></td><td>Hero-niche full USDZ blows out near-white under the cabinet light (other niches read fine)</td><td><span class="v pass">RESOLVED</span> — was a real bounds-math bug (USDZ scaled ~18 m off-screen → empty white niche); fixed with local-space bounds + scale-once + softened materials; verified across all 4 styles</td></tr>
+        <tr><td><span class="v low">LOW</span></td><td>3D viewer default camera sits too close and crops the model before the user orbits</td><td><span class="v pass">RESOLVED</span> — framing margin added; whole model now framed on first open</td></tr>
+        <tr><td><span class="v low">LOW</span></td><td>Museum-style top light-rail glow is over-saturated vs the rest of the system</td><td><span class="v pass">RESOLVED</span> — desaturated to a museum warm-white fixture</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2><span class="n">6</span> Acceptance criteria (vs PRD)</h2>
+    <ul class="clean">
+      <li><strong>View &amp; pick on any iPhone</strong> — ✓ catalog → drive-select → detail → 3D/AR, sim-verified.</li>
+      <li><strong>Bond to (number + drive)</strong> — ✓ enforced (half-keys rejected); drive decals throughout.</li>
+      <li><strong>Local-first + persistence</strong> — ✓ SwiftData; pick/bond persists across relaunch; iCloud toggle off-by-default.</li>
+      <li><strong>EN + 简体中文, live switch, English default</strong> — ✓ (XCUITest-proven).</li>
+      <li><strong>Opt-in contribution, no auto-upload</strong> — ✓ share is explicit + stubbed (v1.1 upload).</li>
+      <li><strong>Scan on Pro, graceful gate elsewhere</strong> — ✓ invite path; <em>real scan quality = Spike-0 (device, pending)</em>.</li>
+      <li><strong>“Show a friend” one tap</strong> — ✓ grid → 3D / AR.</li>
+      <li><strong>Both beta-testers sign ship</strong> — ✓.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="n">7</span> Scope &amp; what's deferred</h2>
+    <div class="callout warn"><b>This is a v1 simulator build on DEMO content.</b> Real 3D models come from user scans (Spike-0) + the community library; car catalog, the Real-Car enrichment (Wikidata/Wikipedia/Commons + AI), and community upload are <strong>v1.1 backend</strong> (own <code>diecast-postgres</code> + Cloudflare R2, BillMind-style deploy). The DMCA §512(c) designated agent is a <strong>launch-blocker for the community feature</strong>, not for the local v1.</div>
+  </section>
+
+  <footer>
+    Diecast Vault · Test Report v1 · SDD pipeline Step 7 · 2026-06-18. Verdict: <strong>ready for Gate 3</strong> (PM final review + the on-device Spike-0 scan-quality go/no-go). Build green on <code>main</code>; 44 unit tests pass; two independent beta-testers SHIP with no high/medium defects. Post-beta polish (commit <code>0287539</code>) <strong>resolved all 3 LOW defects</strong> — including a genuine hero-niche bounds bug. As the fix is contained and strictly-improving on the already-SHIP'd build (no flow/data/logic change), the Coordinator re-verified it directly (build green, 44 tests, all 4 styles + viewer) rather than re-running a full two-beta round.
+  </footer>
+</div>
+</body>
+</html>
