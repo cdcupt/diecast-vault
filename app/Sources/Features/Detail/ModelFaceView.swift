@@ -9,6 +9,11 @@ struct ModelFaceView: View {
     let scanState: ScanState
     let isOwned: Bool
     let onPick: () -> Void
+    /// Pro gap-nudge action: launch the guided scan flow to light this niche.
+    var onScanFirst: () -> Void = {}
+    /// Non-Pro gap-nudge action: register interest so the owner is told when a
+    /// community scan lands (stubbed locally — surfaces the Library).
+    var onNotify: () -> Void = {}
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -133,27 +138,56 @@ struct ModelFaceView: View {
 
     private func contributionInvite(tone: Tone) -> some View {
         let isTungsten = tone == .tungsten
-        return VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 8) {
-                Image(systemName: isTungsten ? "camera.viewfinder" : "info.circle")
-                Text(isTungsten ? "detail.invite.proTitle" : "detail.invite.basicTitle")
-                    .font(.system(size: 14, weight: .semibold))
-            }
-            .foregroundStyle(isTungsten ? Ink.tungstenDeep : Ink.steel)
+        return VStack(alignment: .leading, spacing: 12) {
+            // The well: ★ headline + reciprocity note (mockup #s-release-noscan).
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 8) {
+                    Image(systemName: isTungsten ? "camera.viewfinder" : "info.circle")
+                    Text(isTungsten ? "detail.invite.proTitle" : "detail.invite.basicTitle")
+                        .font(.system(size: 14, weight: .semibold))
+                }
+                .foregroundStyle(isTungsten ? Ink.tungstenDeep : Ink.steel)
 
-            // The note is localized in the view layer (keyed by scan state) so the
-            // pure Core `ScanState.contributionNote` stays free of locale concerns.
-            Text(isTungsten ? "detail.invite.proNote" : "detail.invite.basicNote")
-                .font(.callout)
-                .foregroundStyle(Ink.soft)
+                // The note is localized in the view layer (keyed by scan state) so the
+                // pure Core `ScanState.contributionNote` stays free of locale concerns.
+                Text(isTungsten ? "detail.invite.proNote" : "detail.invite.basicNote")
+                    .font(.callout)
+                    .foregroundStyle(Ink.soft)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(16)
+            .background(isTungsten ? Color(Palette.tungstenGlow).opacity(0.5) : Ink.steelSoft)
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(isTungsten ? Ink.tungsten : Ink.steel, lineWidth: 1)
+            )
+
+            // The active invite — what turns the passive empty state into a
+            // contribution call. Pro: a tungsten "Be the first to scan this".
+            // Non-Pro: only the calm "notify me" path (scanning needs a Pro iPhone).
+            if isTungsten {
+                Button(action: onScanFirst) {
+                    PrimaryCTALabel(title: "detail.invite.proCta", systemImage: "camera.viewfinder")
+                }
+                .buttonStyle(.plain)
+            }
+
+            Button(action: onNotify) {
+                HStack(spacing: 8) {
+                    Image(systemName: "bell")
+                    Text("detail.invite.notify").font(.system(size: 15, weight: .semibold))
+                }
+                .foregroundStyle(Ink.steel)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 13)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 11, style: .continuous)
+                        .stroke(Ink.steel, lineWidth: 1.5)
+                        .opacity(0.85)
+                )
+            }
+            .buttonStyle(.plain)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(16)
-        .background(isTungsten ? Color(Palette.tungstenGlow).opacity(0.5) : Ink.steelSoft)
-        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .stroke(isTungsten ? Ink.tungsten : Ink.steel, lineWidth: 1)
-        )
     }
 }

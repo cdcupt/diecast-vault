@@ -17,6 +17,12 @@ struct SharePromptView: View {
 
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var router: ScanRouter
+    @EnvironmentObject private var contributionStore: ContributionStore
+
+    /// The opt-in outcome: once "Share" is tapped the upload is QUEUED (the actual
+    /// transfer ships with the community backend in v1.1) and the screen swaps to
+    /// an honest confirmation rather than a fake "uploaded" success.
+    @State private var queued = false
 
     private var displayName: String {
         Release.catalogSample.first { $0.mgtNumber == copy.mgtNumber }?.name ?? copy.mgtNumber
@@ -25,36 +31,11 @@ struct SharePromptView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
-                statusChip
-                Text(isFirstToScan ? "share.title.first" : "share.title.alt")
-                    .font(Voice.serif(28))
-                    .foregroundStyle(Ink.primary)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text(isFirstToScan ? "share.body.first" : "share.body.alt")
-                    .font(.callout)
-                    .foregroundStyle(Ink.soft)
-
-                bondedCard
-
-                Button { finish() } label: {
-                    PrimaryCTALabel(title: "share.cta.share", systemImage: "square.and.arrow.up")
+                if queued {
+                    queuedConfirmation
+                } else {
+                    prompt
                 }
-                .buttonStyle(.plain)
-
-                Button { finish() } label: {
-                    Text("share.cta.notNow")
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(Ink.tungstenDeep)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 13)
-                }
-                .buttonStyle(.plain)
-
-                Text("share.fineprint")
-                    .font(.caption2)
-                    .foregroundStyle(Ink.muted)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity)
             }
             .padding(.horizontal, 18)
             .padding(.top, 8)
@@ -64,6 +45,83 @@ struct SharePromptView: View {
         .navigationTitle(Text("share.title.nav"))
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
+    }
+
+    // MARK: Prompt (pre-decision)
+
+    @ViewBuilder
+    private var prompt: some View {
+        statusChip
+        Text(isFirstToScan ? "share.title.first" : "share.title.alt")
+            .font(Voice.serif(28))
+            .foregroundStyle(Ink.primary)
+            .fixedSize(horizontal: false, vertical: true)
+        Text(isFirstToScan ? "share.body.first" : "share.body.alt")
+            .font(.callout)
+            .foregroundStyle(Ink.soft)
+
+        bondedCard
+
+        // Opt-in share: tungsten when first-to-scan (highest leverage), steel when
+        // offering an alternate to an existing canonical scan.
+        Button { share() } label: {
+            PrimaryCTALabel(
+                title: isFirstToScan ? "share.cta.share" : "share.cta.shareAlt",
+                systemImage: "square.and.arrow.up",
+                fill: isFirstToScan ? Ink.tungsten : Ink.steel
+            )
+        }
+        .buttonStyle(.plain)
+
+        Button { finish() } label: {
+            Text(isFirstToScan ? "share.cta.notNow" : "share.cta.notNow.private")
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(Ink.tungstenDeep)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 13)
+        }
+        .buttonStyle(.plain)
+
+        VStack(spacing: 4) {
+            Text("share.fineprint")
+            if isFirstToScan {
+                Text("share.reciprocity")
+            }
+        }
+        .font(.caption2)
+        .foregroundStyle(Ink.muted)
+        .multilineTextAlignment(.center)
+        .frame(maxWidth: .infinity)
+    }
+
+    // MARK: Queued confirmation (post opt-in)
+
+    @ViewBuilder
+    private var queuedConfirmation: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "clock.badge.checkmark")
+                .foregroundStyle(Ink.tungstenDeep)
+            Text("share.queued.chip")
+                .font(Voice.mono(10, weight: .heavy))
+                .textCase(.uppercase)
+                .foregroundStyle(Ink.tungstenDeep)
+                .padding(.horizontal, 9).padding(.vertical, 4)
+                .background(Color(Palette.tungstenGlow), in: Capsule())
+        }
+
+        Text("share.queued.title")
+            .font(Voice.serif(28))
+            .foregroundStyle(Ink.primary)
+        Text("share.queued.body")
+            .font(.callout)
+            .foregroundStyle(Ink.soft)
+
+        bondedCard
+
+        Button { finish() } label: {
+            PrimaryCTALabel(title: "share.queued.done", systemImage: "checkmark")
+        }
+        .buttonStyle(.plain)
     }
 
     private var statusChip: some View {
@@ -113,6 +171,15 @@ struct SharePromptView: View {
         .background(Ink.cellSurface)
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(Ink.line, lineWidth: 1))
+    }
+
+    /// Opt-in to share. Records the contribution locally (so Me's recognition and
+    /// the Library credit reflect it immediately) and swaps to the honest "queued"
+    /// confirmation — the actual upload ships with the community backend (v1.1).
+    /// Personal models never auto-upload; this only runs on an explicit tap.
+    private func share() {
+        contributionStore.queueShare(copy, name: displayName, isWorldFirst: isFirstToScan)
+        withAnimation(.easeOut(duration: 0.25)) { queued = true }
     }
 
     /// Close the whole scan flow and return to the cabinet (the model is saved).

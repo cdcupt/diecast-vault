@@ -48,6 +48,9 @@ targets:
         INFOPLIST_KEY_CFBundleDisplayName: "Diecast Vault"
         INFOPLIST_KEY_UIUserInterfaceStyle: Light   # warm light chrome only
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+        # Spike-0 on-device capture (ObjectCaptureSession) needs camera access; the
+        # purpose string is required or the first camera request hard-crashes.
+        INFOPLIST_KEY_NSCameraUsageDescription: "Diecast Vault uses the camera to scan your diecast cars into 3D models."
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
 

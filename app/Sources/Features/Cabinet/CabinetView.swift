@@ -14,6 +14,7 @@ import DiecastVaultCore
 struct CabinetView: View {
     @Query(sort: \OwnedModel.acquiredAt, order: .reverse) private var owned: [OwnedModel]
     @EnvironmentObject private var stylePreference: CabinetStylePreference
+    @EnvironmentObject private var contributionStore: ContributionStore
 
     /// Cross-tab pick path (matte niche → Catalog). A simple binding the shell
     /// can observe later; for now the detail covers lit niches and matte niches
@@ -104,6 +105,7 @@ struct CabinetView: View {
         }
         .sheet(isPresented: $showScan) {
             ScanFlowView()
+                .environmentObject(contributionStore)
         }
     }
 
@@ -220,5 +222,6 @@ struct CabinetView: View {
     NavigationStack { CabinetView() }
         .modelContainer(PersistenceController.inMemory())
         .environmentObject(CabinetStylePreference())
+        .environmentObject(ContributionStore())
         .tint(Ink.tungsten)
 }

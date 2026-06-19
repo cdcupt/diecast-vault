@@ -382,10 +382,13 @@ struct StepChip: View {
     }
 }
 
-/// The shared tungsten primary CTA label (full-width, filled).
+/// The shared primary CTA label (full-width, filled). Tungsten by default; a
+/// `fill` override lets a secondary action (e.g. "offer as alternate") wear steel
+/// while keeping the same shape and metrics.
 struct PrimaryCTALabel: View {
     let title: LocalizedStringKey
     let systemImage: String
+    var fill: Color = Ink.tungsten
 
     var body: some View {
         HStack(spacing: 8) {
@@ -395,7 +398,7 @@ struct PrimaryCTALabel: View {
         .foregroundStyle(.white)
         .frame(maxWidth: .infinity)
         .padding(.vertical, 14)
-        .background(Ink.tungsten, in: RoundedRectangle(cornerRadius: 11, style: .continuous))
+        .background(fill, in: RoundedRectangle(cornerRadius: 11, style: .continuous))
     }
 }
 

@@ -18,11 +18,25 @@ struct BondView: View {
     /// the bonded niche lights up and the bond→save→cabinet chain is verifiable
     /// without a camera.
     let scanResult: ScanResult?
+    /// When the bond was launched from a release's gap-nudge, the form opens
+    /// pre-seeded with that release's `(number, drive)` so a world-first lights the
+    /// correct niche.
+    var prefillKey: CatalogKey? = nil
 
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject private var router: ScanRouter
 
-    @State private var draft = BondDraft()
+    @State private var draft: BondDraft
+
+    init(scanResult: ScanResult?, prefillKey: CatalogKey? = nil) {
+        self.scanResult = scanResult
+        self.prefillKey = prefillKey
+        if let key = prefillKey {
+            _draft = State(initialValue: BondDraft(mgtNumber: key.mgtNumber, drive: key.drive))
+        } else {
+            _draft = State(initialValue: BondDraft())
+        }
+    }
 
     /// Live catalog match for the typed number (any drive) — drives the confirmation chip.
     private var match: Release? {
@@ -148,9 +162,11 @@ struct BondView: View {
             modelContext.insert(OwnedModel(copy))
         }
         try? modelContext.save()
-        // First-to-scan when this bond came from a live scan (no canonical
-        // community scan exists yet for a fresh capture).
-        router.go(.share(copy: copy, isFirstToScan: scanResult != nil))
+        // First-to-scan when this bond came from a live scan OR from a release's
+        // "Be the first to scan this" gap-nudge (no canonical community scan exists
+        // yet for that key).
+        let isFirstToScan = scanResult != nil || prefillKey != nil
+        router.go(.share(copy: copy, isFirstToScan: isFirstToScan))
     }
 }
 

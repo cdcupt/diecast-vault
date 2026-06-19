@@ -8,7 +8,12 @@ import DiecastVaultCore
 struct MeView: View {
     @EnvironmentObject private var localeManager: LocaleManager
     @EnvironmentObject private var stylePreference: CabinetStylePreference
+    @EnvironmentObject private var contributionStore: ContributionStore
     @State private var showStylePicker = false
+
+    /// Recognition is DERIVED from the user's opted-in shares — never hardcoded, so
+    /// it tracks a fresh share from the post-bond prompt the instant it lands.
+    private var summary: ContributionSummary { contributionStore.summary }
 
     var body: some View {
         ScrollView {
@@ -60,29 +65,27 @@ struct MeView: View {
     // MARK: Contribution summary
 
     private var contribution: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             Text("me.contribution.heading")
                 .textCase(.uppercase)
                 .font(Voice.mono(10, weight: .semibold))
                 .tracking(1.2)
                 .foregroundStyle(Ink.muted)
 
-            // Scale-contrast: the lit count towers; the breakdown sits in mono.
-            HStack(alignment: .firstTextBaseline, spacing: 6) {
-                Text("9")
-                    .font(Voice.serif(40))
-                    .foregroundStyle(Ink.primary)
-                Text("me.contribution.litReleases")
-                    .font(.callout)
-                    .foregroundStyle(Ink.soft)
-                Spacer()
-            }
+            // The headline reads the derived count — "You've lit N releases…".
+            Text("me.contribution.litHeadline \(summary.litReleases)")
+                .font(Voice.serif(24))
+                .foregroundStyle(Ink.primary)
+                .fixedSize(horizontal: false, vertical: true)
 
-            Text("me.contribution.stats")
+            // Telemetry breakdown in mono (shares · downloads · world-firsts).
+            Text("me.contribution.tele \(summary.litReleases) \(summary.totalDownloads) \(summary.worldFirsts)")
                 .font(Voice.mono(10))
-                .foregroundStyle(Ink.muted)
+                .foregroundStyle(Ink.soft)
 
-            Text("me.contribution.note")
+            badges
+
+            Text("me.contribution.creditNote")
                 .font(.footnote)
                 .foregroundStyle(Ink.soft)
         }
@@ -93,6 +96,36 @@ struct MeView: View {
         .overlay(
             RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(Ink.tungsten.opacity(0.5), lineWidth: 1)
         )
+    }
+
+    /// Light badges earned from opted-in shares (mockup #s-settings strip).
+    private var badges: some View {
+        HStack(spacing: 6) {
+            ForEach(summary.badges) { badge in
+                badgeChip(badge)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func badgeChip(_ badge: ContributionBadge) -> some View {
+        switch badge {
+        case .firstLight:
+            chip("me.badge.firstLight \(summary.worldFirsts)",
+                 fg: Ink.tungstenDeep, bg: Color(Palette.tungstenGlow))
+        case .seeder:
+            chip("me.badge.seeder", fg: Ink.steel, bg: Ink.steelSoft)
+        case .verifiedOwner:
+            chip("me.badge.verifiedOwner", fg: .white, bg: Ink.ok)
+        }
+    }
+
+    private func chip(_ key: LocalizedStringKey, fg: Color, bg: Color) -> some View {
+        Text(key)
+            .font(Voice.mono(10, weight: .semibold))
+            .foregroundStyle(fg)
+            .padding(.horizontal, 9).padding(.vertical, 4)
+            .background(bg, in: Capsule())
     }
 
     // MARK: Settings
@@ -296,5 +329,6 @@ struct LanguageView: View {
     NavigationStack { MeView() }
         .environmentObject(LocaleManager())
         .environmentObject(CabinetStylePreference())
+        .environmentObject(ContributionStore())
         .tint(Ink.tungsten)
 }

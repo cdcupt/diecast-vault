@@ -34,6 +34,11 @@ struct DiecastVaultApp: App {
     /// picker share one live, persisted source of truth.
     @StateObject private var stylePreference = CabinetStylePreference()
 
+    /// Owns the user's opted-in community shares (upload stubbed for v1.1). Shared
+    /// so a fresh share from the post-bond prompt is reflected live in Me and in
+    /// the Library credit lines — recognition derived, never hardcoded.
+    @StateObject private var contributionStore = ContributionStore()
+
     var body: some Scene {
         WindowGroup {
             Group {
@@ -48,6 +53,7 @@ struct DiecastVaultApp: App {
             .tint(Ink.tungsten)
             .environmentObject(localeManager)
             .environmentObject(stylePreference)
+            .environmentObject(contributionStore)
             // Live language switch: re-rendering against this locale is what makes
             // every localized `Text` flip without a relaunch (see LocaleManager).
             .environment(\.locale, localeManager.locale)
@@ -67,6 +73,8 @@ struct DiecastVaultApp: App {
             CatalogView()
         case "me":
             MeView()
+        case "library":
+            LibraryView()
         case "language":
             LanguageView()
         case "stylePicker":
@@ -80,6 +88,16 @@ struct DiecastVaultApp: App {
             // DEV bond path: land straight on the BOND step (sample USDZ stands in
             // for a live scan) so the bond→save→cabinet chain runs without a camera.
             ScanFlowView(startAtBond: true)
+        case "share":
+            // DEV: land straight on the post-bond SHARE prompt (first-to-scan
+            // framing) so the contribution opt-in is screenshot-able in the sim.
+            SharePromptScreenshotHost()
+        case "noscan":
+            // DEV: a no-scan-yet (MATTE) release detail — the Pro gap-nudge with the
+            // active "Be the first to scan this" invite.
+            ReleaseDetailView(release: Release(
+                key: .init(mgtNumber: "MGT00910", drive: .lhd),
+                name: "Lamborghini Huracán EVO", edition: "0344/2019", isLit: false))
         case "devbond":
             // Seed a fresh bonded model, then show the full shell so it appears LIT
             // in the cabinet — verifies the bond→save→appears-in-cabinet chain.
@@ -87,6 +105,24 @@ struct DiecastVaultApp: App {
         default:
             ReleaseDetailView(release: routeSample)
         }
+    }
+}
+
+/// DEV host (DV_ROUTE=share): presents the post-bond SHARE prompt inside a scan
+/// router so the contribution opt-in surface is screenshot-able without walking
+/// the whole capture→bond chain. Uses a representative first-to-scan copy.
+private struct SharePromptScreenshotHost: View {
+    @StateObject private var router = ScanRouter()
+    private static let copy = OwnedCopy(
+        key: .init(mgtNumber: "MGT00802", drive: .rhd),
+        editionNo: "0640/2022", hasModel: true)
+
+    var body: some View {
+        NavigationStack {
+            SharePromptView(copy: Self.copy, isFirstToScan: true)
+        }
+        .environmentObject(router)
+        .tint(Ink.tungsten)
     }
 }
 

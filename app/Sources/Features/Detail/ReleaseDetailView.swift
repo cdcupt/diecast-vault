@@ -11,9 +11,15 @@ struct ReleaseDetailView: View {
     let release: Release
 
     @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject private var contributionStore: ContributionStore
     @Query private var owned: [OwnedModel]
 
     @State private var face: DetailFace
+    /// Presents the guided scan flow from the Pro gap-nudge ("Be the first…").
+    @State private var showScan = false
+    /// Set when the non-Pro "Notify me when it's scanned" path is taken (stubbed —
+    /// no push backend in v1.1; surfaces a confirmation toast).
+    @State private var notifyInterest = false
 
     /// Slice 2 runs the simulator as a "Pro" device so the tungsten contribution
     /// invite is exercised; capability detection arrives with the capture pipeline.
@@ -39,7 +45,14 @@ struct ReleaseDetailView: View {
 
                 switch face {
                 case .model:
-                    ModelFaceView(release: release, scanState: scanState, isOwned: isOwned, onPick: pickToShelf)
+                    ModelFaceView(
+                        release: release,
+                        scanState: scanState,
+                        isOwned: isOwned,
+                        onPick: pickToShelf,
+                        onScanFirst: { showScan = true },
+                        onNotify: { notifyInterest = true }
+                    )
                 case .realCar:
                     RealCarFaceView(release: release)
                 }
@@ -53,6 +66,35 @@ struct ReleaseDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(for: ViewerRoute.self) { route in
             ModelViewerView(release: route.release)
+        }
+        .sheet(isPresented: $showScan) {
+            // Launch the guided scan pre-bonded to THIS release so a fresh world-
+            // first lights the right niche. Re-inject the store across the sheet.
+            ScanFlowView(prefillKey: release.key)
+                .environmentObject(contributionStore)
+        }
+        .overlay(alignment: .bottom) {
+            if notifyInterest { notifyToast }
+        }
+    }
+
+    /// Calm confirmation for the non-Pro / "notify me" gap-nudge path. Auto-hides.
+    private var notifyToast: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "bell.badge")
+                .foregroundStyle(Ink.steel)
+            Text("detail.invite.notified")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(Ink.primary)
+        }
+        .padding(.horizontal, 16).padding(.vertical, 12)
+        .background(Ink.steelSoft, in: Capsule())
+        .overlay(Capsule().stroke(Ink.steel.opacity(0.4), lineWidth: 1))
+        .padding(.bottom, 24)
+        .transition(.move(edge: .bottom).combined(with: .opacity))
+        .task {
+            try? await Task.sleep(nanoseconds: 2_400_000_000)
+            withAnimation { notifyInterest = false }
         }
     }
 

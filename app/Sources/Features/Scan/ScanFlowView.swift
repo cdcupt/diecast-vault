@@ -40,6 +40,10 @@ struct ScanFlowView: View {
     /// DEV path: open straight on the BOND step (no live scan, bundled sample USDZ
     /// attached) so the bond→save→cabinet chain is testable in the simulator.
     var startAtBond: Bool = false
+    /// When launched from a release's "Be the first to scan this" gap-nudge, the
+    /// bond is prefilled with that release's `(number, drive)` so a world-first
+    /// lights the right niche. Implies starting at the bond step on the simulator.
+    var prefillKey: CatalogKey? = nil
 
     @Environment(\.dismiss) private var dismiss
     @StateObject private var flow = ScanFlowModel()
@@ -51,7 +55,7 @@ struct ScanFlowView: View {
                 .navigationDestination(for: ScanRoute.self) { route in
                     switch route {
                     case let .bond(scan):
-                        BondView(scanResult: scan)
+                        BondView(scanResult: scan, prefillKey: prefillKey)
                     case let .share(copy, isFirst):
                         SharePromptView(copy: copy, isFirstToScan: isFirst)
                     }
@@ -70,9 +74,10 @@ struct ScanFlowView: View {
 
     @ViewBuilder
     private var root: some View {
-        if startAtBond {
-            // DEV path: land on BOND immediately (sample USDZ stands in for a scan).
-            BondView(scanResult: nil)
+        if startAtBond || prefillKey != nil {
+            // DEV / gap-nudge path: land on BOND immediately (sample USDZ stands in
+            // for a scan). A `prefillKey` seeds the form from the release.
+            BondView(scanResult: nil, prefillKey: prefillKey)
         } else if capability.canCapture {
             guidedFlow
         } else {
