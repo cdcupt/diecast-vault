@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 import DiecastVaultCore
 
 @main
@@ -70,8 +71,51 @@ struct DiecastVaultApp: App {
             LanguageView()
         case "stylePicker":
             CabinetStylePickerView()
+        case "scan":
+            // The full scan flow — shows the capability-invite on the simulator
+            // (PhotogrammetrySession.isSupported == false). DV_FORCE_SCAN_SUPPORT=1
+            // overrides to exercise the guided path.
+            ScanFlowView()
+        case "bond":
+            // DEV bond path: land straight on the BOND step (sample USDZ stands in
+            // for a live scan) so the bond→save→cabinet chain runs without a camera.
+            ScanFlowView(startAtBond: true)
+        case "devbond":
+            // Seed a fresh bonded model, then show the full shell so it appears LIT
+            // in the cabinet — verifies the bond→save→appears-in-cabinet chain.
+            DevBondedCabinet()
         default:
             ReleaseDetailView(release: routeSample)
         }
+    }
+}
+
+/// DEV verification view (DV_ROUTE=devbond): bonds a new owned model via the
+/// bundled sample USDZ on first appear, then shows the full tab shell so the
+/// freshly-bonded car is visible LIT in the 3D cabinet — the bond→save→cabinet
+/// chain, end to end, with no camera.
+private struct DevBondedCabinet: View {
+    @Environment(\.modelContext) private var modelContext
+    @State private var seeded = false
+
+    /// A release deliberately NOT in the first-run lit seed, so it reads as freshly
+    /// bonded against the matte shelf.
+    private static let freshDraft = BondDraft(mgtNumber: "MGT00702", drive: .lhd, editionNo: "0319/2023")
+
+    var body: some View {
+        RootTabView()
+            .task {
+                guard !seeded else { return }
+                seeded = true
+                guard let copy = Self.freshDraft.ownedCopy(hasModel: true) else { return }
+                let id = copy.key.stableID
+                let existing = try? modelContext.fetch(
+                    FetchDescriptor<OwnedModel>(predicate: #Predicate { $0.stableID == id })
+                )
+                if existing?.isEmpty ?? true {
+                    modelContext.insert(OwnedModel(copy))
+                    try? modelContext.save()
+                }
+            }
     }
 }

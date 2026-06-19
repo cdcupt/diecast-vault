@@ -20,6 +20,7 @@ struct CabinetView: View {
     /// open the catalog entry for that release inline.
     @State private var route: Release?
     @State private var showStylePicker = false
+    @State private var showScan = false
 
     /// The perf harness HUD is debug-only now (the cabinet IS the home).
     /// `DV_PERF_HUD=1` overlays the live FPS/mem/thermal readout for measurement.
@@ -83,12 +84,26 @@ struct CabinetView: View {
         .navigationTitle(Text("tab.cabinet"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(.hidden, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showScan = true
+                } label: {
+                    Image(systemName: "camera.viewfinder")
+                        .foregroundStyle(Ink.tungsten)
+                }
+                .accessibilityLabel(Text("scan.title"))
+            }
+        }
         .navigationDestination(item: $route) { release in
             ReleaseDetailView(release: release)
         }
         .sheet(isPresented: $showStylePicker) {
             CabinetStylePickerView()
                 .environmentObject(stylePreference)
+        }
+        .sheet(isPresented: $showScan) {
+            ScanFlowView()
         }
     }
 

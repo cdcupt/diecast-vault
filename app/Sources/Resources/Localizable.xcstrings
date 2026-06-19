@@ -2,6 +2,210 @@
   "sourceLanguage": "en",
   "version": "1.0",
   "strings": {
+    "bond.cta": {
+      "comment": "Bond save CTA.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stamp & bond"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刻印并绑定"
+          }
+        }
+      }
+    },
+    "bond.cta.hint": {
+      "comment": "Bond CTA accessibility hint.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saves this model to your collection."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "把该模型保存到你的收藏。"
+          }
+        }
+      }
+    },
+    "bond.eyebrow": {
+      "comment": "Bond lightbar eyebrow.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bond the model"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "绑定该模型"
+          }
+        }
+      }
+    },
+    "bond.field.drive": {
+      "comment": "Bond field label: drive (required, half the key).",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drive — required (half the key)"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "驾驶位——必选（构成识别键的一半）"
+          }
+        }
+      }
+    },
+    "bond.field.edition": {
+      "comment": "Bond field label: optional edition serial.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edition serial — optional (per copy)"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "限量编号——可选（每件独立）"
+          }
+        }
+      }
+    },
+    "bond.field.edition.note": {
+      "comment": "Bond edition field note.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stamped on this copy only — never part of the shared dedup key."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仅印于此件之上——绝不参与共享去重键。"
+          }
+        }
+      }
+    },
+    "bond.field.number": {
+      "comment": "Bond field label: Mini GT number.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mini GT number"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mini GT 编号"
+          }
+        }
+      }
+    },
+    "bond.heading": {
+      "comment": "Bond screen headline.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bond the model"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "绑定该模型"
+          }
+        }
+      }
+    },
+    "bond.matched %@": {
+      "comment": "Bond number match confirmation chip. %@ is the car name.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "matched · %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已匹配 · %@"
+          }
+        }
+      }
+    },
+    "bond.subhead.dev": {
+      "comment": "Bond subhead on the dev/invite path (no live scan).",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attach the catalog identity to a copy you own. Bonding never needs the camera."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "为你拥有的实物附上目录身份。绑定无需使用相机。"
+          }
+        }
+      }
+    },
+    "bond.subhead.scan": {
+      "comment": "Bond subhead when bonding a fresh scan.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attach the catalog identity. The scan is already saved — bonding just gives it a name."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "为其附上目录身份。扫描已保存——绑定只是给它取个名字。"
+          }
+        }
+      }
+    },
+    "bond.title": {
+      "comment": "Bond screen nav title.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bond"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "绑定"
+          }
+        }
+      }
+    },
     "cabinet.empty.blurb": {
       "comment": "Empty cabinet helper text",
       "localizations": {
@@ -1086,6 +1290,754 @@
           "stringUnit": {
             "state": "translated",
             "value": "来源：%@"
+          }
+        }
+      }
+    },
+    "scan.cancel": {
+      "comment": "Cancel button that dismisses the scan flow.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消"
+          }
+        }
+      }
+    },
+    "scan.capture.coverageLabel": {
+      "comment": "Label under the coverage percentage in the gauge.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coverage"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "覆盖度"
+          }
+        }
+      }
+    },
+    "scan.capture.finish": {
+      "comment": "Capture finish CTA.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finish & reconstruct"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完成并重建"
+          }
+        }
+      }
+    },
+    "scan.capture.hint": {
+      "comment": "Capture hint.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep orbiting — capture the roof & underside."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "继续环绕——拍到车顶与车底。"
+          }
+        }
+      }
+    },
+    "scan.capture.telemetry %lld %lld": {
+      "comment": "Capture telemetry line. %1$lld coverage percent, %2$lld shot count.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "COVERAGE %1$lld%% · %2$lld SHOTS"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "覆盖度 %1$lld%% · %2$lld 张"
+          }
+        }
+      }
+    },
+    "scan.invite.bond.cta": {
+      "comment": "Bond CTA on the invite screen.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bond a car I own"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "绑定我拥有的车"
+          }
+        }
+      }
+    },
+    "scan.invite.bond.note": {
+      "comment": "Note above the bond affordance on the invite screen.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can still add cars you own — bond a copy to a community scan when one exists."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你仍可添加自己拥有的车——当社区已有扫描时，把你的实物绑定上去。"
+          }
+        }
+      }
+    },
+    "scan.invite.eyebrow": {
+      "comment": "Lightbar eyebrow on the capability-invite screen.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contribute a scan"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "贡献扫描"
+          }
+        }
+      }
+    },
+    "scan.invite.heroCaption": {
+      "comment": "Mono caption under the invite hero glyph.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A niche waiting to be lit"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一格等待点亮的展位"
+          }
+        }
+      }
+    },
+    "scan.invite.pitch.body": {
+      "comment": "Invite contributor-pitch body.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every scan a Pro owner shares saves everyone else from re-scanning the same release. When you’re on a Pro iPhone, you can light niches no one else has."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "每位 Pro 用户分享的扫描，都能让其他人无需重复扫描同一款车。当你使用 Pro 版 iPhone 时，便能点亮无人涉足的展位。"
+          }
+        }
+      }
+    },
+    "scan.invite.pitch.title": {
+      "comment": "Invite contributor-pitch title.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You’d be seeding the library"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你将为社区库播下第一颗种子"
+          }
+        }
+      }
+    },
+    "scan.invite.requirement.body %@ %@": {
+      "comment": "Invite requirement body. %1$@ lower Pro device, %2$@ upper Pro device.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guided capture and on-device reconstruction use LiDAR + photogrammetry, available on a Pro iPhone (%1$@ through %2$@). The simulator can’t run a camera."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "引导拍摄与设备端重建需要 LiDAR 与摄影测量，仅 Pro 版 iPhone（%1$@ 至 %2$@）支持。模拟器无法使用相机。"
+          }
+        }
+      }
+    },
+    "scan.invite.requirement.title": {
+      "comment": "Invite requirement row title.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Why this device can’t scan"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "为何此设备无法扫描"
+          }
+        }
+      }
+    },
+    "scan.invite.title": {
+      "comment": "Capability-invite headline (unsupported device).",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanning new cars needs a Pro iPhone"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "扫描新车需要 Pro 版 iPhone"
+          }
+        }
+      }
+    },
+    "scan.recon.body %lld": {
+      "comment": "Reconstruction body. %lld is frame count.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meshing %lld frames into a reduced-detail USDZ. This runs entirely on your iPhone — nothing leaves the device yet."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在把 %lld 帧合成为简化精度的 USDZ。全程在你的 iPhone 上完成——目前没有任何数据离开设备。"
+          }
+        }
+      }
+    },
+    "scan.recon.label": {
+      "comment": "Reconstruction progress label.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reconstructing on-device"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在设备端重建"
+          }
+        }
+      }
+    },
+    "scan.step %lld %lld": {
+      "comment": "Step chip in the guided flow, e.g. 'Step 1 / 4'. First %lld is current, second is total.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Step %1$lld / %2$lld"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "第 %1$lld / %2$lld 步"
+          }
+        }
+      }
+    },
+    "scan.tip.cta": {
+      "comment": "Tip screen CTA.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start capture orbit"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "开始环绕拍摄"
+          }
+        }
+      }
+    },
+    "scan.tip.lightingBody": {
+      "comment": "Tip lighting well body.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soft, diffuse light from several sides. Glossy diecast loves to reflect — kill the hotspots."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "采用来自多个方向的柔和散射光。光亮的合金车容易反光——消除高光点。"
+          }
+        }
+      }
+    },
+    "scan.tip.lightingTitle": {
+      "comment": "Tip lighting well title.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lighting"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "光照"
+          }
+        }
+      }
+    },
+    "scan.tip.removeBody": {
+      "comment": "Tip card body.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear acrylic confuses photogrammetry. Place the loose car on a matte, evenly-lit surface — no harsh window light."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "透明亚克力会干扰摄影测量。把车单独放在哑光、光照均匀的台面上——避开刺眼的窗光。"
+          }
+        }
+      }
+    },
+    "scan.tip.removeTitle": {
+      "comment": "Tip card title.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take it out of the case"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "把它从展示盒中取出"
+          }
+        }
+      }
+    },
+    "scan.tip.title": {
+      "comment": "Tip screen headline.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Before you scan"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "扫描之前"
+          }
+        }
+      }
+    },
+    "scan.title": {
+      "comment": "Scan flow nav title.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan a car"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "扫描车模"
+          }
+        }
+      }
+    },
+    "scan.verdict.captured": {
+      "comment": "Verdict capture summary.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Body & livery captured well. Spin it below to judge."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "车身与涂装捕捉良好。在下方旋转查看以做判断。"
+          }
+        }
+      }
+    },
+    "scan.verdict.caveat.body": {
+      "comment": "Verdict reduced-detail caveat body.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thin spoilers and clear windows came out soft — normal for small glossy diecast. Fine for showing off; re-scan if you want the canonical community model."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "纤细的尾翼与透明车窗略显模糊——这是小尺寸光亮合金车的常态。用于展示足矣；若想要社区标准模型，可重新扫描。"
+          }
+        }
+      }
+    },
+    "scan.verdict.caveat.title": {
+      "comment": "Verdict reduced-detail caveat title.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reduced detail"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "精度有所简化"
+          }
+        }
+      }
+    },
+    "scan.verdict.complete": {
+      "comment": "Verdict status chip.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan complete"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "扫描完成"
+          }
+        }
+      }
+    },
+    "scan.verdict.keep": {
+      "comment": "Verdict keep CTA.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep it → Bond"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保留 → 绑定"
+          }
+        }
+      }
+    },
+    "scan.verdict.rescan": {
+      "comment": "Verdict re-scan CTA.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Re-scan"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新扫描"
+          }
+        }
+      }
+    },
+    "scan.verdict.spec.coverage": {
+      "comment": "Verdict spec row: coverage.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coverage"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "覆盖度"
+          }
+        }
+      }
+    },
+    "scan.verdict.spec.detail": {
+      "comment": "Verdict spec row: detail level.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detail level"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "精度等级"
+          }
+        }
+      }
+    },
+    "scan.verdict.spec.size": {
+      "comment": "Verdict spec row: file size.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Size"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "大小"
+          }
+        }
+      }
+    },
+    "scan.verdict.title": {
+      "comment": "Verdict headline.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Good enough to show a friend?"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "够拿给朋友看了吗？"
+          }
+        }
+      }
+    },
+    "share.body.alt": {
+      "comment": "Share prompt body when a canonical scan exists.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A canonical scan of this release + drive already exists, so there’s no pressure. If yours came out cleaner, you can offer it as an alternate."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "该车款 + 驾驶位已有标准扫描，无需有压力。若你的成品更干净，可作为备选提供。"
+          }
+        }
+      }
+    },
+    "share.body.first": {
+      "comment": "Share prompt body when first to scan.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No one else owns a model of this release + drive yet. Share it so other owners can use it instead of re-scanning their own?"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目前还没有人拥有该车款 + 驾驶位的模型。要分享出去，让其他车主直接使用、省去自行扫描吗？"
+          }
+        }
+      }
+    },
+    "share.chip.bonded": {
+      "comment": "Share prompt bonded chip.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bonded"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已绑定"
+          }
+        }
+      }
+    },
+    "share.chip.first": {
+      "comment": "Share prompt first-to-scan chip.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "★ first to scan"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "★ 首位扫描者"
+          }
+        }
+      }
+    },
+    "share.cta.notNow": {
+      "comment": "Share prompt dismiss CTA.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not now"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂不"
+          }
+        }
+      }
+    },
+    "share.cta.share": {
+      "comment": "Share prompt share CTA.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share to community"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "分享到社区"
+          }
+        }
+      }
+    },
+    "share.fineprint": {
+      "comment": "Share prompt fine print.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Personal, non-commercial · you’ll be credited · remove anytime."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "个人、非商业用途 · 会署名于你 · 可随时移除。"
+          }
+        }
+      }
+    },
+    "share.title.alt": {
+      "comment": "Share prompt headline when a canonical scan exists.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nice scan. Add yours as an alternate?"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "扫描不错。要把你的作为备选加入吗？"
+          }
+        }
+      }
+    },
+    "share.title.first": {
+      "comment": "Share prompt headline when first to scan.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You’re the first to scan this."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你是第一位扫描它的人。"
+          }
+        }
+      }
+    },
+    "share.title.nav": {
+      "comment": "Share prompt nav title.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bonded"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已绑定"
           }
         }
       }
