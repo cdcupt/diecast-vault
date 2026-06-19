@@ -84,26 +84,33 @@ final class StageScene {
             return 0.12
         }
         // Normalize the model to a consistent on-stage size so framing and lighting
-        // are reliable regardless of the source USDZ's units (the prior version
-        // framed off raw bounds, which left the procedural sample car tiny + dim).
-        let rawBounds = model.visualBounds(relativeTo: nil)
-        let rawMax = max(rawBounds.extents.x, max(rawBounds.extents.y, rawBounds.extents.z))
-        if rawMax > 0 {
-            model.scale = SIMD3(repeating: targetStageSize / rawMax)
-        }
+        // are reliable regardless of the source USDZ's units. Measured in the
+        // model's OWN local space (`relativeTo: model`) so the bounds are
+        // scale-invariant: querying `relativeTo: nil` before AND after setting
+        // `.scale` double-applies the loaded entity's own transform, which corrupts
+        // the size, recenter, and framing distance.
+        let local = model.visualBounds(relativeTo: model)
+        let rawMax = max(local.extents.x, max(local.extents.y, local.extents.z))
+        let factor: Float = rawMax > 0 ? targetStageSize / rawMax : 1
+        model.scale = SIMD3(repeating: factor)
 
-        // Re-measure after scaling, then recenter on the (now stage-sized) bounds.
-        let bounds = model.visualBounds(relativeTo: nil)
-        let extent = bounds.extents
+        // Stage-space extents/center are the local values scaled by the same factor.
+        let extent = local.extents * factor
+        let center = local.center * factor
         let horizontalSpan = max(extent.x, extent.z)
         // Framing: distance keyed to the model's diagonal (it sits at a 3/4 angle,
         // so the diagonal — not a single axis — is what must fit) with breathing
-        // room for the title + control bars. The car fills most of the stage
-        // (DESIGN §4.6) without cropping at any idle-orbit angle.
+        // room for the title + control bars. The car must read as a whole display
+        // piece on first open (before the user orbits), so the camera sits back
+        // far enough to frame the FULL model with margin on every side — the prior
+        // multiplier sat too close and cropped the body/wheels (VIEWER FRAMING fix).
+        // Margin factor (1.0 = tight fit). The wider of diagonal/height drives the
+        // pull-back so neither axis crops at the starting 3/4 angle.
+        let framingMargin: Float = 1.6
         let diagonal = (extent.x * extent.x + extent.z * extent.z).squareRoot()
-        baseDistance = max(diagonal, extent.y) * 2.2 + 0.06
+        baseDistance = max(diagonal, extent.y) * 2.2 * framingMargin + 0.08
         // Sit the car on the plinth (y=0) and centered in x/z.
-        model.position = SIMD3(-bounds.center.x, -bounds.center.y + extent.y / 2, -bounds.center.z)
+        model.position = SIMD3(-center.x, -center.y + extent.y / 2, -center.z)
         focusHeight = extent.y / 2
         pivot.addChild(model)
         self.modelRoot = model

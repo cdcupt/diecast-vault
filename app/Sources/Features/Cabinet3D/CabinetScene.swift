@@ -207,19 +207,30 @@ final class CabinetScene {
 
             // Light = state: a LIT niche gets its own light pooling glow in the
             // style's niche-light temperature (warm tungsten / 2700K LED / cool
-            // 4000K spot). Intensity is high so the pool reads clearly even with
-            // the simulator's flat host-GPU shading.
+            // 4000K spot). Intensity reads the pool clearly even with the
+            // simulator's flat host-GPU shading, but the HERO niche is toned DOWN,
+            // not up: it renders the full reflective USDZ (real metallic paint),
+            // which blows out near-white under the same close point-light that the
+            // matte procedural impostors absorb fine. The impostors keep the bright
+            // pool; the hero gets a softer wash + a wider falloff so the model reads
+            // as a lit car, not a white silhouette (HERO-NICHE WASH-OUT fix).
             let light = Entity()
+            // Pull the hero light back so it rakes the model rather than baking the
+            // face that's nearest the lamp, and widen its radius so the falloff is
+            // gradual instead of a hot near-field spike.
+            let heroDim: Float = isHero ? 0.55 : 1.0
+            let radius = nicheSize * (isHero ? 2.0 : 1.6)
             var point = PointLightComponent(
                 color: color(theme.nicheLight.washColor),
-                intensity: Float(theme.nicheLight.washLumens) * 26 * (isHero ? 1.1 : 1.0),
-                attenuationRadius: nicheSize * 1.6
+                intensity: Float(theme.nicheLight.washLumens) * 26 * heroDim,
+                attenuationRadius: radius
             )
-            point.attenuationRadius = nicheSize * 1.6
+            point.attenuationRadius = radius
             light.components.set(point)
             // Pull the light forward and above so it rakes the car + pools on the
-            // board behind it (the floor glow).
-            light.position = SIMD3(0, nicheSize / 2 - 0.04, -nicheDepth * 0.2)
+            // board behind it (the floor glow). The hero lamp sits a touch further
+            // back so the full USDZ isn't lit point-blank.
+            light.position = SIMD3(0, nicheSize / 2 - 0.04, -nicheDepth * (isHero ? 0.34 : 0.2))
             niche.addChild(light)
         }
 
@@ -249,17 +260,75 @@ final class CabinetScene {
 
     /// Scale + recenter a loaded USDZ to sit on the niche floor at a niche-fitting
     /// size, regardless of the source units.
+    ///
+    /// Measured in the model's OWN local space (`relativeTo: model`) so the bounds
+    /// are scale-invariant: querying `relativeTo: nil` before AND after setting
+    /// `.scale` double-applies the loaded entity's own transform, which previously
+    /// blew the model up to ~18 m on stage — it scaled off-screen, leaving an empty
+    /// white niche (the real HERO-NICHE WASH-OUT cause: there was no visible car).
     private func normalizedUSDZ(_ model: Entity) -> Entity {
         let holder = Entity()
-        let raw = model.visualBounds(relativeTo: nil)
-        let rawMax = max(raw.extents.x, max(raw.extents.y, raw.extents.z))
+        // Local-space bounds: independent of the entity's own scale, so the ratio
+        // and the recenter are computed once and applied once.
+        let local = model.visualBounds(relativeTo: model)
+        let rawMax = max(local.extents.x, max(local.extents.y, local.extents.z))
         let target: Float = nicheSize * 0.72
-        if rawMax > 0 { model.scale = SIMD3(repeating: target / rawMax) }
-        let bounds = model.visualBounds(relativeTo: nil)
-        // Rest on the floor (y at -extent/2 → 0) and centre x/z.
-        model.position = SIMD3(-bounds.center.x, -bounds.center.y + bounds.extents.y / 2, -bounds.center.z)
+        let factor: Float = rawMax > 0 ? target / rawMax : 1
+        model.scale = SIMD3(repeating: factor)
+        // Recenter using the local center scaled by the same factor: rest on the
+        // floor (bottom at y=0) and centre x/z within the niche.
+        let scaledCenter = local.center * factor
+        let scaledHalfHeight = (local.extents.y * factor) / 2
+        model.position = SIMD3(-scaledCenter.x, -scaledCenter.y + scaledHalfHeight, -scaledCenter.z)
+        // Soften the loaded materials so the close per-niche lamp can't blow the
+        // hero's real (often glossy/metallic) paint out to a white silhouette —
+        // floor the roughness and cap the metallic so highlights stay matte enough
+        // to read the body, not a hot specular wash (HERO-NICHE WASH-OUT fix).
+        softenForNiche(model)
         holder.addChild(model)
         return holder
+    }
+
+    /// Walk a loaded model's hierarchy and tame any material that would
+    /// specular-blow under the tight per-niche light. The bundled USDZ ships
+    /// glossy, part-metallic paint plus a near-white 60%-metallic trim that, under
+    /// the close top wash, blooms to a white silhouette. Force the hero's surfaces
+    /// fully matte + non-metallic (kills the specular bloom) and pull bright
+    /// diffuse tints down toward a readable mid-tone so the body reads as a lit
+    /// car, not a white card (HERO-NICHE WASH-OUT fix).
+    private func softenForNiche(_ entity: Entity) {
+        if var model = entity.components[ModelComponent.self] {
+            model.materials = model.materials.map { material in
+                guard var pbr = material as? PhysicallyBasedMaterial else { return material }
+                // Floor roughness and cap metallic so the close lamp grazes the
+                // body instead of throwing a hot specular highlight; the model
+                // keeps its diffuse paint (the orange body, dark cabin) so it still
+                // reads as a finished car, just not a glossy bloom.
+                pbr.roughness = .init(floatLiteral: max(pbr.roughness.scale, 0.7))
+                pbr.metallic = .init(floatLiteral: min(pbr.metallic.scale, 0.1))
+                pbr.clearcoat = .init(floatLiteral: 0)
+                // Knock back only NEAR-WHITE constant tints (e.g. the model's
+                // 60%-metallic white trim) so a bright diffuse can't read as a
+                // blown highlight; the body/cabin colours are left intact.
+                if pbr.baseColor.texture == nil {
+                    pbr.baseColor = .init(tint: dimmedTint(pbr.baseColor.tint))
+                }
+                return pbr
+            }
+            entity.components.set(model)
+        }
+        for child in entity.children { softenForNiche(child) }
+    }
+
+    /// Scale a base-colour tint down once it climbs into the near-white range, so
+    /// the hero's bright trims sit a readable notch below the lit board behind them.
+    private func dimmedTint(_ c: UIColor) -> UIColor {
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        guard c.getRed(&r, green: &g, blue: &b, alpha: &a) else { return c }
+        let luma = 0.2126 * r + 0.7152 * g + 0.0722 * b
+        guard luma > 0.7 else { return c }             // only the brightest tints
+        let k: CGFloat = 0.78                           // pull them ~22% darker
+        return UIColor(red: r * k, green: g * k, blue: b * k, alpha: a)
     }
 
     /// Procedural low-poly car. The hero stand-in gets a richer body + cabin +

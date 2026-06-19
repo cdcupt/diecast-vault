@@ -88,7 +88,12 @@ public enum CabinetStyle: String, CaseIterable, Identifiable, Sendable, Codable 
                 matteRecess: RGB(0.082, 0.086, 0.094), // near-black recess (downlight off)
                 matteRoughness: 0.8,
                 shelf: RGB(0.16, 0.17, 0.18),
-                lightbar: LightSpec(color: Palette.tungsten.rgb, intensity: 5, washColor: Palette.tungstenGlow.rgb, washLumens: 500),
+                // Museum top-rail toned down (MUSEUM TOP-RAIL fix): the saturated
+                // tungsten-orange strip at full intensity out-competed the lit
+                // niches against the dark case. Desaturate toward a soft museum
+                // warm-white and drop the emissive + wash a notch so the rail reads
+                // as a fixture, not the brightest thing on the shelf.
+                lightbar: LightSpec(color: RGB(0.96, 0.86, 0.72), intensity: 3, washColor: Palette.tungstenGlow.rgb, washLumens: 360),
                 nicheLight: LightSpec(color: RGB(0.85, 0.90, 0.97), intensity: 1, washColor: RGB(0.85, 0.90, 0.97), washLumens: 220), // ~4000K cool spot
                 fill: LightSpec(color: RGB(0.62, 0.69, 0.78), intensity: 180, washColor: RGB(1, 1, 1), washLumens: 180),
                 stageBackdrop: Palette.stage0.rgb     // the only dark cabinet — like the 3D stage
