@@ -16,7 +16,13 @@ struct Spike1CabinetView: View {
             // The dark stage fills the screen; light chrome is the safe-area band.
             Color(Palette.stage0).ignoresSafeArea()
 
-            renderer.makeView(shelf: shelf, harness: harness)
+            renderer.makeView(
+                shelf: shelf,
+                style: .museum,            // the dark stress scene reads best on the dark case
+                modelURL: SampleModel.url,
+                harness: harness,
+                onSelect: { _ in }         // perf scene: taps are inert
+            )
 
             VStack {
                 perfHUD

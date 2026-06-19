@@ -8,6 +8,11 @@ extension Color {
     init(_ token: PaletteToken) {
         self.init(.sRGB, red: token.red, green: token.green, blue: token.blue, opacity: 1)
     }
+
+    /// Bridge a Core `RGB` triple (used by `CabinetTheme`) to a SwiftUI `Color`.
+    init(_ rgb: RGB) {
+        self.init(.sRGB, red: rgb.r, green: rgb.g, blue: rgb.b, opacity: 1)
+    }
 }
 
 /// Locked semantic colors, named to match the design doc.

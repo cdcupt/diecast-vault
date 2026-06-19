@@ -7,6 +7,8 @@ import DiecastVaultCore
 /// their backends land. Account/contribution numbers are local sample copy.
 struct MeView: View {
     @EnvironmentObject private var localeManager: LocaleManager
+    @EnvironmentObject private var stylePreference: CabinetStylePreference
+    @State private var showStylePicker = false
 
     var body: some View {
         ScrollView {
@@ -24,6 +26,10 @@ struct MeView: View {
         .background(Ink.paper)
         .navigationTitle(Text("tab.me"))
         .navigationBarTitleDisplayMode(.large)
+        .sheet(isPresented: $showStylePicker) {
+            CabinetStylePickerView()
+                .environmentObject(stylePreference)
+        }
     }
 
     // MARK: Identity
@@ -100,6 +106,18 @@ struct MeView: View {
                 .foregroundStyle(Ink.muted)
 
             VStack(spacing: 0) {
+                Button {
+                    showStylePicker = true
+                } label: {
+                    SettingsRow(
+                        icon: "square.stack.3d.up.fill",
+                        title: "me.row.cabinetStyle",
+                        value: Text(LocalizedStringKey(stylePreference.style.nameKey))
+                    )
+                }
+                .buttonStyle(.plain)
+
+                divider
                 NavigationLink {
                     LanguageView()
                 } label: {
@@ -277,5 +295,6 @@ struct LanguageView: View {
 #Preview {
     NavigationStack { MeView() }
         .environmentObject(LocaleManager())
+        .environmentObject(CabinetStylePreference())
         .tint(Ink.tungsten)
 }

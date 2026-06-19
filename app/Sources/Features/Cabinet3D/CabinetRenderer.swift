@@ -18,9 +18,17 @@ protocol CabinetRenderer {
     /// A stable identity for logging / the Gate-1 packet.
     var rendererName: String { get }
 
-    /// The SwiftUI surface that draws the cabinet for the given shelf. The
-    /// `harness` is injected so the perf HUD measures the live scene.
-    func makeView(shelf: [Release], harness: PerfHarness) -> AnyView
+    /// The SwiftUI surface that draws the cabinet for the given shelf in the given
+    /// `style`. `modelURL` is the bundled full USDZ used by the LOD hero niche;
+    /// `harness` is injected so the perf HUD can measure the live scene; `onSelect`
+    /// routes a tapped niche by light-as-state (lit → detail, matte → catalog).
+    func makeView(
+        shelf: [Release],
+        style: CabinetStyle,
+        modelURL: URL?,
+        harness: PerfHarness,
+        onSelect: @escaping (Release) -> Void
+    ) -> AnyView
 }
 
 /// Chooses the live renderer. Real-time RealityKit when `RealityView` is
@@ -43,20 +51,43 @@ enum CabinetRendererFactory {
 struct PseudoThreeDCabinetRenderer: CabinetRenderer {
     let rendererName = "PseudoThreeD (fallback)"
 
-    func makeView(shelf: [Release], harness: PerfHarness) -> AnyView {
-        AnyView(
-            VStack(spacing: 12) {
-                Text("Pseudo-3D fallback")
-                    .font(Voice.serif(22))
-                    .foregroundStyle(Ink.primary)
-                Text("RealityView requires iOS 18+. The flat-preview cabinet renders here on older devices.")
-                    .font(.callout)
-                    .foregroundStyle(Ink.soft)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 32)
+    func makeView(
+        shelf: [Release],
+        style: CabinetStyle,
+        modelURL: URL?,
+        harness: PerfHarness,
+        onSelect: @escaping (Release) -> Void
+    ) -> AnyView {
+        // Flat-preview grid of niches so <iOS 18 devices still get a working,
+        // tappable, light-as-state Home (no RealityView). The 2D CabinetCell
+        // carries the same lit/matte look + drive decal + mono placard.
+        AnyView(PseudoThreeDCabinet(shelf: shelf, onSelect: onSelect))
+    }
+}
+
+/// The <iOS 18 fallback Home: a 2-up grid of `CabinetCell`s that reuses the same
+/// light-as-state styling and routes taps exactly like the 3D cabinet.
+private struct PseudoThreeDCabinet: View {
+    let shelf: [Release]
+    let onSelect: (Release) -> Void
+
+    private let columns = [
+        GridItem(.flexible(), spacing: 14),
+        GridItem(.flexible(), spacing: 14)
+    ]
+
+    var body: some View {
+        ScrollView {
+            LazyVGrid(columns: columns, spacing: 14) {
+                ForEach(shelf) { release in
+                    Button { onSelect(release) } label: {
+                        CabinetCell(release: release)
+                    }
+                    .buttonStyle(.plain)
+                }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Ink.paper)
-        )
+            .padding(18)
+        }
+        .background(Ink.paper)
     }
 }

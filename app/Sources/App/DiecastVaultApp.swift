@@ -29,6 +29,10 @@ struct DiecastVaultApp: App {
     /// tree re-resolves its String Catalog entries the instant the choice changes.
     @StateObject private var localeManager = LocaleManager()
 
+    /// Owns the user's chosen cabinet style; injected so the 3D Home and the style
+    /// picker share one live, persisted source of truth.
+    @StateObject private var stylePreference = CabinetStylePreference()
+
     var body: some Scene {
         WindowGroup {
             Group {
@@ -42,6 +46,7 @@ struct DiecastVaultApp: App {
             }
             .tint(Ink.tungsten)
             .environmentObject(localeManager)
+            .environmentObject(stylePreference)
             // Live language switch: re-rendering against this locale is what makes
             // every localized `Text` flip without a relaunch (see LocaleManager).
             .environment(\.locale, localeManager.locale)
@@ -63,6 +68,8 @@ struct DiecastVaultApp: App {
             MeView()
         case "language":
             LanguageView()
+        case "stylePicker":
+            CabinetStylePickerView()
         default:
             ReleaseDetailView(release: routeSample)
         }
