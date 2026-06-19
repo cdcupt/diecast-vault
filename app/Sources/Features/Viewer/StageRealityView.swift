@@ -8,6 +8,13 @@ import DiecastVaultCore
 @available(iOS 18.0, *)
 struct StageRealityView: View {
     let release: Release
+    /// Resolved model URL — the viewer owns this so a retry can re-supply it (and
+    /// a deliberately-missing URL exercises the model-load-failed state).
+    let modelURL: URL?
+    /// Reports whether the stage model actually loaded, so the host can lift its
+    /// authored "couldn't load the model" state over a failed build (never a
+    /// dead-grey stage). Reported on `.task` once the scene has been built.
+    var onLoadResult: (Bool) -> Void = { _ in }
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private let scene = StageScene()
@@ -27,8 +34,9 @@ struct StageRealityView: View {
 
     var body: some View {
         RealityView { content in
-            scene.build(in: content, modelURL: SampleModel.url, reduceMotion: reduceMotion)
+            scene.build(in: content, modelURL: modelURL, reduceMotion: reduceMotion)
             scene.orient(spin: spin, pitch: pitch)
+            onLoadResult(scene.didLoadModel)
         } update: { _ in
             let liveSpin = spin + idleSpin + Float(dragDelta.width) * 0.008
             let livePitch = clampPitch(pitch - Float(dragDelta.height) * 0.006)

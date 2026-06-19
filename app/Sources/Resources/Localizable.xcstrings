@@ -2551,6 +2551,482 @@
           }
         }
       }
+    },
+    "cabinet.empty.headline": {
+      "comment": "Empty cabinet headline — no cars owned yet (the dark cabinet invite).",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your cabinet is dark"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你的陈列柜还未点亮"
+          }
+        }
+      }
+    },
+    "cabinet.empty.invite": {
+      "comment": "Empty cabinet sub-line under the dark headline.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick or scan your first car to light a niche."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选取或扫描你的第一辆车，点亮第一格。"
+          }
+        }
+      }
+    },
+    "cabinet.empty.pick": {
+      "comment": "Empty cabinet CTA — open the Catalog to pick a release.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick from the catalog"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "从目录中选取"
+          }
+        }
+      }
+    },
+    "cabinet.empty.scan": {
+      "comment": "Empty cabinet CTA — open the scan flow.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan a car"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "扫描一辆车"
+          }
+        }
+      }
+    },
+    "library.empty.headline": {
+      "comment": "Empty community library headline — nothing shared yet.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The library is dark"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "社区库还很安静"
+          }
+        }
+      }
+    },
+    "library.empty.blurb": {
+      "comment": "Empty community library sub-line.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When owners share their scans, canonical models appear here — one per release."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当藏家分享他们的扫描后，规范模型会出现在这里 —— 每款车一份。"
+          }
+        }
+      }
+    },
+    "offline.banner.title": {
+      "comment": "Offline banner title shown above community surfaces when the network is down.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You're offline"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前离线"
+          }
+        }
+      }
+    },
+    "offline.banner.body": {
+      "comment": "Offline banner body — the cached shelf still works; the live library doesn't.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your shelf works from cache. The community library is unavailable until you reconnect."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你的陈列柜可离线使用（来自缓存）。社区库需联网后才可用。"
+          }
+        }
+      }
+    },
+    "offline.badge": {
+      "comment": "Small mono OFFLINE chip on the offline library state.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OFFLINE"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "离线"
+          }
+        }
+      }
+    },
+    "offline.cached.note": {
+      "comment": "Footnote on the offline library — what is still available from cache.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cached on this iPhone — your own shelf and previously viewed models."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已缓存在此 iPhone —— 你的陈列柜与此前浏览过的模型。"
+          }
+        }
+      }
+    },
+    "viewer.error.title": {
+      "comment": "3D viewer error state title — the model couldn't be loaded onto the stage.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't load the model"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法载入模型"
+          }
+        }
+      }
+    },
+    "viewer.error.body": {
+      "comment": "3D viewer error body — honest explanation + that the AR path may still work.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The 3D model failed to load onto the stage. Your scan is safe — try again, or view it in AR."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3D 模型未能载入舞台。你的扫描仍安全保存 —— 可重试，或在 AR 中查看。"
+          }
+        }
+      }
+    },
+    "viewer.error.retry": {
+      "comment": "3D viewer error — retry loading the model.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try again"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重试"
+          }
+        }
+      }
+    },
+    "me.section.account": {
+      "comment": "Settings section header — account.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "账户"
+          }
+        }
+      }
+    },
+    "me.row.account": {
+      "comment": "Settings row — Sign in with Apple (signed-in state).",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Account"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple 账户"
+          }
+        }
+      }
+    },
+    "me.row.account.signedIn": {
+      "comment": "Account row value — signed in with Apple.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Signed in with Apple"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已通过 Apple 登录"
+          }
+        }
+      }
+    },
+    "me.section.storage": {
+      "comment": "Settings section header — storage & sync.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Storage"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "存储"
+          }
+        }
+      }
+    },
+    "me.row.icloudSync": {
+      "comment": "Settings row title — iCloud Sync toggle.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud Sync"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 同步"
+          }
+        }
+      }
+    },
+    "me.row.icloudSync.note": {
+      "comment": "iCloud Sync note — off by default, uses the user's own iCloud quota.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Off by default. Turning it on stores your 3D models in your own iCloud and counts against your iCloud quota."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "默认关闭。开启后会把你的 3D 模型存入你自己的 iCloud，并占用你的 iCloud 容量。"
+          }
+        }
+      }
+    },
+    "me.row.localStorage": {
+      "comment": "Settings row title — local on-device storage.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On this iPhone"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "此 iPhone 上"
+          }
+        }
+      }
+    },
+    "me.row.localStorage.value %lld %@": {
+      "comment": "Local storage value — N cars · size. %1 is the car count, %2 the size string.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld cars · %2$@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld 辆 · %2$@"
+          }
+        }
+      }
+    },
+    "me.section.legal": {
+      "comment": "Settings section header — safety & legal.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Safety & legal"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "安全与法务"
+          }
+        }
+      }
+    },
+    "me.row.report": {
+      "comment": "Settings row — report a model / problem.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Report a problem"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "报告问题"
+          }
+        }
+      }
+    },
+    "me.row.dmca": {
+      "comment": "Settings row — DMCA / takedown contact.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DMCA / takedown contact"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DMCA / 下架联系"
+          }
+        }
+      }
+    },
+    "me.row.license": {
+      "comment": "Settings row — non-commercial license note.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non-commercial license"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "非商业许可"
+          }
+        }
+      }
+    },
+    "me.section.about": {
+      "comment": "Settings section header — about.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "关于"
+          }
+        }
+      }
+    },
+    "me.row.version": {
+      "comment": "Settings row title — app version.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "版本"
+          }
+        }
+      }
+    },
+    "me.section.general": {
+      "comment": "Settings section header — general (language + appearance).",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "General"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "通用"
+          }
+        }
+      }
     }
   }
 }

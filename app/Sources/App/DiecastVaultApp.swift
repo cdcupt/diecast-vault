@@ -66,6 +66,7 @@ struct DiecastVaultApp: App {
     private static func routedView(_ route: String) -> some View {
         switch route {
         case "viewer":
+            // The model-load-failed state is reached with DV_VIEWER_ERROR=1 alongside.
             ModelViewerView(release: routeSample)
         case "realcar":
             ReleaseDetailView(release: routeSample, initialFace: .realCar)
@@ -102,6 +103,21 @@ struct DiecastVaultApp: App {
             // Seed a fresh bonded model, then show the full shell so it appears LIT
             // in the cabinet — verifies the bond→save→appears-in-cabinet chain.
             DevBondedCabinet()
+        case "emptyCabinet":
+            // DEV: the empty (zero-lit) cabinet over an UNSEEDED store, so the
+            // authored "your cabinet is dark" invite is screenshot-able.
+            NavigationStack { CabinetView() }
+                .modelContainer(PersistenceController.inMemory(seeded: false))
+                .environmentObject(CabinetStylePreference())
+                .environmentObject(ContributionStore())
+        case "emptyLibrary":
+            // DEV: the empty community library (no opted-in shares yet).
+            NavigationStack { LibraryView() }
+                .environmentObject(ContributionStore(seed: []))
+        case "offlineLibrary":
+            // DEV: the offline community library — cached-shelf-works banner.
+            NavigationStack { LibraryView(forceOffline: true) }
+                .environmentObject(ContributionStore())
         default:
             ReleaseDetailView(release: routeSample)
         }

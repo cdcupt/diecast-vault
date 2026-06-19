@@ -15,16 +15,34 @@ struct ModelViewerView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showAR = false
 
+    /// Load state of the dark stage. `.loading` until the RealityView build reports
+    /// back; `.failed` drives the authored model-load-failed state (with retry),
+    /// never a dead-grey stage. `attempt` is bumped to rebuild the scene on retry.
+    private enum LoadState { case loading, loaded, failed }
+    @State private var loadState: LoadState = .loading
+    @State private var attempt = 0
+
+    /// Deterministic sim override: `DV_VIEWER_ERROR=1` forces the model-load-failed
+    /// state (the live failure only happens with a corrupt/absent USDZ) so it is
+    /// screenshot-able. The retry then clears the override for that session.
+    @State private var forceError = ProcessInfo.processInfo.environment["DV_VIEWER_ERROR"] == "1"
+
+    /// The model the stage loads. Nil-ed while `forceError` is set so the stage's
+    /// own load path fails honestly (rather than faking the overlay).
+    private var modelURL: URL? { forceError ? nil : SampleModel.url }
+
     var body: some View {
         ZStack {
             Color(Palette.stage0).ignoresSafeArea()
 
             stage
 
+            if loadState == .failed { errorOverlay }
+
             VStack {
                 topBar
                 Spacer()
-                controlBar
+                if loadState != .failed { controlBar }
             }
             .padding(16)
         }
@@ -43,10 +61,69 @@ struct ModelViewerView: View {
     @ViewBuilder
     private var stage: some View {
         if #available(iOS 18.0, *) {
-            StageRealityView(release: release)
+            StageRealityView(release: release, modelURL: modelURL) { loaded in
+                loadState = loaded ? .loaded : .failed
+            }
+            .id(attempt)   // rebuild the scene on retry
+            .opacity(loadState == .failed ? 0 : 1)
         } else {
             stageFallback
         }
+    }
+
+    /// Authored model-load-failed state — the single dark surface stays on-brand
+    /// (tungsten, serif headline), explains honestly, and offers Retry + AR rather
+    /// than dead-ending. Retry clears any forced-error override and rebuilds.
+    private var errorOverlay: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "cube.transparent")
+                .font(.system(size: 46, weight: .light))
+                .foregroundStyle(Color(Palette.stageRim))
+            Text("viewer.error.title")
+                .font(Voice.serif(22))
+                .foregroundStyle(.white)
+            Text("viewer.error.body")
+                .font(.callout)
+                .foregroundStyle(.white.opacity(0.7))
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 36)
+
+            HStack(spacing: 10) {
+                Button {
+                    forceError = false
+                    loadState = .loading
+                    attempt += 1
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: "arrow.clockwise")
+                        Text("viewer.error.retry").font(.system(size: 14, weight: .semibold))
+                    }
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 16).padding(.vertical, 10)
+                    .background(Color(Palette.tungsten), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                }
+                .accessibilityLabel(Text("viewer.error.retry"))
+
+                if SampleModel.url != nil {
+                    Button { showAR = true } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: "arkit")
+                            Text("viewer.viewInAR").font(.system(size: 14, weight: .semibold))
+                        }
+                        .foregroundStyle(.white.opacity(0.9))
+                        .padding(.horizontal, 16).padding(.vertical, 10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                .stroke(Color(Palette.stageRim).opacity(0.5), lineWidth: 1)
+                        )
+                    }
+                    .accessibilityLabel(Text("viewer.viewInAR"))
+                }
+            }
+            .padding(.top, 4)
+        }
+        .padding(.vertical, 28)
+        .accessibilityElement(children: .contain)
     }
 
     /// Light, graceful fallback for < iOS 18 (no RealityView). AR Quick Look is

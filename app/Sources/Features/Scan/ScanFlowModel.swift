@@ -118,15 +118,24 @@ final class ScanFlowModel: ObservableObject {
         }
     }
 
+    /// Representative size of Spike-0's reduced-detail tier (~2.8 MB). Used whenever
+    /// no live reconstruction ran, so the verdict never advertises the tiny bundled
+    /// SAMPLE USDZ's bytes (a few KB) — which read as a broken "Size: 9 KB" against
+    /// the honest "reduced scan" copy.
+    private static let representativeReducedBytes = 2_800_000
+
     private func finishReconstruction(modelURL: URL?) {
         // Spike-0 produces a reduced-detail USDZ. With no live PhotogrammetrySession
         // (sim / this build) we keep the bundled sample as the model bytes — the
         // honest verdict still reports a reduced-detail scan.
         let url = modelURL ?? URL(fileURLWithPath: "/dev/null")
-        // Spike-0's reduced tier lands around ~2.8 MB; use the real on-disk size of
-        // the attached USDZ when readable, else that representative default.
+        // Use the real on-disk size ONLY for a genuine reconstruction output; the
+        // bundled SAMPLE stand-in reports the representative reduced-tier size so
+        // the verdict's "Size" row stays believable instead of showing ~9 KB.
+        let isSampleStandIn = url == SampleModel.url
         let onDiskSize = (try? FileManager.default.attributesOfItem(atPath: url.path)[.size]) as? Int
-        let bytes = onDiskSize ?? 2_800_000
+        let bytes = isSampleStandIn ? Self.representativeReducedBytes
+                                    : (onDiskSize ?? Self.representativeReducedBytes)
         result = ScanResult(
             modelURL: url,
             detail: .reduced,

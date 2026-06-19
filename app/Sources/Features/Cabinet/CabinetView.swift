@@ -77,6 +77,8 @@ struct CabinetView: View {
             VStack(spacing: 0) {
                 header
                 Spacer()
+                if litCount == 0 { emptyInvite }
+                Spacer()
                 if Self.showsPerfHUD { perfHUD }
             }
             .padding(.horizontal, 16)
@@ -174,6 +176,68 @@ struct CabinetView: View {
         .buttonStyle(.plain)
         .accessibilityLabel(Text("cabinet.style.chip"))
         .accessibilityValue(Text(stylePreference.style.nameKey))
+    }
+
+    // MARK: Empty invite (zero lit niches)
+
+    /// Authored empty state: when nothing is owned the cabinet is a wall of MATTE
+    /// recesses (the 3D scene still renders, dark but alive), and a tungsten invite
+    /// card floats over it pointing to the two ways to light the first niche. Never
+    /// a dead-grey screen — the dark cabinet IS the message, with a way forward.
+    private var emptyInvite: some View {
+        let onLight = stylePreference.style.isDarkCase
+        return VStack(spacing: 14) {
+            Image(systemName: "lightbulb.slash")
+                .font(.system(size: 34, weight: .light))
+                .foregroundStyle(Ink.tungsten)
+            VStack(spacing: 6) {
+                Text("cabinet.empty.headline")
+                    .font(Voice.serif(24))
+                    .foregroundStyle(onLight ? .white : Ink.primary)
+                    .multilineTextAlignment(.center)
+                Text("cabinet.empty.invite")
+                    .font(.callout)
+                    .foregroundStyle(onLight ? Color.white.opacity(0.72) : Ink.soft)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: 280)
+            }
+            HStack(spacing: 10) {
+                Button { showScan = true } label: {
+                    PrimaryCTALabel(title: "cabinet.empty.scan", systemImage: "camera.viewfinder")
+                        .fixedSize()
+                }
+                .buttonStyle(.plain)
+                Button { route = Release.catalogSample.first { !$0.isLit } } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: "magnifyingglass")
+                        Text("cabinet.empty.pick").font(.system(size: 15, weight: .semibold))
+                    }
+                    .foregroundStyle(Ink.tungstenDeep)
+                    .padding(.horizontal, 16).padding(.vertical, 14)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 11, style: .continuous)
+                            .stroke(Ink.tungsten, lineWidth: 1.5)
+                    )
+                    .background(
+                        RoundedRectangle(cornerRadius: 11, style: .continuous)
+                            .fill(onLight ? Color(Palette.tungstenGlow).opacity(0.85) : Ink.paper.opacity(0.9))
+                    )
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(24)
+        .background(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(onLight ? Color(Palette.stage1).opacity(0.78) : Ink.paper.opacity(0.92))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .stroke(Ink.tungsten.opacity(0.45), lineWidth: 1)
+                )
+        )
+        .shadow(color: Color(Palette.ink).opacity(0.18), radius: 22, y: 12)
+        .padding(.horizontal, 8)
+        .accessibilityElement(children: .contain)
     }
 
     // MARK: Routing

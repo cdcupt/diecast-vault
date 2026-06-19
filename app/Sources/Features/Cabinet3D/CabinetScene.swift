@@ -197,6 +197,12 @@ final class CabinetScene {
             // Sits forward, near the niche opening, so it reads from the camera.
             let car = makeCar(release: release, isHero: isHero, modelURL: modelURL)
             car.position = SIMD3(0, -nicheSize / 2 + 0.05, -nicheDepth * 0.42)
+            // Turn each car to a 3/4 stance — the camera is near head-on, so a
+            // straight side-on body foreshortens into a lozenge; a ~24° yaw shows
+            // the hood + flank and reads unmistakably as a car. Alternate the turn
+            // by drive so the shelf doesn't look rubber-stamped.
+            let turn: Float = release.drive == .lhd ? 0.42 : -0.42
+            car.orientation = simd_quatf(angle: turn, axis: SIMD3(0, 1, 0))
             niche.addChild(car)
 
             // Light = state: a LIT niche gets its own light pooling glow in the
@@ -262,22 +268,30 @@ final class CabinetScene {
     private func proceduralCar(release: Release, isHero: Bool) -> Entity {
         let car = Entity()
         let bodyColor = release.drive == .lhd ? color(Palette.lhd) : color(Palette.rhd)
-        let bodyMat = isHero ? glossy(bodyColor) : matte(bodyColor, roughness: 0.6)
+        let bodyMat = isHero ? glossy(bodyColor) : matte(bodyColor, roughness: 0.5)
 
-        let w: Float = 0.16, h: Float = 0.045, d: Float = 0.07
-        let body = ModelEntity(mesh: .generateBox(size: SIMD3(w, h, d), cornerRadius: 0.012), materials: [bodyMat])
+        // Lower, wider body with a tight corner radius — a flatter sportscar profile
+        // that reads as a CAR, not a rounded lozenge. The cabin bump (below) is what
+        // sells the silhouette, so every lit niche gets one (cheap: one box + a slab).
+        let w: Float = 0.17, h: Float = 0.034, d: Float = 0.072
+        let body = ModelEntity(mesh: .generateBox(size: SIMD3(w, h, d), cornerRadius: 0.005), materials: [bodyMat])
         body.position = SIMD3(0, h / 2 + 0.02, 0)
         car.addChild(body)
 
-        if isHero {
-            // Cabin glasshouse for the promoted hero only (more polys = LOD high).
-            let cabin = ModelEntity(
-                mesh: .generateBox(size: SIMD3(w * 0.5, h * 0.9, d * 0.7), cornerRadius: 0.008),
-                materials: [glossy(color(Palette.stage1))]
-            )
-            cabin.position = SIMD3(-0.01, h + 0.02, 0)
-            car.addChild(cabin)
+        // A greenhouse/cabin bump set back from centre — the single cue that turns a
+        // slab into a car at niche scale. Impostors get a body-matched matte cabin
+        // (no extra material churn); the hero gets a glassy stage-blue cabin + wheels.
+        let cabinW = w * 0.46, cabinH = h * 1.05, cabinD = d * 0.74
+        let cabinMat = isHero ? glossy(color(Palette.stage1)) : matte(bodyColor, roughness: 0.45)
+        let cabin = ModelEntity(
+            mesh: .generateBox(size: SIMD3(cabinW, cabinH, cabinD), cornerRadius: 0.004),
+            materials: [cabinMat]
+        )
+        // Sit the cabin ON the body and slightly rearward, so the long hood reads.
+        cabin.position = SIMD3(-w * 0.07, h + cabinH / 2 - 0.004, 0)
+        car.addChild(cabin)
 
+        if isHero {
             let wheelR: Float = 0.018
             let wheelMesh = MeshResource.generateCylinder(height: 0.012, radius: wheelR)
             let wheelMat = matte(color(Palette.ink), roughness: 0.7)
@@ -289,6 +303,15 @@ final class CabinetScene {
                     car.addChild(wheel)
                 }
             }
+        } else {
+            // Impostor wheels: two cheap dark slabs along the flanks (a hint of
+            // wheels without four cylinders) — keeps the impostor light but car-like.
+            let arch = ModelEntity(
+                mesh: .generateBox(size: SIMD3(w * 0.84, 0.012, d * 1.02), cornerRadius: 0.004),
+                materials: [matte(color(Palette.ink), roughness: 0.7)]
+            )
+            arch.position = SIMD3(0, 0.012, 0)
+            car.addChild(arch)
         }
         return car
     }

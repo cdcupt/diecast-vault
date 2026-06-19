@@ -8,30 +8,50 @@ import DiecastVaultCore
 /// v1.1; the list here reads the local `ContributionStore` (sample + freshly
 /// queued shares), so the credit lines are honest, not mocked HTML.
 struct LibraryView: View {
+    /// Deterministic sim override so the offline state is screenshot-able without
+    /// toggling the device radios. Defaults off → uses the live reachability stub.
+    var forceOffline: Bool = false
+
     @EnvironmentObject private var contributionStore: ContributionStore
+    @StateObject private var reachability = Reachability()
+
+    /// The live library needs the network; when offline it is unavailable and only
+    /// the cached shelf (the user's own opted-in shares) is shown.
+    private var isOffline: Bool { forceOffline || !reachability.isOnline }
 
     /// Newest-shared first (a fresh queue from the share prompt lands on top).
     private var items: [CommunityContribution] {
         contributionStore.contributions.reversed()
     }
 
+    /// Offline shows only what's cached on this device — the user's own shares.
+    private var visibleItems: [CommunityContribution] {
+        isOffline ? items.filter(\.isMine) : items
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 vaultBar
-                shelfLabel
-                LazyVGrid(columns: [GridItem(.flexible(), spacing: 12),
-                                    GridItem(.flexible(), spacing: 12)], spacing: 12) {
-                    ForEach(items) { item in
-                        CommunityCard(item: item)
+                if isOffline { offlineBanner }
+
+                if visibleItems.isEmpty {
+                    isOffline ? AnyView(offlineEmpty) : AnyView(emptyState)
+                } else {
+                    shelfLabel
+                    LazyVGrid(columns: [GridItem(.flexible(), spacing: 12),
+                                        GridItem(.flexible(), spacing: 12)], spacing: 12) {
+                        ForEach(visibleItems) { item in
+                            CommunityCard(item: item)
+                        }
                     }
+                    Text(isOffline ? "offline.cached.note" : "library.stub.note")
+                        .font(.caption2)
+                        .foregroundStyle(Ink.muted)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 4)
                 }
-                Text("library.stub.note")
-                    .font(.caption2)
-                    .foregroundStyle(Ink.muted)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .multilineTextAlignment(.center)
-                    .padding(.top, 4)
             }
             .padding(.horizontal, 18)
             .padding(.top, 8)
@@ -40,6 +60,76 @@ struct LibraryView: View {
         .background(Ink.paper)
         .navigationTitle(Text("tab.library"))
         .navigationBarTitleDisplayMode(.large)
+    }
+
+    // MARK: Offline + empty states (authored, never dead-grey)
+
+    /// The offline banner — steel, on-brand: the cached shelf still works; the live
+    /// library is dimmed until reconnect. Carries a mono OFFLINE chip.
+    private var offlineBanner: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "wifi.slash")
+                .font(.system(size: 18))
+                .foregroundStyle(Ink.steel)
+            VStack(alignment: .leading, spacing: 3) {
+                HStack(spacing: 8) {
+                    Text("offline.banner.title")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Ink.primary)
+                    Text("offline.badge")
+                        .font(Voice.mono(8, weight: .heavy))
+                        .tracking(0.8)
+                        .foregroundStyle(Ink.steel)
+                        .padding(.horizontal, 6).padding(.vertical, 2)
+                        .background(Ink.steelSoft, in: Capsule())
+                }
+                Text("offline.banner.body")
+                    .font(.footnote)
+                    .foregroundStyle(Ink.soft)
+            }
+            Spacer(minLength: 0)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(Ink.steelSoft.opacity(0.6), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous).stroke(Ink.steel.opacity(0.3), lineWidth: 1)
+        )
+    }
+
+    /// Empty community library (online, nothing shared yet) — authored invite.
+    private var emptyState: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "cloud")
+                .font(.system(size: 34, weight: .light))
+                .foregroundStyle(Ink.steel)
+            Text("library.empty.headline")
+                .font(Voice.serif(22))
+                .foregroundStyle(Ink.primary)
+            Text("library.empty.blurb")
+                .font(.callout)
+                .foregroundStyle(Ink.soft)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 300)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 36)
+    }
+
+    /// Offline with no cached personal shares — still authored, points at the cache.
+    private var offlineEmpty: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "tray")
+                .font(.system(size: 34, weight: .light))
+                .foregroundStyle(Ink.steel)
+            Text("offline.cached.note")
+                .font(.callout)
+                .foregroundStyle(Ink.soft)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 300)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 36)
     }
 
     /// The steel "Community Vault" lightbar — the system/community identity (steel),

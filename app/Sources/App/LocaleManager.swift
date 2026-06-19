@@ -1,5 +1,6 @@
 import SwiftUI
 import Combine
+import Network
 
 /// The two shipping languages (DESIGN F4 — "English / 简体中文 · live, no relaunch").
 /// 繁體中文 comes later; the raw values are BCP-47 / `.lproj` identifiers so they
@@ -84,4 +85,27 @@ final class LocaleManager: ObservableObject {
         // system alerts) presented after the switch also picks the language up.
         UserDefaults.standard.set([language.rawValue], forKey: "AppleLanguages")
     }
+}
+
+/// Live network reachability for the community surfaces (Library). The community
+/// backend is v1.1, but the offline-vs-online distinction is real today: when the
+/// device has no path, the cached shelf still works and the live library dims
+/// (DESIGN state matrix · Offline). Backed by `NWPathMonitor`; starts optimistic
+/// so a momentary launch gap doesn't flash the offline banner.
+@MainActor
+final class Reachability: ObservableObject {
+    @Published private(set) var isOnline = true
+
+    private let monitor = NWPathMonitor()
+    private let queue = DispatchQueue(label: "dv.reachability")
+
+    init() {
+        monitor.pathUpdateHandler = { [weak self] path in
+            let online = path.status == .satisfied
+            Task { @MainActor in self?.isOnline = online }
+        }
+        monitor.start(queue: queue)
+    }
+
+    deinit { monitor.cancel() }
 }
