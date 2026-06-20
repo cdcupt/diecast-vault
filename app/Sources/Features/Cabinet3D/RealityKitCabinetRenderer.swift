@@ -46,11 +46,16 @@ private struct RealityKitCabinetView: View {
             scene.build(in: content, shelf: shelf, style: style, modelURL: modelURL, reduceMotion: reduceMotion)
         } update: { _ in
             // Apply the clamped camera orientation each update.
-            let liveYaw = reduceMotion ? 0 : yaw + Float(dragDelta.width) * 0.006
-            let livePitch = reduceMotion ? 0.07 : clampPitch(pitch - Float(dragDelta.height) * 0.006)
+            let liveYaw = reduceMotion ? 0 : yaw + Float(dragDelta.width) * orbitSensitivity
+            let livePitch = reduceMotion ? 0.07 : clampPitch(pitch - Float(dragDelta.height) * orbitSensitivity)
             scene.orient(yaw: clampYaw(liveYaw), pitch: livePitch)
         }
-        .gesture(tapGesture)
+        // A stationary tap routes (opens detail) while a drag orbits. Compose them
+        // simultaneously and give the drag a `minimumDistance` so the touch-down
+        // isn't swallowed before the SpatialTapGesture can fire — previously the
+        // last-attached zero-distance DragGesture captured every touch and the tap
+        // never landed (Defect 1).
+        .simultaneousGesture(tapGesture)
         .gesture(orbitGesture)
         .ignoresSafeArea()
         .background(Color(style.theme.stageBackdrop))
@@ -74,18 +79,26 @@ private struct RealityKitCabinetView: View {
     }
 
     private var orbitGesture: some Gesture {
-        DragGesture()
+        // `minimumDistance` of 10pt means a stationary tap is NOT consumed by the
+        // drag (it falls through to the simultaneous SpatialTapGesture), and only a
+        // deliberate finger/mouse drag past the threshold starts the orbit.
+        DragGesture(minimumDistance: 10)
             .updating($dragDelta) { value, state, _ in
                 state = value.translation
             }
             .onEnded { value in
                 guard !reduceMotion else { return }
-                yaw = clampYaw(yaw + Float(value.translation.width) * 0.006)
-                pitch = clampPitch(pitch - Float(value.translation.height) * 0.006)
+                yaw = clampYaw(yaw + Float(value.translation.width) * orbitSensitivity)
+                pitch = clampPitch(pitch - Float(value.translation.height) * orbitSensitivity)
             }
     }
 
-    // Clamp bounds keep the cabinet always readable (no flipping behind / under).
-    private func clampYaw(_ v: Float) -> Float { min(max(v, -0.6), 0.6) }
-    private func clampPitch(_ v: Float) -> Float { min(max(v, -0.15), 0.5) }
+    // Drag → orbit tuning. The sensitivity converts drag points to radians; the
+    // clamps keep the cabinet readable (no flipping behind / under). Yaw is a wide
+    // turntable arc (≈ ±115°) so a normal drag visibly spins the case — the only
+    // motion path in the Simulator, where there is no gyro (Defect 2). Pitch stays
+    // tight so rows never foreshorten away or flip over the top.
+    private let orbitSensitivity: Float = 0.011
+    private func clampYaw(_ v: Float) -> Float { min(max(v, -2.0), 2.0) }
+    private func clampPitch(_ v: Float) -> Float { min(max(v, -0.25), 0.6) }
 }
