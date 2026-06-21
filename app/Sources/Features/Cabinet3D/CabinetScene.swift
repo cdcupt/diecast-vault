@@ -27,6 +27,13 @@ final class CabinetScene {
     private let wallThickness: Float = 0.02
 
     private var cameraRig: Entity?
+    /// The content root that holds the WHOLE vitrine (carcass, niches, lights).
+    /// Orientation is applied HERE (a turntable) rather than to the camera rig:
+    /// on iOS 18 RealityView, imperative camera-rig transforms made outside the
+    /// render path are not reliably reflected on screen (the readout changed but
+    /// the pixels never did — the real DEFECT). Rotating the content root drives a
+    /// dependable re-render, so the cabinet visibly turns (VISUAL-ROTATION fix).
+    private var contentRoot: Entity?
 
     /// Maps a hit-tested niche entity's name back to its release id so the view
     /// can route the tap. Niches are named `"niche:<release.id>"`.
@@ -45,6 +52,7 @@ final class CabinetScene {
 
         let root = Entity()
         content.add(root)
+        self.contentRoot = root
 
         let rows = max(Int(ceil(Double(shelf.count) / Double(columns))), 1)
         let cell = nicheSize + gap
@@ -108,13 +116,25 @@ final class CabinetScene {
 
     // MARK: Orientation (clamped orbit + gyro parallax)
 
+    /// Reorient the vitrine as a TURNTABLE on the content root, NOT the camera rig.
+    ///
+    /// Why the content root: on iOS 18 RealityView, an imperative transform on a
+    /// custom-camera rig made outside the render path is not reliably composited —
+    /// the camera-rig orientation changed every frame but the on-screen pixels
+    /// never moved (the captured proof shots showed the readout advancing while the
+    /// cabinet stayed dead front-on). Rotating the content the camera is looking AT
+    /// is the standard, dependable RealityView pattern and re-renders every time.
+    ///
+    /// A turntable spins the model the opposite visual way a camera orbit would, so
+    /// the angles are negated to keep "yaw +" turning the case the same direction a
+    /// user expects. Yaw spins about Y; pitch tips about X.
     func orient(yaw: Float, pitch: Float) {
-        guard let rig = cameraRig else { return }
+        guard let root = contentRoot else { return }
         let gyroYaw = reduceMotion ? 0 : motionAttitude.x * 0.25
         let gyroPitch = reduceMotion ? 0 : motionAttitude.y * 0.25
-        let q = simd_quatf(angle: yaw + gyroYaw, axis: SIMD3(0, 1, 0))
-              * simd_quatf(angle: pitch + gyroPitch, axis: SIMD3(1, 0, 0))
-        rig.orientation = q
+        let q = simd_quatf(angle: -(yaw + gyroYaw), axis: SIMD3(0, 1, 0))
+              * simd_quatf(angle: -(pitch + gyroPitch), axis: SIMD3(1, 0, 0))
+        root.orientation = q
     }
 
     // MARK: Geometry
