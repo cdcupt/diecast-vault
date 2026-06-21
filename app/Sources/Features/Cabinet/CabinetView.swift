@@ -74,12 +74,20 @@ struct CabinetView: View {
             .id(stylePreference.style)   // rebuild the scene on style change
             .transition(.opacity)
 
+            // The chrome overlay (lightbar header + empty-invite card + perf HUD)
+            // sits ON TOP of the cabinet. Its passive parts — opaque card
+            // backgrounds, the count line, Spacers, the HUD — must NOT swallow
+            // touches meant for the 3D cabinet below, or the RealityView never
+            // sees a tap/drag at all (the root cause of both dead gestures). Each
+            // passive piece carries `.allowsHitTesting(false)` so input falls
+            // through to the cabinet; only the genuine controls (STYLE chip,
+            // empty-invite buttons) stay hit-testable in their own right.
             VStack(spacing: 0) {
                 header
                 Spacer()
                 if litCount == 0 { emptyInvite }
                 Spacer()
-                if Self.showsPerfHUD { perfHUD }
+                if Self.showsPerfHUD { perfHUD.allowsHitTesting(false) }
             }
             .padding(.horizontal, 16)
             .padding(.top, 8)
@@ -116,7 +124,8 @@ struct CabinetView: View {
     private var header: some View {
         let onLight = stylePreference.style.isDarkCase
         return HStack(alignment: .center, spacing: 12) {
-            // The signature lit bulb + localized count line.
+            // The signature lit bulb + localized count line — purely informational,
+            // so it must not block touches reaching the cabinet underneath.
             HStack(spacing: 10) {
                 Circle()
                     .fill(Ink.tungsten)
@@ -133,9 +142,12 @@ struct CabinetView: View {
                         .foregroundStyle(onLight ? Color.white.opacity(0.7) : Ink.soft)
                 }
             }
+            .allowsHitTesting(false)
 
             Spacer()
 
+            // The STYLE chip is the ONE interactive control here — it keeps hit
+            // testing so a tap opens the picker.
             styleChip(onLight: onLight)
         }
         .padding(.horizontal, 14)
@@ -147,6 +159,10 @@ struct CabinetView: View {
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
                         .stroke(onLight ? Color(Palette.stageRim).opacity(0.4) : Ink.line, lineWidth: 1)
                 )
+                // The card backdrop is decorative; let touches pass through it so
+                // a drag/tap starting on the header band still reaches the cabinet
+                // everywhere except the STYLE chip itself.
+                .allowsHitTesting(false)
         )
     }
 
@@ -187,20 +203,25 @@ struct CabinetView: View {
     private var emptyInvite: some View {
         let onLight = stylePreference.style.isDarkCase
         return VStack(spacing: 14) {
-            Image(systemName: "lightbulb.slash")
-                .font(.system(size: 34, weight: .light))
-                .foregroundStyle(Ink.tungsten)
-            VStack(spacing: 6) {
-                Text("cabinet.empty.headline")
-                    .font(Voice.serif(24))
-                    .foregroundStyle(onLight ? .white : Ink.primary)
-                    .multilineTextAlignment(.center)
-                Text("cabinet.empty.invite")
-                    .font(.callout)
-                    .foregroundStyle(onLight ? Color.white.opacity(0.72) : Ink.soft)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: 280)
+            Group {
+                Image(systemName: "lightbulb.slash")
+                    .font(.system(size: 34, weight: .light))
+                    .foregroundStyle(Ink.tungsten)
+                VStack(spacing: 6) {
+                    Text("cabinet.empty.headline")
+                        .font(Voice.serif(24))
+                        .foregroundStyle(onLight ? .white : Ink.primary)
+                        .multilineTextAlignment(.center)
+                    Text("cabinet.empty.invite")
+                        .font(.callout)
+                        .foregroundStyle(onLight ? Color.white.opacity(0.72) : Ink.soft)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: 280)
+                }
             }
+            // Icon + copy are informational — pass touches through so only the two
+            // CTAs below capture taps.
+            .allowsHitTesting(false)
             HStack(spacing: 10) {
                 Button { showScan = true } label: {
                     PrimaryCTALabel(title: "cabinet.empty.scan", systemImage: "camera.viewfinder")
@@ -234,6 +255,9 @@ struct CabinetView: View {
                     RoundedRectangle(cornerRadius: 18, style: .continuous)
                         .stroke(Ink.tungsten.opacity(0.45), lineWidth: 1)
                 )
+                // Decorative card surface — don't capture touches, so a drag/tap
+                // on the empty-state padding still reaches the cabinet behind it.
+                .allowsHitTesting(false)
         )
         .shadow(color: Color(Palette.ink).opacity(0.18), radius: 22, y: 12)
         .padding(.horizontal, 8)
