@@ -26,28 +26,25 @@ final class CabinetScene {
     private let gap: Float = 0.03            // shelf-edge gap between cells
     private let wallThickness: Float = 0.02
 
+    /// The camera rig: a pivot at origin with the camera pushed back along +Z.
+    /// Rotating this rig ORBITS the camera around a fixed, lit cabinet — the
+    /// content (carcass, niches, AND all the lights) never moves, so the lit
+    /// niches always face the lamps and the vitrine stays bright from every angle.
+    /// This is the device-correct rotation: we move the viewpoint, not the subject.
     private var cameraRig: Entity?
-    /// The content root that holds the WHOLE vitrine (carcass, niches, lights).
-    /// Orientation is applied HERE (a turntable) rather than to the camera rig:
-    /// on iOS RealityView, imperative camera-rig transforms made outside the render
-    /// path are not reliably reflected on screen. We rotate the content root — but
-    /// see `orient(...)` / the SceneEvents.Update subscription for WHY the rotation
-    /// must be applied from inside RealityKit's own render loop, not imperatively.
-    private var contentRoot: Entity?
 
-    /// The turntable target the on-screen pose eases toward. Set by the view's
-    /// buttons/drag (`orient(...)`); CONSUMED every frame by the render-loop
-    /// subscription below — never applied imperatively from the caller (that path
-    /// mutates the entity but does not re-composite on iOS; the real DEFECT).
+    /// The orbit target the camera rig eases toward. Set by the view's buttons/drag
+    /// (`orient(...)`); CONSUMED every frame by the render-loop subscription below,
+    /// which slerps `cameraRig.orientation` toward it. Both the gesture drag and the
+    /// debug buttons feed this same target, so they share one smooth easing path.
     private var targetYaw: Float = 0
     private var targetPitch: Float = 0.07
 
-    /// Strong handle to the per-frame `SceneEvents.Update` subscription. RealityKit
-    /// fires this once per frame ON ITS OWN RENDER LOOP; applying the orientation
-    /// there means the transform change is guaranteed to be composited (an
-    /// imperative `.orientation =` / `move(to:)` from a button action is NOT — the
-    /// update: closure never fires on a `@State` change on this iOS host, and a
-    /// raw out-of-loop mutation never refreshes the frame). This is THE fix.
+    /// Strong handle to the per-frame `SceneEvents.Update` subscription. On a real
+    /// device RealityKit fires this once per frame on its own render loop, so easing
+    /// `cameraRig.orientation` toward the target there gives a smooth, cheap orbit
+    /// with NO scene rebuilds (the USDZ loads once). Retained so it is not torn down;
+    /// cancelled on rebuild/teardown so we never stack two subscriptions.
     private var renderLoopSubscription: EventSubscription?
 
     /// Maps a hit-tested niche entity's name back to its release id so the view
@@ -65,18 +62,20 @@ final class CabinetScene {
         self.reduceMotion = reduceMotion
         let theme = style.theme
 
-        // Idempotent: a rebuild (RealityView `.id()` change — the on-this-host
-        // re-composite trigger, see the view) re-runs this `make` closure on the
-        // same scene instance. Clear any prior content + subscription so we never
-        // stack two vitrines or leak the render-loop hook.
+        // Idempotent: a rebuild (RealityView `.id(style)` change — a style swap
+        // rebuilds the whole skinned scene) re-runs this `make` closure on the same
+        // scene instance. Clear any prior content + subscription so we never stack
+        // two vitrines or leak the render-loop hook. Rotation NEVER rebuilds.
         renderLoopSubscription?.cancel()
         renderLoopSubscription = nil
         content.entities.removeAll()
         nicheReleaseByName.removeAll()
 
+        // The content root: built ONCE at identity orientation and never rotated.
+        // The camera rig orbits around it (see below), so the vitrine + all its
+        // lights stay fixed and the niches remain lit from every viewing angle.
         let root = Entity()
         content.add(root)
-        self.contentRoot = root
 
         let rows = max(Int(ceil(Double(shelf.count) / Double(columns))), 1)
         let cell = nicheSize + gap
@@ -114,7 +113,11 @@ final class CabinetScene {
         // Ambient/key fill so MATTE recesses stay legible, themed per style.
         root.addChild(makeFillLight(theme: theme))
 
-        // Camera rig: a pivot at origin with the camera pushed back along +Z.
+        // Camera rig: a pivot at origin with the camera pushed back along +Z. The
+        // camera entity looks toward -Z (its local forward) so it points back at the
+        // origin where the vitrine is centred. Rotating the RIG orbits this camera
+        // around the fixed cabinet while it keeps framing the centre — the device-
+        // correct rotation (content + lights never move, so the niches stay lit).
         let rig = Entity()
         let camEntity = Entity()
         var cam = PerspectiveCameraComponent()
@@ -129,26 +132,24 @@ final class CabinetScene {
         content.add(rig)
         self.cameraRig = rig
 
-        // Seed the turntable from the pose handed in by the view. The build-time
-        // `.orientation =` is the ONLY assignment that reliably composites on this
-        // iOS host (the render loop does not tick between rebuilds, so SceneEvents
-        // .Update never fires and out-of-loop mutations never refresh the frame —
-        // the real DEFECT). The view therefore re-runs this `make` (via `.id()`)
-        // whenever the pose changes, so each new pose is baked into a fresh render.
+        // Seed the orbit target from the pose handed in by the view and snap the rig
+        // to it at build time so the AT-REST cabinet renders at the correct angle
+        // immediately (no ease-in from zero on first appear). The per-frame
+        // subscription then eases toward any later target changes.
         targetYaw = yaw
         targetPitch = pitch
-        root.orientation = quaternion(yaw: targetYaw, pitch: targetPitch)
+        rig.orientation = quaternion(yaw: targetYaw, pitch: targetPitch)
 
-        // THE FIX: drive the turntable from RealityKit's own per-frame render loop.
-        // `SceneEvents.Update` fires once per frame on the render thread, so any
-        // transform we set inside it is guaranteed to be composited — unlike an
-        // imperative `.orientation =` made from a SwiftUI button action / the
-        // `update:` closure (which never fires on a `@State` change on this host).
-        // Each frame we ease the live orientation toward `targetYaw/Pitch` (+ gyro),
-        // so a button tap or drag that moves the target produces a smooth, VISIBLE
-        // on-screen rotation.
+        // Drive the orbit from RealityKit's own per-frame render loop. On a real
+        // device `SceneEvents.Update` fires once per frame, so easing the camera
+        // rig's orientation toward the target here is smooth and cheap — no scene
+        // rebuilds, the USDZ stays resident. Both the drag gesture and the debug
+        // buttons move the target; this subscription is the single thing that moves
+        // the rig. (In the Simulator this loop is static so the orbit isn't visible
+        // there — expected; validated on device. The at-rest frame is correct
+        // because the rig was snapped to the seed pose above.)
         renderLoopSubscription = content.subscribe(to: SceneEvents.Update.self) { [weak self] event in
-            self?.stepTurntable(deltaTime: Float(event.deltaTime))
+            self?.stepOrbit(deltaTime: Float(event.deltaTime))
         }
         startMotion()
     }
@@ -156,50 +157,49 @@ final class CabinetScene {
     /// Resolve a hit-tested entity (or one of its ancestors) back to its release.
     func release(forHitName name: String) -> Release? { nicheReleaseByName[name] }
 
-    // MARK: Orientation (clamped orbit + gyro parallax)
+    // MARK: Orientation (clamped camera orbit + gyro parallax)
 
-    /// Set the turntable TARGET. This does NOT touch the entity directly — the
-    /// per-frame `SceneEvents.Update` subscription (set up in `build`) reads this
-    /// target and rotates the content root from inside RealityKit's render loop,
-    /// which is the only path that actually re-composites the frame on this iOS host
-    /// (an imperative `.orientation =` / `move(to:)` from a button action mutates the
-    /// entity but never refreshes the display — the real DEFECT this fixes).
+    /// Set the orbit TARGET for the camera rig. This does NOT touch the rig directly
+    /// — the per-frame `SceneEvents.Update` subscription (set up in `build`) eases
+    /// `cameraRig.orientation` toward this target each frame. Both the drag gesture
+    /// and the debug buttons call here, so they share one smooth easing path.
     ///
-    /// A turntable spins the model the opposite visual way a camera orbit would, so
-    /// the angles are negated (in `quaternion`) to keep "yaw +" turning the case the
-    /// direction a user expects. Yaw spins about Y; pitch tips about X.
+    /// Yaw orbits the camera about Y; pitch tips it about X. The cabinet (and all
+    /// its lights) stays fixed, so it remains fully lit at every orbit angle.
     func orient(yaw: Float, pitch: Float) {
         targetYaw = yaw
         targetPitch = pitch
     }
 
-    /// Per-frame turntable step, invoked by `SceneEvents.Update` on RealityKit's
-    /// render thread. Eases the live orientation toward the target (+ gyro lean) and
-    /// writes it onto the content root. On a real device this runs inside the render
-    /// loop so the write is composited every frame and the cabinet rotates smoothly;
-    /// on the Simulator the loop is static (this never fires), so the view's
-    /// `.id(poseToken)` rebuild is what re-composites the runtime rotation there.
-    private func stepTurntable(deltaTime: Float) {
-        guard let root = contentRoot else { return }
+    /// Per-frame orbit step, invoked by `SceneEvents.Update` on RealityKit's render
+    /// thread. Eases the camera rig's orientation toward the target (+ a subtle gyro
+    /// lean) so a button nudge or a drag glides the viewpoint around the fixed
+    /// cabinet. On a real device this ticks every frame (smooth orbit); the
+    /// Simulator's render loop is static so this never fires there (expected — the
+    /// at-rest frame is still correct because the rig is snapped to the seed pose at
+    /// build time).
+    private func stepOrbit(deltaTime: Float) {
+        guard let rig = cameraRig else { return }
         let gyroYaw = reduceMotion ? 0 : motionAttitude.x * 0.25
         let gyroPitch = reduceMotion ? 0 : motionAttitude.y * 0.25
         let desired = quaternion(yaw: targetYaw + gyroYaw, pitch: targetPitch + gyroPitch)
         // Critically-damped-ish smoothing toward the target so a button nudge or a
         // drag glides instead of snapping; framerate-independent via deltaTime.
-        let t = min(1, deltaTime * turntableResponse)
-        root.orientation = simd_slerp(root.orientation, desired, t)
+        let t = min(1, deltaTime * orbitResponse)
+        rig.orientation = simd_slerp(rig.orientation, desired, t)
     }
 
-    /// The turntable quaternion for a yaw/pitch pair (angles negated so a turntable
-    /// reads like a camera orbit; yaw about Y, pitch about X).
+    /// The orbit quaternion for a yaw/pitch pair, applied to the CAMERA RIG. Yaw
+    /// orbits the camera about Y, pitch about X. Angles are applied directly (a
+    /// camera orbit reads naturally without the negation a content turntable needs).
     private func quaternion(yaw: Float, pitch: Float) -> simd_quatf {
-        simd_quatf(angle: -yaw, axis: SIMD3(0, 1, 0))
-            * simd_quatf(angle: -pitch, axis: SIMD3(1, 0, 0))
+        simd_quatf(angle: yaw, axis: SIMD3(0, 1, 0))
+            * simd_quatf(angle: pitch, axis: SIMD3(1, 0, 0))
     }
 
-    /// How fast the live pose chases the target (higher = snappier). Tuned so a
-    /// single button nudge resolves in a few frames yet a drag stays smooth.
-    private let turntableResponse: Float = 12
+    /// How fast the rig chases the target (higher = snappier). Tuned so a single
+    /// button nudge resolves in a few frames yet a drag stays smooth.
+    private let orbitResponse: Float = 12
 
     // MARK: Geometry
 

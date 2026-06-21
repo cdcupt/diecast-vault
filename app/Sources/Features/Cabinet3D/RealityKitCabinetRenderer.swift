@@ -34,14 +34,12 @@ private struct RealityKitCabinetView: View {
     let onSelect: (Release) -> Void
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    // Clamped orbit/tilt state. The buttons/drag mutate these `@State` values; the
-    // visible rotation is driven by `poseToken` → `.id()` recreating the RealityView
-    // (whose `make` bakes the current pose into a fresh build-time render — the only
-    // write that reliably composites on a host whose RealityKit render loop is
-    // static). We deliberately do NOT depend on the RealityView `update:` closure
-    // (not re-invoked on a `@State` change on this iOS host) nor on an out-of-loop
-    // imperative `.orientation =` (mutates the entity but never refreshes the frame).
-    // See `CabinetScene.orient` / `stepTurntable` for the device-side smooth path.
+    // Clamped orbit/tilt state. The buttons/drag mutate these `@State` values and
+    // push them into the scene as the camera-orbit TARGET (`scene.orient`); the
+    // scene's retained `SceneEvents.Update` subscription eases the camera rig toward
+    // that target each frame on-device — a smooth orbit with NO scene rebuilds. The
+    // scene builds once (rotation never rebuilds it); only a STYLE change rebuilds
+    // it (via `.id(style)`). See `CabinetScene.orient` / `stepOrbit`.
     @State private var yaw: Float = 0          // left/right orbit
     @State private var pitch: Float = 0.07      // up/down tilt (near head-on)
     // Anchor captured at drag start so each move is relative to where the orbit
@@ -66,32 +64,22 @@ private struct RealityKitCabinetView: View {
     var body: some View {
         ZStack {
             RealityView { content in
-                // The build-time `.orientation =` (inside `build`) is the ONLY write
-                // that reliably composites on this iOS host: the RealityKit render
-                // loop does not tick between rebuilds (SceneEvents.Update never fires
-                // in the Simulator, and an out-of-loop `.orientation =` / `move(to:)`
-                // from a button action mutates the entity but never refreshes the
-                // displayed frame). So we bake the CURRENT pose into the scene at
-                // build time and force a fresh build whenever the pose changes (see
-                // `.id(poseToken)` below). On a real device the SceneEvents.Update
-                // subscription additionally drives smooth per-frame rotation.
+                // Build the scene ONCE. The seed pose is baked into the camera rig at
+                // build time so the at-rest cabinet renders at the correct angle
+                // immediately. From here on, rotation is the camera rig orbiting via
+                // the scene's per-frame render-loop subscription — never a rebuild.
                 scene.build(in: content, shelf: shelf, style: style, modelURL: modelURL,
                             reduceMotion: reduceMotion,
                             yaw: reduceMotion ? 0 : clampYaw(yaw),
                             pitch: reduceMotion ? 0.07 : clampPitch(pitch))
             } update: { _ in
-                // No-op for rotation: `update:` is not re-invoked on a `@State` change
-                // on this host, so nothing it sets would reach the screen. Rotation
-                // is handled by the `.id(poseToken)`-driven rebuild (re-running the
-                // build-time orient) plus the device-side render-loop subscription.
+                // No-op: rotation is driven by the camera-orbit target + the scene's
+                // SceneEvents.Update subscription, not by SwiftUI re-evaluating here.
             }
-            // A quantized pose token: any meaningful yaw/pitch change flips the
-            // RealityView's identity, so SwiftUI tears it down and re-runs `make`,
-            // re-compositing the scene with the new build-time pose. This is the
-            // dependable runtime visual-rotation path on a host whose RealityKit
-            // render loop is otherwise static. Quantized so a drag doesn't rebuild
-            // every sub-degree delta.
-            .id(poseToken)
+            // Rebuild ONLY on a style swap — "one structure, four dressings" reskins
+            // the whole scene graph, so a fresh build is the clean way to apply it.
+            // Rotation deliberately does NOT change identity (no rebuild on pose).
+            .id(style)
             // The RealityView must own the WHOLE area for hit-testing so the
             // gestures land anywhere on the cabinet, not just on opaque content.
             .contentShape(Rectangle())
@@ -114,25 +102,10 @@ private struct RealityKitCabinetView: View {
         }
     }
 
-    /// Identity for the RealityView, quantized from the live clamped pose. Changing
-    /// it forces SwiftUI to recreate the RealityView → re-run `build` → re-composite
-    /// at the new build-time pose (the host's render loop is static, so this is the
-    /// only dependable runtime re-render trigger). Step ≈ 0.06 rad (~3.4°): fine
-    /// enough that every button nudge (0.25 / 0.1) and any deliberate drag visibly
-    /// turns the case, coarse enough not to rebuild on sub-degree jitter.
-    private var poseToken: String {
-        let liveYaw = reduceMotion ? 0 : clampYaw(yaw)
-        let livePitch = reduceMotion ? 0.07 : clampPitch(pitch)
-        let qy = (liveYaw / poseQuantum).rounded()
-        let qp = (livePitch / poseQuantum).rounded()
-        return "\(qy)|\(qp)"
-    }
-    private let poseQuantum: Float = 0.06
-
-    /// Update the scene's turntable target (the per-frame device path). On this host
-    /// the visible rotation comes from the `.id(poseToken)` rebuild, not from here,
-    /// but keeping the target in sync makes the device-side smooth path correct and
-    /// re-seeds the freshly rebuilt scene.
+    /// Push the live clamped pose into the scene as the camera-orbit TARGET. The
+    /// scene's per-frame `SceneEvents.Update` subscription eases the camera rig
+    /// toward it — a smooth orbit with no rebuild. Both the drag and the debug
+    /// buttons funnel through here, so they share one target.
     private func applyOrientation() {
         let liveYaw = reduceMotion ? 0 : clampYaw(yaw)
         let livePitch = reduceMotion ? 0.07 : clampPitch(pitch)
@@ -154,9 +127,9 @@ private struct RealityKitCabinetView: View {
     private var orbitGesture: some Gesture {
         // `minimumDistance` of 10pt means a stationary tap is NOT consumed by the
         // drag (it falls through to the simultaneous SpatialTapGesture), and only a
-        // deliberate finger/mouse drag past the threshold starts the orbit. The
-        // camera is oriented synchronously here, NOT via the RealityView `update:`
-        // closure (which is unreliable mid-gesture on iOS 18).
+        // deliberate finger/mouse drag past the threshold starts the orbit. Each
+        // move updates the camera-orbit TARGET (`applyOrientation`); the scene's
+        // render-loop subscription eases the camera rig toward it on-device.
         DragGesture(minimumDistance: 10)
             .onChanged { value in
                 guard !reduceMotion else { return }
@@ -236,10 +209,9 @@ private struct RealityKitCabinetView: View {
     }
 
     // Drag → orbit tuning. The sensitivity converts drag points to radians; the
-    // clamps keep the cabinet readable (no flipping behind / under). Yaw is a wide
-    // turntable arc (≈ ±115°) so a normal drag visibly spins the case — the only
-    // motion path in the Simulator, where there is no gyro (Defect 2). Pitch stays
-    // tight so rows never foreshorten away or flip over the top.
+    // clamps keep the cabinet readable (no orbiting fully behind / under). Yaw is a
+    // wide arc (≈ ±115°) so a normal drag swings the viewpoint right around the
+    // case; pitch stays tight so rows never foreshorten away or flip over the top.
     private let orbitSensitivity: Float = 0.011
     private func clampYaw(_ v: Float) -> Float { min(max(v, -2.0), 2.0) }
     private func clampPitch(_ v: Float) -> Float { min(max(v, -0.25), 0.6) }
