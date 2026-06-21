@@ -34,13 +34,14 @@ private struct RealityKitCabinetView: View {
     let onSelect: (Release) -> Void
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    // Clamped orbit/tilt state, driven DIRECTLY by the drag gesture handler.
-    // Not via `@GestureState` + the RealityView `update:` closure: on iOS 18 the
-    // `update:` closure is not reliably re-invoked while a gesture is in flight,
-    // so the old "`.updating($dragDelta)` → read `dragDelta` in `update:`" path
-    // never moved the camera in the Simulator. We now mutate `@State` in
-    // `.onChanged` and call `scene.orient(...)` synchronously, so rotation does
-    // not depend on the `update:` closure re-running at all (Defect 2 root cause).
+    // Clamped orbit/tilt state. The buttons/drag mutate these `@State` values; the
+    // visible rotation is driven by `poseToken` → `.id()` recreating the RealityView
+    // (whose `make` bakes the current pose into a fresh build-time render — the only
+    // write that reliably composites on a host whose RealityKit render loop is
+    // static). We deliberately do NOT depend on the RealityView `update:` closure
+    // (not re-invoked on a `@State` change on this iOS host) nor on an out-of-loop
+    // imperative `.orientation =` (mutates the entity but never refreshes the frame).
+    // See `CabinetScene.orient` / `stepTurntable` for the device-side smooth path.
     @State private var yaw: Float = 0          // left/right orbit
     @State private var pitch: Float = 0.07      // up/down tilt (near head-on)
     // Anchor captured at drag start so each move is relative to where the orbit
@@ -65,14 +66,32 @@ private struct RealityKitCabinetView: View {
     var body: some View {
         ZStack {
             RealityView { content in
-                scene.build(in: content, shelf: shelf, style: style, modelURL: modelURL, reduceMotion: reduceMotion)
-                applyOrientation()
+                // The build-time `.orientation =` (inside `build`) is the ONLY write
+                // that reliably composites on this iOS host: the RealityKit render
+                // loop does not tick between rebuilds (SceneEvents.Update never fires
+                // in the Simulator, and an out-of-loop `.orientation =` / `move(to:)`
+                // from a button action mutates the entity but never refreshes the
+                // displayed frame). So we bake the CURRENT pose into the scene at
+                // build time and force a fresh build whenever the pose changes (see
+                // `.id(poseToken)` below). On a real device the SceneEvents.Update
+                // subscription additionally drives smooth per-frame rotation.
+                scene.build(in: content, shelf: shelf, style: style, modelURL: modelURL,
+                            reduceMotion: reduceMotion,
+                            yaw: reduceMotion ? 0 : clampYaw(yaw),
+                            pitch: reduceMotion ? 0.07 : clampPitch(pitch))
             } update: { _ in
-                // Belt-and-braces: re-apply the current orientation on any rebuild
-                // (e.g. reduce-motion / gyro changes). The drag itself no longer
-                // relies on this closure firing — `.onChanged` orients directly.
-                applyOrientation()
+                // No-op for rotation: `update:` is not re-invoked on a `@State` change
+                // on this host, so nothing it sets would reach the screen. Rotation
+                // is handled by the `.id(poseToken)`-driven rebuild (re-running the
+                // build-time orient) plus the device-side render-loop subscription.
             }
+            // A quantized pose token: any meaningful yaw/pitch change flips the
+            // RealityView's identity, so SwiftUI tears it down and re-runs `make`,
+            // re-compositing the scene with the new build-time pose. This is the
+            // dependable runtime visual-rotation path on a host whose RealityKit
+            // render loop is otherwise static. Quantized so a drag doesn't rebuild
+            // every sub-degree delta.
+            .id(poseToken)
             // The RealityView must own the WHOLE area for hit-testing so the
             // gestures land anywhere on the cabinet, not just on opaque content.
             .contentShape(Rectangle())
@@ -95,7 +114,25 @@ private struct RealityKitCabinetView: View {
         }
     }
 
-    /// Apply the live clamped orientation to the scene's camera rig.
+    /// Identity for the RealityView, quantized from the live clamped pose. Changing
+    /// it forces SwiftUI to recreate the RealityView → re-run `build` → re-composite
+    /// at the new build-time pose (the host's render loop is static, so this is the
+    /// only dependable runtime re-render trigger). Step ≈ 0.06 rad (~3.4°): fine
+    /// enough that every button nudge (0.25 / 0.1) and any deliberate drag visibly
+    /// turns the case, coarse enough not to rebuild on sub-degree jitter.
+    private var poseToken: String {
+        let liveYaw = reduceMotion ? 0 : clampYaw(yaw)
+        let livePitch = reduceMotion ? 0.07 : clampPitch(pitch)
+        let qy = (liveYaw / poseQuantum).rounded()
+        let qp = (livePitch / poseQuantum).rounded()
+        return "\(qy)|\(qp)"
+    }
+    private let poseQuantum: Float = 0.06
+
+    /// Update the scene's turntable target (the per-frame device path). On this host
+    /// the visible rotation comes from the `.id(poseToken)` rebuild, not from here,
+    /// but keeping the target in sync makes the device-side smooth path correct and
+    /// re-seeds the freshly rebuilt scene.
     private func applyOrientation() {
         let liveYaw = reduceMotion ? 0 : clampYaw(yaw)
         let livePitch = reduceMotion ? 0.07 : clampPitch(pitch)

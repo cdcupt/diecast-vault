@@ -29,11 +29,26 @@ final class CabinetScene {
     private var cameraRig: Entity?
     /// The content root that holds the WHOLE vitrine (carcass, niches, lights).
     /// Orientation is applied HERE (a turntable) rather than to the camera rig:
-    /// on iOS 18 RealityView, imperative camera-rig transforms made outside the
-    /// render path are not reliably reflected on screen (the readout changed but
-    /// the pixels never did — the real DEFECT). Rotating the content root drives a
-    /// dependable re-render, so the cabinet visibly turns (VISUAL-ROTATION fix).
+    /// on iOS RealityView, imperative camera-rig transforms made outside the render
+    /// path are not reliably reflected on screen. We rotate the content root — but
+    /// see `orient(...)` / the SceneEvents.Update subscription for WHY the rotation
+    /// must be applied from inside RealityKit's own render loop, not imperatively.
     private var contentRoot: Entity?
+
+    /// The turntable target the on-screen pose eases toward. Set by the view's
+    /// buttons/drag (`orient(...)`); CONSUMED every frame by the render-loop
+    /// subscription below — never applied imperatively from the caller (that path
+    /// mutates the entity but does not re-composite on iOS; the real DEFECT).
+    private var targetYaw: Float = 0
+    private var targetPitch: Float = 0.07
+
+    /// Strong handle to the per-frame `SceneEvents.Update` subscription. RealityKit
+    /// fires this once per frame ON ITS OWN RENDER LOOP; applying the orientation
+    /// there means the transform change is guaranteed to be composited (an
+    /// imperative `.orientation =` / `move(to:)` from a button action is NOT — the
+    /// update: closure never fires on a `@State` change on this iOS host, and a
+    /// raw out-of-loop mutation never refreshes the frame). This is THE fix.
+    private var renderLoopSubscription: EventSubscription?
 
     /// Maps a hit-tested niche entity's name back to its release id so the view
     /// can route the tap. Niches are named `"niche:<release.id>"`.
@@ -46,9 +61,18 @@ final class CabinetScene {
 
     // MARK: Build
 
-    func build(in content: RealityViewCameraContent, shelf: [Release], style: CabinetStyle, modelURL: URL?, reduceMotion: Bool) {
+    func build(in content: RealityViewCameraContent, shelf: [Release], style: CabinetStyle, modelURL: URL?, reduceMotion: Bool, yaw: Float = 0, pitch: Float = 0.07) {
         self.reduceMotion = reduceMotion
         let theme = style.theme
+
+        // Idempotent: a rebuild (RealityView `.id()` change — the on-this-host
+        // re-composite trigger, see the view) re-runs this `make` closure on the
+        // same scene instance. Clear any prior content + subscription so we never
+        // stack two vitrines or leak the render-loop hook.
+        renderLoopSubscription?.cancel()
+        renderLoopSubscription = nil
+        content.entities.removeAll()
+        nicheReleaseByName.removeAll()
 
         let root = Entity()
         content.add(root)
@@ -105,9 +129,27 @@ final class CabinetScene {
         content.add(rig)
         self.cameraRig = rig
 
-        // A gentle, near head-on framing (small up-tilt) so rows don't foreshorten
-        // and the lit top row reads fully.
-        orient(yaw: 0, pitch: 0.07)
+        // Seed the turntable from the pose handed in by the view. The build-time
+        // `.orientation =` is the ONLY assignment that reliably composites on this
+        // iOS host (the render loop does not tick between rebuilds, so SceneEvents
+        // .Update never fires and out-of-loop mutations never refresh the frame —
+        // the real DEFECT). The view therefore re-runs this `make` (via `.id()`)
+        // whenever the pose changes, so each new pose is baked into a fresh render.
+        targetYaw = yaw
+        targetPitch = pitch
+        root.orientation = quaternion(yaw: targetYaw, pitch: targetPitch)
+
+        // THE FIX: drive the turntable from RealityKit's own per-frame render loop.
+        // `SceneEvents.Update` fires once per frame on the render thread, so any
+        // transform we set inside it is guaranteed to be composited — unlike an
+        // imperative `.orientation =` made from a SwiftUI button action / the
+        // `update:` closure (which never fires on a `@State` change on this host).
+        // Each frame we ease the live orientation toward `targetYaw/Pitch` (+ gyro),
+        // so a button tap or drag that moves the target produces a smooth, VISIBLE
+        // on-screen rotation.
+        renderLoopSubscription = content.subscribe(to: SceneEvents.Update.self) { [weak self] event in
+            self?.stepTurntable(deltaTime: Float(event.deltaTime))
+        }
         startMotion()
     }
 
@@ -116,26 +158,48 @@ final class CabinetScene {
 
     // MARK: Orientation (clamped orbit + gyro parallax)
 
-    /// Reorient the vitrine as a TURNTABLE on the content root, NOT the camera rig.
-    ///
-    /// Why the content root: on iOS 18 RealityView, an imperative transform on a
-    /// custom-camera rig made outside the render path is not reliably composited —
-    /// the camera-rig orientation changed every frame but the on-screen pixels
-    /// never moved (the captured proof shots showed the readout advancing while the
-    /// cabinet stayed dead front-on). Rotating the content the camera is looking AT
-    /// is the standard, dependable RealityView pattern and re-renders every time.
+    /// Set the turntable TARGET. This does NOT touch the entity directly — the
+    /// per-frame `SceneEvents.Update` subscription (set up in `build`) reads this
+    /// target and rotates the content root from inside RealityKit's render loop,
+    /// which is the only path that actually re-composites the frame on this iOS host
+    /// (an imperative `.orientation =` / `move(to:)` from a button action mutates the
+    /// entity but never refreshes the display — the real DEFECT this fixes).
     ///
     /// A turntable spins the model the opposite visual way a camera orbit would, so
-    /// the angles are negated to keep "yaw +" turning the case the same direction a
-    /// user expects. Yaw spins about Y; pitch tips about X.
+    /// the angles are negated (in `quaternion`) to keep "yaw +" turning the case the
+    /// direction a user expects. Yaw spins about Y; pitch tips about X.
     func orient(yaw: Float, pitch: Float) {
+        targetYaw = yaw
+        targetPitch = pitch
+    }
+
+    /// Per-frame turntable step, invoked by `SceneEvents.Update` on RealityKit's
+    /// render thread. Eases the live orientation toward the target (+ gyro lean) and
+    /// writes it onto the content root. On a real device this runs inside the render
+    /// loop so the write is composited every frame and the cabinet rotates smoothly;
+    /// on the Simulator the loop is static (this never fires), so the view's
+    /// `.id(poseToken)` rebuild is what re-composites the runtime rotation there.
+    private func stepTurntable(deltaTime: Float) {
         guard let root = contentRoot else { return }
         let gyroYaw = reduceMotion ? 0 : motionAttitude.x * 0.25
         let gyroPitch = reduceMotion ? 0 : motionAttitude.y * 0.25
-        let q = simd_quatf(angle: -(yaw + gyroYaw), axis: SIMD3(0, 1, 0))
-              * simd_quatf(angle: -(pitch + gyroPitch), axis: SIMD3(1, 0, 0))
-        root.orientation = q
+        let desired = quaternion(yaw: targetYaw + gyroYaw, pitch: targetPitch + gyroPitch)
+        // Critically-damped-ish smoothing toward the target so a button nudge or a
+        // drag glides instead of snapping; framerate-independent via deltaTime.
+        let t = min(1, deltaTime * turntableResponse)
+        root.orientation = simd_slerp(root.orientation, desired, t)
     }
+
+    /// The turntable quaternion for a yaw/pitch pair (angles negated so a turntable
+    /// reads like a camera orbit; yaw about Y, pitch about X).
+    private func quaternion(yaw: Float, pitch: Float) -> simd_quatf {
+        simd_quatf(angle: -yaw, axis: SIMD3(0, 1, 0))
+            * simd_quatf(angle: -pitch, axis: SIMD3(1, 0, 0))
+    }
+
+    /// How fast the live pose chases the target (higher = snappier). Tuned so a
+    /// single button nudge resolves in a few frames yet a drag stays smooth.
+    private let turntableResponse: Float = 12
 
     // MARK: Geometry
 
@@ -492,5 +556,7 @@ extension CabinetScene {
 
     func stopMotion() {
         if motion.isDeviceMotionActive { motion.stopDeviceMotionUpdates() }
+        renderLoopSubscription?.cancel()
+        renderLoopSubscription = nil
     }
 }
