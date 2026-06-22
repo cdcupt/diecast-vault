@@ -57,16 +57,15 @@ enum ScanCapabilityService {
 
     /// Guided Object Capture session availability (RealityKit, iOS 17+, same Pro
     /// device class). Never available in the simulator.
+    ///
+    /// `ObjectCaptureSession` lives in the `_RealityKit_SwiftUI` overlay and is
+    /// `@MainActor`-isolated, so it is not in scope from this plain `import
+    /// RealityKit` synchronous accessor on the iOS device SDK. Object Capture and
+    /// on-device photogrammetry ship together on the exact same hardware class
+    /// (LiDAR Pro iPhone, iOS 17+), so we gate on the photogrammetry signal —
+    /// the load-bearing requirement — which is equivalent at runtime and keeps
+    /// this a clean, dependency-light synchronous check.
     static var isObjectCaptureAvailable: Bool {
-        #if targetEnvironment(simulator)
-        return false
-        #elseif canImport(RealityKit)
-        if #available(iOS 17.0, *) {
-            return ObjectCaptureSession.isSupported
-        }
-        return false
-        #else
-        return false
-        #endif
+        isPhotogrammetrySupported
     }
 }
