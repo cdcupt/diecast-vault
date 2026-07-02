@@ -52,24 +52,26 @@ public struct CommunityContribution: Identifiable, Hashable, Codable, Sendable {
 }
 
 public extension CommunityContribution {
-    /// Sample community library (no backend in v1.1). A deduped mix of the user's
-    /// own credited scans and other contributors', so the "scanned by @you"
-    /// credit and the recognition stat are exercised against real-looking data.
+    /// Bundled starter library (no backend in v1.1). A deduped set of OTHER
+    /// contributors' scans: a fresh install has shared nothing, so nothing here
+    /// is credited to the user — recognition is earned via a real opted-in
+    /// share, never seeded (App Review honesty: no fabricated history).
     static let sampleLibrary: [CommunityContribution] = [
         .init(key: .init(mgtNumber: "MGT00489", drive: .rhd), name: "Porsche 911 Turbo",
-              contributor: "@erik_64", isMine: true, isWorldFirst: true, downloads: 142),
+              contributor: "@torque_scale", isMine: false, isWorldFirst: true, downloads: 142),
         .init(key: .init(mgtNumber: "MGT00377", drive: .rhd), name: "Mazda RX-7",
               contributor: "@kaz_jdm", isMine: false, isWorldFirst: false, downloads: 98),
         .init(key: .init(mgtNumber: "MGT00256", drive: .lhd), name: "Honda NSX",
               contributor: "@miura_collects", isMine: false, isWorldFirst: false, downloads: 211),
         .init(key: .init(mgtNumber: "MGT00521", drive: .lhd), name: "Cayman GT4",
-              contributor: "@erik_64", isMine: true, isWorldFirst: true, downloads: 73),
+              contributor: "@vitrine_jp", isMine: false, isWorldFirst: true, downloads: 73),
         .init(key: .init(mgtNumber: "MGT00640", drive: .lhd), name: "Porsche 911 GT3 RS",
-              contributor: "@erik_64", isMine: true, isWorldFirst: false, downloads: 188),
+              contributor: "@lhd_garage", isMine: false, isWorldFirst: false, downloads: 188),
         .init(key: .init(mgtNumber: "MGT00802", drive: .rhd), name: "Toyota GR Supra A90",
-              contributor: "@erik_64", isMine: true, isWorldFirst: true, downloads: 102),
+              contributor: "@matte_diecast", isMine: false, isWorldFirst: true, downloads: 102),
     ]
 
-    /// The handle this build is signed in as (sample). Used to credit fresh shares.
-    static let myHandle = "@erik_64"
+    /// Placeholder handle used to credit a fresh local share until accounts
+    /// exist (there is no sign-in in this build; shares stay on-device).
+    static let myHandle = "@collector"
 }

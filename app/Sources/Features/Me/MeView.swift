@@ -63,7 +63,8 @@ struct MeView: View {
         }
     }
 
-    // MARK: Identity
+    // MARK: Identity (local-only — there is no sign-in or tier in this build,
+    // so the card claims neither; it names the on-device collection honestly)
 
     private var identity: some View {
         HStack(spacing: 12) {
@@ -71,7 +72,7 @@ struct MeView: View {
                 .font(.system(size: 40))
                 .foregroundStyle(Ink.steel)
             VStack(alignment: .leading, spacing: 2) {
-                Text(verbatim: "@erik_64")
+                Text("me.localName")
                     .font(Voice.serif(20))
                     .foregroundStyle(Ink.primary)
                 Text("me.signedIn")
@@ -79,12 +80,6 @@ struct MeView: View {
                     .foregroundStyle(Ink.soft)
             }
             Spacer()
-            Text("me.tier.pro")
-                .textCase(.uppercase)
-                .font(Voice.mono(10, weight: .heavy))
-                .foregroundStyle(.white)
-                .padding(.horizontal, 9).padding(.vertical, 4)
-                .background(Ink.tungsten, in: Capsule())
         }
     }
 
@@ -98,22 +93,35 @@ struct MeView: View {
                 .tracking(1.2)
                 .foregroundStyle(Ink.muted)
 
-            // The headline reads the derived count — "You've lit N releases…".
-            Text("me.contribution.litHeadline \(summary.litReleases)")
-                .font(Voice.serif(24))
-                .foregroundStyle(Ink.primary)
-                .fixedSize(horizontal: false, vertical: true)
+            if summary.litReleases > 0 {
+                // The headline reads the derived count — "You've lit N releases…".
+                Text("me.contribution.litHeadline \(summary.litReleases)")
+                    .font(Voice.serif(24))
+                    .foregroundStyle(Ink.primary)
+                    .fixedSize(horizontal: false, vertical: true)
 
-            // Telemetry breakdown in mono (shares · downloads · world-firsts).
-            Text("me.contribution.tele \(summary.litReleases) \(summary.totalDownloads) \(summary.worldFirsts)")
-                .font(Voice.mono(10))
-                .foregroundStyle(Ink.soft)
+                // Telemetry breakdown in mono (shares · downloads · world-firsts).
+                Text("me.contribution.tele \(summary.litReleases) \(summary.totalDownloads) \(summary.worldFirsts)")
+                    .font(Voice.mono(10))
+                    .foregroundStyle(Ink.soft)
 
-            badges
+                badges
 
-            Text("me.contribution.creditNote")
-                .font(.footnote)
-                .foregroundStyle(Ink.soft)
+                Text("me.contribution.creditNote")
+                    .font(.footnote)
+                    .foregroundStyle(Ink.soft)
+            } else {
+                // Fresh install: nothing shared yet, so nothing is claimed —
+                // recognition is earned, never seeded. Aspirational empty state.
+                Text("me.contribution.emptyHeadline")
+                    .font(Voice.serif(24))
+                    .foregroundStyle(Ink.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text("me.contribution.note")
+                    .font(.footnote)
+                    .foregroundStyle(Ink.soft)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)
@@ -154,12 +162,13 @@ struct MeView: View {
             .background(bg, in: Capsule())
     }
 
-    // MARK: Account (Sign in with Apple — local stub for now)
+    // MARK: Account (none exists in this build — the row says so honestly;
+    // everything lives on-device)
 
     private var account: some View {
         SettingsGroup(header: "me.section.account") {
             SettingsRow(
-                icon: "applelogo",
+                icon: "iphone",
                 title: "me.row.account",
                 value: Text("me.row.account.signedIn"),
                 chevron: false

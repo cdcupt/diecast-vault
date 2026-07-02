@@ -23,16 +23,18 @@ final class ScanRouter: ObservableObject {
 /// The "Scan a car" entry point and capture-flow coordinator. Decides between the
 /// two top-level paths at runtime:
 ///
-/// - SUPPORTED device (`PhotogrammetrySession.isSupported`): the guided flow —
-///   tip → ObjectCaptureSession orbit → PhotogrammetrySession reconstruct →
-///   keep/re-scan verdict → BOND → share prompt.
-/// - UNSUPPORTED device / simulator: the capability-invite (a contributor
-///   invitation, never a dead control), which still routes to BOND so an owner
-///   can name a copy they own.
+/// - Guided flow (tip → orbit → reconstruct → keep/re-scan verdict → BOND →
+///   share prompt): only when `ScanCapabilityService` reports a supported
+///   device AND guided capture has shipped. In v1.0 it has NOT shipped — the
+///   live ObjectCaptureSession/PhotogrammetrySession pipeline (Spike-0) is
+///   unbuilt, so no device takes this path in release builds.
+/// - Everyone else: the capability-invite (a contributor invitation, never a
+///   dead control), which still routes to BOND so an owner can name a copy
+///   they own.
 ///
-/// Capture + reconstruction only truly run on a physical Pro iPhone (that IS
-/// Spike-0). The gating below is what makes the simulator show the invite; a
-/// `DV_FORCE_SCAN_SUPPORT=1` override exercises the guided UI without a device.
+/// A `DV_FORCE_SCAN_SUPPORT=1` env override exercises the guided UI in
+/// development without a device; end users cannot set env vars, so release
+/// installs always see the invite until the ship flag flips.
 struct ScanFlowView: View {
     /// Inject a fixed capability for deterministic screenshots; defaults to the
     /// real runtime detection.

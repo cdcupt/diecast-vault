@@ -162,11 +162,16 @@ struct BondView: View {
             modelContext.insert(OwnedModel(copy))
         }
         try? modelContext.save()
-        // First-to-scan when this bond came from a live scan OR from a release's
-        // "Be the first to scan this" gap-nudge (no canonical community scan exists
-        // yet for that key).
-        let isFirstToScan = scanResult != nil || prefillKey != nil
-        router.go(.share(copy: copy, isFirstToScan: isFirstToScan))
+        // Only a bond that carries a REAL capture has a scan to offer the
+        // community. An invite / gap-nudge bond (scanResult == nil — no camera
+        // ever ran) saves quietly and finishes back to the cabinet: narrating
+        // "you're the first to scan this" after a camera-free form would
+        // fabricate a scan that never happened (App Review 2.1a).
+        if scanResult != nil {
+            router.go(.share(copy: copy, isFirstToScan: true))
+        } else {
+            router.finish()
+        }
     }
 }
 

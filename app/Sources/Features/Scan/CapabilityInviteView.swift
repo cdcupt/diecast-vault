@@ -1,14 +1,15 @@
 import SwiftUI
 import DiecastVaultCore
 
-/// The UNSUPPORTED-device path (simulator + non-Pro iPhones): the
-/// capability-invite. `PhotogrammetrySession.isSupported == false`, so instead of
-/// a dead / greyed "Scan" control we render a warm contributor invitation
-/// (DESIGN §4.5b) — "Scanning new cars needs a Pro iPhone (12 Pro–17 Pro)",
-/// framed as joining the people who seed the community library, with a clear way
-/// to still browse + bond what you own.
+/// The scan entry every device sees while guided capture is descoped
+/// (`ScanCapabilityService.guidedCaptureShipped == false`), and the permanent
+/// path for unsupported hardware once it ships. Instead of a dead / greyed
+/// "Scan" control we render a warm contributor invitation (DESIGN §4.5b) —
+/// guided scanning arrives in an upcoming update, built for LiDAR Pro iPhones —
+/// framed as joining the people who will seed the community library, with a
+/// clear way to still browse + bond what you own.
 ///
-/// This is the state most reviewers see in the simulator, so it is treated as a
+/// This is the screen App Review and most users see, so it is treated as a
 /// first-class designed screen, not a fallback afterthought.
 struct CapabilityInviteView: View {
     /// Continue to the bond step (you can still record + name a copy you own,
@@ -70,7 +71,7 @@ struct CapabilityInviteView: View {
         }
     }
 
-    // MARK: The honest requirement (specific Pro window)
+    // MARK: The honest status (built for a specific Pro window, not yet shipped)
 
     private var requirement: some View {
         HStack(alignment: .top, spacing: 10) {

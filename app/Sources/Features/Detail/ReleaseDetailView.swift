@@ -21,9 +21,13 @@ struct ReleaseDetailView: View {
     /// no push backend in v1.1; surfaces a confirmation toast).
     @State private var notifyInterest = false
 
-    /// Slice 2 runs the simulator as a "Pro" device so the tungsten contribution
-    /// invite is exercised; capability detection arrives with the capture pipeline.
-    private let isProDevice = true
+    /// Whether THIS device could start a guided capture right now. Wired to the
+    /// real runtime gate — which ships OFF for v1.0
+    /// (`ScanCapabilityService.guidedCaptureShipped`) — so the tungsten
+    /// "Be the first to scan this" CTA can never promise a capture the build
+    /// cannot run (App Review 2.1a). Matte releases show the calm
+    /// no-community-scan-yet note instead.
+    private var isProDevice: Bool { ScanCapabilityService.current.canCapture }
 
     init(release: Release, initialFace: DetailFace = .model) {
         self.release = release
