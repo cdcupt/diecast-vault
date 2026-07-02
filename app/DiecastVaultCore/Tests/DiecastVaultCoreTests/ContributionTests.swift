@@ -3,32 +3,38 @@ import XCTest
 
 final class ContributionSummaryTests: XCTestCase {
 
-    func testSummaryCountsOnlyMyShares() {
-        // Arrange — a mix of my shares and other contributors'.
+    func testFreshInstallClaimsNoShares() {
+        // Arrange — the bundled starter library, exactly as a fresh install sees it.
         let lib = CommunityContribution.sampleLibrary
-        let mineCount = lib.filter(\.isMine).count
 
         // Act
         let summary = ContributionSummary(contributions: lib)
 
-        // Assert — "lit for the community" counts only opted-in shares I own.
-        XCTAssertEqual(summary.litReleases, mineCount)
-        XCTAssertGreaterThan(summary.litReleases, 0)
+        // Assert — recognition is earned, never seeded: a user who has shared
+        // nothing is credited with nothing.
+        XCTAssertEqual(summary.litReleases, 0)
+        XCTAssertEqual(summary.totalDownloads, 0)
+        XCTAssertEqual(summary.worldFirsts, 0)
     }
 
-    func testSummaryDerivesDownloadsAndWorldFirsts() {
-        // Arrange
-        let lib = CommunityContribution.sampleLibrary
-        let mine = lib.filter(\.isMine)
-        let expectedDownloads = mine.reduce(0) { $0 + $1.downloads }
-        let expectedFirsts = mine.filter(\.isWorldFirst).count
+    func testSummaryCountsOnlyMyShares() {
+        // Arrange — a synthetic mix of my shares and other contributors'.
+        let lib: [CommunityContribution] = [
+            .init(key: .init(mgtNumber: "MGT00001", drive: .lhd), name: "A",
+                  contributor: "@me", isMine: true, isWorldFirst: true, downloads: 5),
+            .init(key: .init(mgtNumber: "MGT00002", drive: .rhd), name: "B",
+                  contributor: "@me", isMine: true, isWorldFirst: false, downloads: 7),
+            .init(key: .init(mgtNumber: "MGT00003", drive: .lhd), name: "C",
+                  contributor: "@other", isMine: false, isWorldFirst: true, downloads: 90),
+        ]
 
         // Act
         let summary = ContributionSummary(contributions: lib)
 
-        // Assert
-        XCTAssertEqual(summary.totalDownloads, expectedDownloads)
-        XCTAssertEqual(summary.worldFirsts, expectedFirsts)
+        // Assert — only opted-in shares I own count toward recognition.
+        XCTAssertEqual(summary.litReleases, 2)
+        XCTAssertEqual(summary.totalDownloads, 12)
+        XCTAssertEqual(summary.worldFirsts, 1)
     }
 
     func testBadgesAreEarnedNotDecorative() {
@@ -67,12 +73,9 @@ final class CommunityContributionTests: XCTestCase {
         XCTAssertEqual(Set(keys).count, keys.count)
     }
 
-    func testMyContributionsAreCredited() {
-        // Arrange
-        let mine = CommunityContribution.sampleLibrary.filter(\.isMine)
-
-        // Assert — every share I own credits my handle.
-        XCTAssertFalse(mine.isEmpty)
-        XCTAssertTrue(mine.allSatisfy { $0.creditHandle == CommunityContribution.myHandle })
+    func testBundledLibraryNeverClaimsUserContributions() {
+        // Assert — the starter library is other collectors' work; nothing in it
+        // is presented as the user's own share (no fabricated history).
+        XCTAssertTrue(CommunityContribution.sampleLibrary.allSatisfy { !$0.isMine })
     }
 }

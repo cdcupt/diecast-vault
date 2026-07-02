@@ -705,13 +705,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No community scan yet — needs a Pro iPhone to seed it."
+            "value": "Guided scanning on Pro iPhones arrives in an upcoming update."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "社区尚无扫描 — 需要一台 Pro 机型的 iPhone 来发起。"
+            "value": "面向 Pro 版 iPhone 的引导扫描将在后续更新中推出。"
           }
         }
       }
@@ -899,6 +899,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "复用社区共享的扫描模型，也可贡献你自己的。浏览与上传将在后端上线后开放。"
+          }
+        }
+      }
+    },
+    "me.contribution.emptyHeadline": {
+      "comment": "Me contribution card, fresh-install empty state (nothing shared yet).",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scans you share will be credited here"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你分享的扫描将在这里获得署名"
           }
         }
       }
@@ -1096,13 +1113,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Signed in with Apple"
+            "value": "Local collection — no account needed"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "已通过 Apple 登录"
+            "value": "本地收藏——无需账户"
           }
         }
       }
@@ -1453,13 +1470,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Every scan a Pro owner shares saves everyone else from re-scanning the same release. When you’re on a Pro iPhone, you can light niches no one else has."
+            "value": "Every scan a Pro owner shares saves everyone else from re-scanning the same release. When guided scanning arrives, you can light niches no one else has."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "每位 Pro 用户分享的扫描，都能让其他人无需重复扫描同一款车。当你使用 Pro 版 iPhone 时，便能点亮无人涉足的展位。"
+            "value": "每位 Pro 用户分享的扫描，都能让其他人无需重复扫描同一款车。引导扫描上线后，你便能点亮无人涉足的展位。"
           }
         }
       }
@@ -1470,7 +1487,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "You’d be seeding the library"
+            "value": "You’ll be seeding the library"
           }
         },
         "zh-Hans": {
@@ -1487,13 +1504,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Guided capture and on-device reconstruction use LiDAR + photogrammetry, available on a Pro iPhone (%1$@ through %2$@). The simulator can’t run a camera."
+            "value": "Guided capture and on-device reconstruction use LiDAR + photogrammetry on a Pro iPhone (%1$@ through %2$@). We’re validating scan quality on real diecast cars before switching it on."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "引导拍摄与设备端重建需要 LiDAR 与摄影测量，仅 Pro 版 iPhone（%1$@ 至 %2$@）支持。模拟器无法使用相机。"
+            "value": "引导拍摄与设备端重建基于 LiDAR 与摄影测量，需要 Pro 版 iPhone（%1$@ 至 %2$@）。我们正在实体车模上验证扫描质量，随后开放。"
           }
         }
       }
@@ -1504,13 +1521,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Why this device can’t scan"
+            "value": "Built for Pro iPhones"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "为何此设备无法扫描"
+            "value": "为 Pro 版 iPhone 打造"
           }
         }
       }
@@ -1521,13 +1538,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scanning new cars needs a Pro iPhone"
+            "value": "Guided scanning arrives in an upcoming update"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "扫描新车需要 Pro 版 iPhone"
+            "value": "引导扫描将在后续更新中推出"
           }
         }
       }
@@ -2790,19 +2807,36 @@
         }
       }
     },
+    "me.localName": {
+      "comment": "Me identity card title — local, account-less collection.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My collection"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "我的收藏"
+          }
+        }
+      }
+    },
     "me.row.account": {
       "comment": "Settings row — Sign in with Apple (signed-in state).",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Apple Account"
+            "value": "Sign-in"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Apple 账户"
+            "value": "登录"
           }
         }
       }
@@ -2813,13 +2847,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Signed in with Apple"
+            "value": "Not required — your data stays on this device"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "已通过 Apple 登录"
+            "value": "无需登录——数据保存在本机"
           }
         }
       }

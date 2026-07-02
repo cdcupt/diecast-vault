@@ -21,10 +21,22 @@ import RealityKit
 /// without a device while leaving genuine runtime detection in place by default.
 enum ScanCapabilityService {
 
+    /// v1.0 ships with guided capture OFF for every device: the live
+    /// `ObjectCaptureSession` / `PhotogrammetrySession` pipeline (Spike-0) has not
+    /// been implemented and validated on hardware yet, and App Review correctly
+    /// rejected the deterministic stand-in as a scan stuck at 72% with no camera
+    /// (Guideline 2.1a, submission 4a2e9d18). Until this flips, every device gets
+    /// the capability-invite path — which is honest "arriving in an update" copy,
+    /// with bonding still fully available. Flip to `true` only once the real
+    /// capture pipeline lands AND has been validated on a physical LiDAR Pro
+    /// iPhone.
+    static let guidedCaptureShipped = false
+
     /// The current device's capability. Honors the env override first, then the
-    /// real Apple availability signals.
+    /// ship flag, then the real Apple availability signals.
     static var current: ScanCapability {
         if let forced = forcedOverride { return forced }
+        guard guidedCaptureShipped else { return .unsupported }
         return ScanCapability(isSupported: isPhotogrammetrySupported && isObjectCaptureAvailable)
     }
 
