@@ -2,18 +2,15 @@ import SwiftUI
 import DiecastVaultCore
 
 /// The "Model" face of Release detail: the niche/poster, mono+drive metadata, the
-/// designed scan-state (light-as-state), a Pick-to-shelf action, and the
-/// "View in 3D" CTA that lifts the model onto the dark stage.
+/// designed model-presence state (light-as-state), a Pick-to-shelf action, and the
+/// "View in 3D" CTA that lifts the model onto the dark stage. Every control here
+/// performs a real action — v1.0 carries no camera/scan affordances and no
+/// coming-soon copy (App Review 2.1a).
 struct ModelFaceView: View {
     let release: Release
     let scanState: ScanState
     let isOwned: Bool
     let onPick: () -> Void
-    /// Pro gap-nudge action: launch the guided scan flow to light this niche.
-    var onScanFirst: () -> Void = {}
-    /// Non-Pro gap-nudge action: register interest so the owner is told when a
-    /// community scan lands (stubbed locally — surfaces the Library).
-    var onNotify: () -> Void = {}
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -23,10 +20,8 @@ struct ModelFaceView: View {
             switch scanState {
             case .hasModel:
                 ctas
-            case .noScanPro:
-                contributionInvite(tone: .tungsten)
-            case .noScanBasic:
-                contributionInvite(tone: .steel)
+            case .noScanPro, .noScanBasic:
+                noModelState
             }
         }
     }
@@ -132,62 +127,43 @@ struct ModelFaceView: View {
         .padding(.vertical, 13)
     }
 
-    // MARK: Contribution invite (no scan yet)
+    // MARK: No-model state (matte niche)
 
-    private enum Tone { case tungsten, steel }
-
-    private func contributionInvite(tone: Tone) -> some View {
-        let isTungsten = tone == .tungsten
-        return VStack(alignment: .leading, spacing: 12) {
-            // The well: ★ headline + reciprocity note (mockup #s-release-noscan).
+    /// Calm, factual state for a release without a 3D model in the library: a
+    /// steel note plus the same working Pick-to-shelf action lit releases get —
+    /// the copy lands matte on the shelf. No dead controls, no promises.
+    private var noModelState: some View {
+        VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 8) {
-                    Image(systemName: isTungsten ? "camera.viewfinder" : "info.circle")
-                    Text(isTungsten ? "detail.invite.proTitle" : "detail.invite.basicTitle")
+                    Image(systemName: "info.circle")
+                    Text("detail.invite.basicTitle")
                         .font(.system(size: 14, weight: .semibold))
                 }
-                .foregroundStyle(isTungsten ? Ink.tungstenDeep : Ink.steel)
+                .foregroundStyle(Ink.steel)
 
-                // The note is localized in the view layer (keyed by scan state) so the
-                // pure Core `ScanState.contributionNote` stays free of locale concerns.
-                Text(isTungsten ? "detail.invite.proNote" : "detail.invite.basicNote")
+                Text("detail.invite.basicNote")
                     .font(.callout)
                     .foregroundStyle(Ink.soft)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(16)
-            .background(isTungsten ? Color(Palette.tungstenGlow).opacity(0.5) : Ink.steelSoft)
+            .background(Ink.steelSoft)
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(isTungsten ? Ink.tungsten : Ink.steel, lineWidth: 1)
+                    .stroke(Ink.steel, lineWidth: 1)
             )
 
-            // The active invite — what turns the passive empty state into a
-            // contribution call. Pro: a tungsten "Be the first to scan this".
-            // Non-Pro: only the calm "notify me" path (scanning needs a Pro iPhone).
-            if isTungsten {
-                Button(action: onScanFirst) {
-                    PrimaryCTALabel(title: "detail.invite.proCta", systemImage: "camera.viewfinder")
-                }
-                .buttonStyle(.plain)
-            }
-
-            Button(action: onNotify) {
-                HStack(spacing: 8) {
-                    Image(systemName: "bell")
-                    Text("detail.invite.notify").font(.system(size: 15, weight: .semibold))
-                }
-                .foregroundStyle(Ink.steel)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 13)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 11, style: .continuous)
-                        .stroke(Ink.steel, lineWidth: 1.5)
-                        .opacity(0.85)
-                )
+            Button(action: onPick) {
+                ctaLabel(isOwned ? "detail.cta.onShelf" : "detail.cta.pick",
+                         systemImage: isOwned ? "checkmark" : "plus")
+                    .foregroundStyle(.white)
+                    .background(isOwned ? Ink.ok : Ink.tungsten,
+                                in: RoundedRectangle(cornerRadius: 11, style: .continuous))
             }
             .buttonStyle(.plain)
+            .disabled(isOwned)
         }
     }
 }

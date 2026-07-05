@@ -139,7 +139,7 @@ struct LibraryView: View {
             Text("library.communityVault")
                 .font(Voice.serif(18))
                 .foregroundStyle(.white)
-            Text("\(contributionStore.contributions.count) SCANS · 1 CANONICAL / (NO.,DRIVE)")
+            Text("library.vault.tele \(contributionStore.contributions.count)")
                 .font(Voice.mono(10, weight: .medium))
                 .foregroundStyle(.white.opacity(0.7))
         }
@@ -176,7 +176,7 @@ struct CommunityCard: View {
         .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).stroke(Ink.line, lineWidth: 1))
         .shadow(color: Color(Palette.ink).opacity(0.06), radius: 12, y: 8)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(item.name), scanned by \(item.creditHandle)")
+        .accessibilityLabel(Text("community.sharedBy.a11y \(item.name) \(item.creditHandle)"))
     }
 
     private var niche: some View {
@@ -224,7 +224,7 @@ struct CommunityCard: View {
         .padding(.horizontal, 10).padding(.vertical, 9)
     }
 
-    /// "scanned by @handle" — appends a localized "· you" on the user's own shares.
+    /// "shared by @handle" — appends a localized "· you" on the user's own shares.
     private var credit: some View {
         HStack(spacing: 0) {
             Text("community.scannedBy \(item.creditHandle)")

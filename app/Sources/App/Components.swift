@@ -176,7 +176,11 @@ struct CabinetCell: View {
             radius: 14, x: 0, y: 10
         )
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(release.name), \(release.drive.displayName), \(release.isLit ? "scan present" : "no scan yet")")
+        .accessibilityLabel(Text(
+            release.isLit
+                ? "cell.a11y.hasModel \(release.name) \(release.drive.displayName)"
+                : "cell.a11y.noModel \(release.name) \(release.drive.displayName)"
+        ))
     }
 
     @ViewBuilder

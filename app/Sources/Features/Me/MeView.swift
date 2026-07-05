@@ -12,11 +12,6 @@ struct MeView: View {
     @EnvironmentObject private var contributionStore: ContributionStore
     @State private var showStylePicker = false
 
-    /// iCloud Sync — OFF by default (DESIGN F4 §Storage). Local-only effect for now
-    /// (no `cloudKitDatabase` is wired yet); the preference persists so the real
-    /// sync wiring in v1.1 reads an honest user choice. Stored, not hardcoded.
-    @AppStorage("dv.icloudSync") private var icloudSync = false
-
     /// App version for the About row — read from the bundle, never hardcoded.
     private var appVersion: String {
         let v = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.1.0"
@@ -176,16 +171,11 @@ struct MeView: View {
         }
     }
 
-    // MARK: Storage (iCloud Sync toggle + on-device usage)
+    // MARK: Storage (on-device usage; everything stays local in this version —
+    // an iCloud Sync control returns only when CloudKit is actually wired)
 
     private var storage: some View {
-        SettingsGroup(header: "me.section.storage", footer: "me.row.icloudSync.note") {
-            SettingsToggleRow(
-                icon: "icloud",
-                title: "me.row.icloudSync",
-                isOn: $icloudSync
-            )
-            divider
+        SettingsGroup(header: "me.section.storage") {
             SettingsRow(
                 icon: "iphone",
                 title: "me.row.localStorage",
