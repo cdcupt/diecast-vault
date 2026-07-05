@@ -89,6 +89,43 @@ final class ProductionCopyAuditTests: XCTestCase {
         )
     }
 
+    /// The Real-Car face renders `RealCarProfile.sample(for:)` — embedded Core
+    /// copy the String Catalog audit cannot see. Codex review of the 2.1(a) fix
+    /// caught roadmap promises hiding here ("When the enrichment backend
+    /// lands…", "Wikimedia Commons later"), so audit the generated profiles in
+    /// both locales too.
+    func testBundledRealCarProfilesCarryNoRoadmapPromises() {
+        let forbiddenEnglish = Self.forbiddenEnglish + ["later", "backend", "lands"]
+        let forbiddenChinese = Self.forbiddenChinese + ["稍后", "后续", "上线", "即将"]
+        var violations: [String] = []
+
+        for release in Release.catalogSample {
+            for locale in [SampleLocale.english, .simplifiedChinese] {
+                let profile = RealCarProfile.sample(for: release, locale: locale)
+                var texts = profile.history + [profile.historySource]
+                texts += profile.specs.flatMap { [$0.key, $0.value] }
+                for image in [profile.hero] + profile.gallery {
+                    texts += [image.caption, image.attribution, image.license]
+                }
+                for text in texts {
+                    let lowered = text.lowercased()
+                    for term in forbiddenEnglish where lowered.contains(term) {
+                        violations.append("\(release.mgtNumber) [\(locale)] contains \"\(term)\": \(text)")
+                    }
+                    for term in forbiddenChinese where text.contains(term) {
+                        violations.append("\(release.mgtNumber) [\(locale)] contains \"\(term)\": \(text)")
+                    }
+                }
+            }
+        }
+
+        XCTAssertTrue(
+            violations.isEmpty,
+            "Bundled Real-Car copy must not promise future features (App Review 2.1a). "
+                + "Violations:\n" + violations.joined(separator: "\n")
+        )
+    }
+
     func testDeletedPlaceholderKeysStayDeleted() throws {
         let catalog = try loadCatalog()
         // Each of these carried a coming-soon promise or a dead control; they were

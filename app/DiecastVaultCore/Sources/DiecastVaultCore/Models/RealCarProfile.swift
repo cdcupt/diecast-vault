@@ -98,14 +98,14 @@ public extension RealCarProfile {
             mgtNumber: release.mgtNumber,
             history: zh
                 ? [
-                    "\(model) 是这款 1:64 模型所复刻的真车。此段文字为内置样例，便于在离线状态下查看真车页面。",
-                    "待内容增强后端上线后，这些段落将来自按（车款、语言）解析的、有据可查且带引用的维基百科摘要。"
+                    "\(model) 是这款 1:64 模型所复刻的真车。",
+                    "该参考资料随应用内置，离线也能快速了解模型背后的原型车。"
                 ]
                 : [
-                    "The \(model) is the full-size car this 1:64 release replicates. This write-up is bundled sample copy so the Real-Car view is reviewable offline.",
-                    "When the enrichment backend lands, these paragraphs come from a grounded, cited Wikipedia extract resolved per (release, locale)."
+                    "The \(model) is the full-size car this 1:64 release replicates.",
+                    "This reference profile is bundled with the app — a quick offline read on the car behind the model."
                 ],
-            historySource: zh ? "维基百科（样例）" : "Wikipedia (sample)",
+            historySource: zh ? "内置参考资料" : "Bundled reference notes",
             specs: [
                 RealCarSpec(key: zh ? "厂商" : "MAKER", value: String(model.split(separator: " ").first ?? "—")),
                 RealCarSpec(key: zh ? "引擎" : "ENGINE", value: zh ? "—（样例）" : "— (sample)"),
@@ -115,8 +115,8 @@ public extension RealCarProfile {
             ],
             hero: RealCarImage(
                 caption: zh ? "参考照片占位" : "Reference photo placeholder",
-                attribution: zh ? "样例 — 后续来自维基共享资源" : "Sample — Wikimedia Commons later",
-                license: zh ? "CC-BY-SA（样例）" : "CC-BY-SA (sample)",
+                attribution: zh ? "内置样例" : "Bundled sample",
+                license: zh ? "—（样例）" : "— (sample)",
                 origin: .commons
             ),
             gallery: [
