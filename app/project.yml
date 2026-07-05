@@ -23,7 +23,7 @@ settings:
     # sign with that team to match the cert+profile chain.
     DEVELOPMENT_TEAM: "NK3U2C365Z"
     MARKETING_VERSION: "1.0.0"
-    CURRENT_PROJECT_VERSION: "4"
+    CURRENT_PROJECT_VERSION: "5"
   configs:
     # Simulator/dev builds need no signing identity; keep them quick and unsigned.
     Debug:
