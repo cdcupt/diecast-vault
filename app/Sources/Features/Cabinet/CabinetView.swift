@@ -21,7 +21,7 @@ struct CabinetView: View {
     /// open the catalog entry for that release inline.
     @State private var route: Release?
     @State private var showStylePicker = false
-    @State private var showScan = false
+    @State private var showAddCar = false
 
     /// The perf harness HUD is debug-only now (the cabinet IS the home).
     /// `DV_PERF_HUD=1` overlays the live FPS/mem/thermal readout for measurement.
@@ -98,7 +98,7 @@ struct CabinetView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    showScan = true
+                    showAddCar = true
                 } label: {
                     Image(systemName: "plus")
                         .foregroundStyle(Ink.tungsten)
@@ -113,7 +113,7 @@ struct CabinetView: View {
             CabinetStylePickerView()
                 .environmentObject(stylePreference)
         }
-        .sheet(isPresented: $showScan) {
+        .sheet(isPresented: $showAddCar) {
             AddCarFlowView()
                 .environmentObject(contributionStore)
         }
@@ -191,7 +191,7 @@ struct CabinetView: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text("cabinet.style.chip"))
-        .accessibilityValue(Text(stylePreference.style.nameKey))
+        .accessibilityValue(Text(LocalizedStringKey(stylePreference.style.nameKey)))
     }
 
     // MARK: Empty invite (zero lit niches)
@@ -223,7 +223,7 @@ struct CabinetView: View {
             // CTAs below capture taps.
             .allowsHitTesting(false)
             HStack(spacing: 10) {
-                Button { showScan = true } label: {
+                Button { showAddCar = true } label: {
                     PrimaryCTALabel(title: "cabinet.empty.add", systemImage: "plus")
                         .fixedSize()
                 }

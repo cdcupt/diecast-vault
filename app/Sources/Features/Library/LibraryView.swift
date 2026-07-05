@@ -9,7 +9,7 @@ import DiecastVaultCore
 /// queued shares), so the credit lines are honest, not mocked HTML.
 struct LibraryView: View {
     /// Deterministic sim override so the offline state is screenshot-able without
-    /// toggling the device radios. Defaults off → uses the live reachability stub.
+    /// toggling the device radios. Defaults off → uses the live NWPathMonitor.
     var forceOffline: Bool = false
 
     @EnvironmentObject private var contributionStore: ContributionStore
@@ -215,9 +215,9 @@ struct CommunityCard: View {
                     .foregroundStyle(Ink.steel)
                 DriveDecal(drive: item.drive).scaleEffect(0.6).frame(width: 16, height: 16)
                 Spacer(minLength: 0)
-                Text(verbatim: "↓ \(item.downloads)")
-                    .font(Voice.mono(9))
-                    .foregroundStyle(Ink.muted)
+                // No download counter: the bundled starter library has no live
+                // backend, and fabricated telemetry is exactly the content class
+                // App Review rejected twice (2.1a).
             }
             credit
         }

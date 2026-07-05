@@ -19,7 +19,10 @@ enum PersistenceController {
             seedIfEmpty(container.mainContext)
             return container
         } catch {
-            // Last-resort in-memory store keeps the UI alive; logged for triage.
+            // Last-resort in-memory store keeps the UI alive. Actually logged —
+            // an invisible ephemeral fallback would mean every "saved" car
+            // silently evaporates on relaunch with no trace to triage.
+            AppLog.persistence.fault("persistent store failed to open, falling back to in-memory: \(error, privacy: .public)")
             let config = ModelConfiguration("DiecastVault-fallback", schema: schema, isStoredInMemoryOnly: true)
             // swiftlint:disable:next force_try
             let container = try! ModelContainer(for: schema, configurations: config)
@@ -46,6 +49,10 @@ enum PersistenceController {
         for copy in OwnedCopy.sampleSeed {
             context.insert(OwnedModel(copy))
         }
-        try? context.save()
+        do {
+            try context.save()
+        } catch {
+            AppLog.persistence.error("first-run seed save failed: \(error, privacy: .public)")
+        }
     }
 }

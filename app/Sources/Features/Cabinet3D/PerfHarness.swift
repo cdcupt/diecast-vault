@@ -48,7 +48,20 @@ final class PerfHarness: ObservableObject {
         self.window = window
     }
 
+    /// Measurement is opt-in: without a perf flag the sampler must NOT run —
+    /// a CADisplayLink publishing a @Published sample every frame invalidates
+    /// the observing view at display cadence, a pure waste on the production
+    /// home tab. (`DV_PERF_HUD` overlays the HUD; `DV_SPIKE1`/`spike1Cabinet`
+    /// is the dedicated perf scene.)
+    private static var isMeasurementEnabled: Bool {
+        let env = ProcessInfo.processInfo.environment
+        return env["DV_PERF_HUD"] == "1"
+            || env["DV_SPIKE1"] == "1"
+            || UserDefaults.standard.bool(forKey: "spike1Cabinet")
+    }
+
     func start() {
+        guard Self.isMeasurementEnabled else { return }
         stop()
         startTime = CACurrentMediaTime()
         lastTick = startTime
@@ -114,12 +127,14 @@ final class PerfHarness: ObservableObject {
         window=\(self.window, format: .fixed(precision: 1))s \
         (SIMULATOR — not device-representative)
         """)
+        #if DEBUG
         // Also a plain print so it shows in `xcrun simctl` log / Xcode console
-        // even without the unified-log subsystem filter.
+        // even without the unified-log subsystem filter. Debug builds only.
         print("[Spike-1] RESULT avgFPS=\(String(format: "%.1f", avg)) "
             + "minFPS=\(String(format: "%.1f", s.minFPS)) "
             + "residentMB=\(String(format: "%.1f", s.residentMB)) "
             + "thermal=\(s.thermal) (SIMULATOR — not device-representative)")
+        #endif
     }
 
     // MARK: - Probes

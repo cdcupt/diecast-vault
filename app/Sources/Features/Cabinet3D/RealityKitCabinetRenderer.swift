@@ -96,7 +96,7 @@ private struct RealityKitCabinetView: View {
                 harness.stop()
                 scene.stopMotion()
             }
-            .accessibilityLabel("3D cabinet, \(shelf.count) niches, \(shelf.filter(\.isLit).count) lit")
+            .accessibilityLabel(Text("cabinet.a11y \(shelf.count) \(shelf.filter(\.isLit).count)"))
 
             if Self.showsGestureDebug { debugHarness }
         }
