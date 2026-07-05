@@ -20,21 +20,51 @@ final class ScanRouter: ObservableObject {
     func finish() { finishedToken += 1 }
 }
 
-/// The "Scan a car" entry point and capture-flow coordinator. Decides between the
-/// two top-level paths at runtime:
+/// The production "Add a car" sheet: a plain, camera-free flow that hosts
+/// `BondView` directly. There is no scan framing anywhere on this path — App
+/// Review rejected v1.0 twice under Guideline 2.1(a) for advertising a scan
+/// feature that had not shipped (first a stalled capture simulation, then a
+/// "coming in an update" placeholder), so until the real capture pipeline lands
+/// AND is device-validated, adding a car is presented purely as attaching a
+/// catalog identity to a copy you own.
+struct AddCarFlowView: View {
+    /// When launched from a release detail, the form opens pre-seeded with that
+    /// release's `(number, drive)`.
+    var prefillKey: CatalogKey? = nil
+
+    @Environment(\.dismiss) private var dismiss
+    @StateObject private var router = ScanRouter()
+
+    var body: some View {
+        NavigationStack(path: $router.path) {
+            BondView(scanResult: nil, prefillKey: prefillKey)
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button("scan.cancel") { dismiss() }
+                            .foregroundStyle(Ink.tungstenDeep)
+                    }
+                }
+        }
+        .environmentObject(router)
+        .tint(Ink.tungsten)
+        .onChange(of: router.finishedToken) { _, _ in dismiss() }
+    }
+}
+
+/// DEV-ONLY capture-flow coordinator — no production surface presents this view.
+/// It is reachable only via the `DV_ROUTE=scan` debug route (process-environment
+/// gated, unreachable on a store install). Decides between the two top-level
+/// paths at runtime:
 ///
 /// - Guided flow (tip → orbit → reconstruct → keep/re-scan verdict → BOND →
 ///   share prompt): only when `ScanCapabilityService` reports a supported
 ///   device AND guided capture has shipped. In v1.0 it has NOT shipped — the
 ///   live ObjectCaptureSession/PhotogrammetrySession pipeline (Spike-0) is
 ///   unbuilt, so no device takes this path in release builds.
-/// - Everyone else: the capability-invite (a contributor invitation, never a
-///   dead control), which still routes to BOND so an owner can name a copy
-///   they own.
+/// - Everyone else: the capability-invite, which still routes to BOND.
 ///
 /// A `DV_FORCE_SCAN_SUPPORT=1` env override exercises the guided UI in
-/// development without a device; end users cannot set env vars, so release
-/// installs always see the invite until the ship flag flips.
+/// development without a device. Production adds cars through `AddCarFlowView`.
 struct ScanFlowView: View {
     /// Inject a fixed capability for deterministic screenshots; defaults to the
     /// real runtime detection.

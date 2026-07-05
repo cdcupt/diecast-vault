@@ -2,11 +2,11 @@ import SwiftUI
 import DiecastVaultCore
 
 /// The "Real Car" face of Release detail (DESIGN §4.5b) — a LIGHT editorial
-/// reference profile of the full-size car. **Stubbed locally in slice 2**: the
-/// content comes from `RealCarProfile.sample(for:)` and is clearly tagged
-/// "sample — server-backed later". The dark stage belongs to the Model face only;
-/// this view stays in light chrome. Attribution treatment is kept faithful so the
-/// real (server-backed) version is a drop-in.
+/// reference profile of the full-size car, served from the bundled local
+/// profiles (`RealCarProfile.sample(for:)`). The dark stage belongs to the Model
+/// face only; this view stays in light chrome. Attribution treatment is kept
+/// faithful so a server-backed version remains a drop-in — but the UI makes no
+/// roadmap claims (App Review 2.1a: no coming-soon copy anywhere in v1.0).
 struct RealCarFaceView: View {
     let release: Release
 
@@ -23,26 +23,12 @@ struct RealCarFaceView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            sampleBanner
             heroPhoto
             history
             specs
             gallery
             compare
         }
-    }
-
-    /// Honest, prominent flag that this profile is local sample data.
-    private var sampleBanner: some View {
-        HStack(spacing: 8) {
-            Image(systemName: "flask")
-            Text("realcar.sampleBanner")
-                .font(Voice.mono(10, weight: .medium))
-        }
-        .foregroundStyle(Ink.warn)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(10)
-        .background(Color(Palette.warn).opacity(0.12), in: RoundedRectangle(cornerRadius: 9, style: .continuous))
     }
 
     // MARK: Hero

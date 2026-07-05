@@ -3,10 +3,11 @@ import SwiftData
 import DiecastVaultCore
 
 /// Release detail (DESIGN §4.5 / §4.5b). Carries the `Model | Real Car`
-/// segmented control: **Model** shows the car, its metadata, and a "View in 3D"
-/// CTA (lifting into the dark stage); **Real Car** is the light reference profile
-/// (stubbed locally in slice 2). The three scan states are expressed through
-/// light, not greyed buttons.
+/// segmented control: **Model** shows the car, its metadata, the model-presence
+/// state, and a "View in 3D" CTA (lifting into the dark stage); **Real Car** is
+/// the light reference profile. Model presence is expressed through light, not
+/// greyed buttons, and every control on this screen performs a real action —
+/// v1.0 carries no camera/scan affordances (App Review 2.1a).
 struct ReleaseDetailView: View {
     let release: Release
 
@@ -15,19 +16,6 @@ struct ReleaseDetailView: View {
     @Query private var owned: [OwnedModel]
 
     @State private var face: DetailFace
-    /// Presents the guided scan flow from the Pro gap-nudge ("Be the first…").
-    @State private var showScan = false
-    /// Set when the non-Pro "Notify me when it's scanned" path is taken (stubbed —
-    /// no push backend in v1.1; surfaces a confirmation toast).
-    @State private var notifyInterest = false
-
-    /// Whether THIS device could start a guided capture right now. Wired to the
-    /// real runtime gate — which ships OFF for v1.0
-    /// (`ScanCapabilityService.guidedCaptureShipped`) — so the tungsten
-    /// "Be the first to scan this" CTA can never promise a capture the build
-    /// cannot run (App Review 2.1a). Matte releases show the calm
-    /// no-community-scan-yet note instead.
-    private var isProDevice: Bool { ScanCapabilityService.current.canCapture }
 
     init(release: Release, initialFace: DetailFace = .model) {
         self.release = release
@@ -37,7 +25,9 @@ struct ReleaseDetailView: View {
     }
 
     private var isOwned: Bool { !owned.isEmpty }
-    private var scanState: ScanState { release.scanState(isProDevice: isProDevice) }
+    /// v1.0 ships no capture path on any device, so model presence is computed
+    /// for the non-Pro posture unconditionally.
+    private var scanState: ScanState { release.scanState(isProDevice: false) }
 
     var body: some View {
         ScrollView {
@@ -53,9 +43,7 @@ struct ReleaseDetailView: View {
                         release: release,
                         scanState: scanState,
                         isOwned: isOwned,
-                        onPick: pickToShelf,
-                        onScanFirst: { showScan = true },
-                        onNotify: { notifyInterest = true }
+                        onPick: pickToShelf
                     )
                 case .realCar:
                     RealCarFaceView(release: release)
@@ -70,35 +58,6 @@ struct ReleaseDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(for: ViewerRoute.self) { route in
             ModelViewerView(release: route.release)
-        }
-        .sheet(isPresented: $showScan) {
-            // Launch the guided scan pre-bonded to THIS release so a fresh world-
-            // first lights the right niche. Re-inject the store across the sheet.
-            ScanFlowView(prefillKey: release.key)
-                .environmentObject(contributionStore)
-        }
-        .overlay(alignment: .bottom) {
-            if notifyInterest { notifyToast }
-        }
-    }
-
-    /// Calm confirmation for the non-Pro / "notify me" gap-nudge path. Auto-hides.
-    private var notifyToast: some View {
-        HStack(spacing: 8) {
-            Image(systemName: "bell.badge")
-                .foregroundStyle(Ink.steel)
-            Text("detail.invite.notified")
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(Ink.primary)
-        }
-        .padding(.horizontal, 16).padding(.vertical, 12)
-        .background(Ink.steelSoft, in: Capsule())
-        .overlay(Capsule().stroke(Ink.steel.opacity(0.4), lineWidth: 1))
-        .padding(.bottom, 24)
-        .transition(.move(edge: .bottom).combined(with: .opacity))
-        .task {
-            try? await Task.sleep(nanoseconds: 2_400_000_000)
-            withAnimation { notifyInterest = false }
         }
     }
 

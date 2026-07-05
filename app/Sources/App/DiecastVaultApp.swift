@@ -80,22 +80,25 @@ struct DiecastVaultApp: App {
             LanguageView()
         case "stylePicker":
             CabinetStylePickerView()
+        #if DEBUG
         case "scan":
-            // The full scan flow — shows the capability-invite on the simulator
-            // (PhotogrammetrySession.isSupported == false). DV_FORCE_SCAN_SUPPORT=1
-            // overrides to exercise the guided path.
+            // DEBUG-only: the unshipped capture flow — shows the capability-invite
+            // on the simulator (PhotogrammetrySession.isSupported == false).
+            // DV_FORCE_SCAN_SUPPORT=1 overrides to exercise the guided path.
+            // Compiled out of Release so no store binary carries a scan route.
             ScanFlowView()
-        case "bond":
-            // DEV bond path: land straight on the BOND step (sample USDZ stands in
-            // for a live scan) so the bond→save→cabinet chain runs without a camera.
-            ScanFlowView(startAtBond: true)
         case "share":
-            // DEV: land straight on the post-bond SHARE prompt (first-to-scan
-            // framing) so the contribution opt-in is screenshot-able in the sim.
+            // DEBUG-only: the post-bond SHARE prompt (requires a real capture,
+            // impossible in production) so the opt-in is screenshot-able in the sim.
             SharePromptScreenshotHost()
+        #endif
+        case "bond":
+            // DEV add-a-car path: land straight on the bond form so the
+            // add→save→cabinet chain runs without a camera.
+            AddCarFlowView()
         case "noscan":
-            // DEV: a no-scan-yet (MATTE) release detail — the Pro gap-nudge with the
-            // active "Be the first to scan this" invite.
+            // DEV: a MATTE (no-model) release detail — the calm no-model note with
+            // the working Pick-to-shelf action.
             ReleaseDetailView(release: Release(
                 key: .init(mgtNumber: "MGT00910", drive: .lhd),
                 name: "Lamborghini Huracán EVO", edition: "0344/2019", isLit: false))

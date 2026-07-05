@@ -42,13 +42,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bond the model"
+            "value": "Add to your cabinet"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "绑定该模型"
+            "value": "加入你的陈列柜"
           }
         }
       }
@@ -127,13 +127,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bond the model"
+            "value": "Add a car you own"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "绑定该模型"
+            "value": "添加你拥有的车模"
           }
         }
       }
@@ -161,13 +161,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Attach the catalog identity to a copy you own. Bonding never needs the camera."
+            "value": "Attach the catalog identity to a copy you own."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "为你拥有的实物附上目录身份。绑定无需使用相机。"
+            "value": "为你拥有的实物附上目录身份。"
           }
         }
       }
@@ -195,47 +195,30 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bond"
+            "value": "Add a car"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "绑定"
+            "value": "添加车模"
           }
         }
       }
     },
-    "cabinet.empty.blurb": {
-      "comment": "Empty cabinet helper text",
+    "addcar.title": {
+      "comment": "Add-a-car sheet title + Cabinet toolbar accessibility label.",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pick a release from the Catalog to light its first niche."
+            "value": "Add a car"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "从目录中挑选一款车，点亮它的第一格展位。"
-          }
-        }
-      }
-    },
-    "cabinet.empty.title": {
-      "comment": "Empty cabinet heading",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your cabinet is dark"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "你的陈列柜还未点亮"
+            "value": "添加车模"
           }
         }
       }
@@ -705,13 +688,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Guided scanning on Pro iPhones arrives in an upcoming update."
+            "value": "This release doesn't have a 3D model in the library yet. You can still add it to your shelf."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "面向 Pro 版 iPhone 的引导扫描将在后续更新中推出。"
+            "value": "这款车在库中还没有 3D 模型。你仍可以把它加入你的陈列柜。"
           }
         }
       }
@@ -722,47 +705,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No community scan yet"
+            "value": "No 3D model yet"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "社区尚无扫描"
-          }
-        }
-      }
-    },
-    "detail.invite.proNote": {
-      "comment": "Contribution invite note on a Pro device",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Be the first to light this for the community."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "成为第一个为社区点亮它的人。"
-          }
-        }
-      }
-    },
-    "detail.invite.proTitle": {
-      "comment": "Contribution invite title on a Pro device (no scan yet)",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Be the first to light this"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "成为第一个点亮它的人"
+            "value": "尚无 3D 模型"
           }
         }
       }
@@ -858,13 +807,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "UI strings, tabs and the real-car history all switch. Car model names stay as proper nouns (e.g. Porsche 911 GT3 RS). Traditional Chinese comes later."
+            "value": "UI strings, tabs and the real-car history all switch. Car model names stay as proper nouns (e.g. Porsche 911 GT3 RS)."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "界面文字、标签页与真车车史都会切换。车款名称保留为专有名词（如 Porsche 911 GT3 RS）。繁體中文稍后推出。"
+            "value": "界面文字、标签页与真车车史都会切换。车款名称保留为专有名词（如 Porsche 911 GT3 RS）。"
           }
         }
       }
@@ -886,36 +835,19 @@
         }
       }
     },
-    "library.blurb": {
-      "comment": "Library placeholder blurb",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reuse scans the community has shared, and contribute your own. Browse and upload arrive once the backend lands."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "复用社区共享的扫描模型，也可贡献你自己的。浏览与上传将在后端上线后开放。"
-          }
-        }
-      }
-    },
     "me.contribution.emptyHeadline": {
       "comment": "Me contribution card, fresh-install empty state (nothing shared yet).",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scans you share will be credited here"
+            "value": "Models you share will be credited here"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "你分享的扫描将在这里获得署名"
+            "value": "你分享的模型将在这里获得署名"
           }
         }
       }
@@ -937,53 +869,19 @@
         }
       }
     },
-    "me.contribution.litReleases": {
-      "comment": "Sits after the big '9' — releases lit for the community",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "releases lit for the community"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "款车已为社区点亮"
-          }
-        }
-      }
-    },
     "me.contribution.note": {
       "comment": "Framing note for the contribution summary",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Every release you share saves another owner the work of scanning their own."
+            "value": "Every model you share helps another owner light the same release."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "你每分享一款，就为另一位车主省去亲自扫描的功夫。"
-          }
-        }
-      }
-    },
-    "me.contribution.stats": {
-      "comment": "Mono stats line of contribution metrics",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "9 SCANS SHARED · ↓ 614 DOWNLOADS · 3 WORLD-FIRSTS"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "9 个共享扫描 · ↓ 614 次下载 · 3 个全球首发"
+            "value": "你每分享一款模型，都会帮另一位车主点亮同款车。"
           }
         }
       }
@@ -1273,23 +1171,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "插画"
-          }
-        }
-      }
-    },
-    "realcar.sampleBanner": {
-      "comment": "Honest banner flagging that the Real-Car profile is local sample data",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sample reference profile — server-backed enrichment lands later"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "样例参考资料 — 服务器端内容增强稍后上线"
           }
         }
       }
@@ -2331,40 +2212,6 @@
         }
       }
     },
-    "detail.invite.proCta": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Be the first to scan this"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "成为第一个扫描它的人"
-          }
-        }
-      }
-    },
-    "detail.invite.notify": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Notify me when it’s scanned"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "有人扫描后通知我"
-          }
-        }
-      }
-    },
     "me.contribution.litHeadline %lld": {
       "extractionState": "manual",
       "localizations": {
@@ -2388,13 +2235,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$lld SCANS SHARED · ↓ %2$lld DOWNLOADS · %3$lld WORLD-FIRSTS"
+            "value": "%1$lld MODELS SHARED · ↓ %2$lld DOWNLOADS · %3$lld FIRSTS"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$lld 个共享扫描 · ↓ %2$lld 次下载 · %3$lld 个全球首发"
+            "value": "%1$lld 个共享模型 · ↓ %2$lld 次下载 · %3$lld 个首发"
           }
         }
       }
@@ -2473,13 +2320,30 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "scanned by %@"
+            "value": "shared by %@"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "由 %@ 扫描"
+            "value": "由 %@ 分享"
+          }
+        }
+      }
+    },
+    "community.sharedBy.a11y %@ %@": {
+      "comment": "Community card combined accessibility label (name, credit).",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, shared by %2$@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@，由 %2$@ 分享"
           }
         }
       }
@@ -2535,36 +2399,36 @@
         }
       }
     },
+    "library.vault.tele %lld": {
+      "comment": "Library vault-bar telemetry line.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld MODELS · 1 CANONICAL / (NO.,DRIVE)"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 个模型 · 每（编号·驾驶位）一份"
+          }
+        }
+      }
+    },
     "library.stub.note": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Browse is a styled preview — upload and live browse arrive with the backend (v1.1)."
+            "value": "Community picks — one canonical model per release."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "浏览为样式预览——上传与实时浏览将随后端（v1.1）上线。"
-          }
-        }
-      }
-    },
-    "detail.invite.notified": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "We’ll tell you when it’s scanned."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "有人扫描它时我们会通知你。"
+            "value": "社区精选——每款车一份公认模型。"
           }
         }
       }
@@ -2592,13 +2456,30 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pick or scan your first car to light a niche."
+            "value": "Pick from the catalog or add a car you own to light a niche."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "选取或扫描你的第一辆车，点亮第一格。"
+            "value": "从目录中选取，或添加你拥有的车模，点亮第一格展位。"
+          }
+        }
+      }
+    },
+    "cabinet.empty.add": {
+      "comment": "Empty-cabinet primary CTA (opens the Add-a-car flow).",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a car I own"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加我拥有的车模"
           }
         }
       }
@@ -2616,23 +2497,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "从目录中选取"
-          }
-        }
-      }
-    },
-    "cabinet.empty.scan": {
-      "comment": "Empty cabinet CTA — open the scan flow.",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scan a car"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "扫描一辆车"
           }
         }
       }
@@ -2660,13 +2524,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "When owners share their scans, canonical models appear here — one per release."
+            "value": "When owners share their models, canonical picks appear here — one per release."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "当藏家分享他们的扫描后，规范模型会出现在这里 —— 每款车一份。"
+            "value": "当藏家分享他们的模型后，公认模型会出现在这里——每款车一份。"
           }
         }
       }
@@ -2762,13 +2626,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The 3D model failed to load onto the stage. Your scan is safe — try again, or view it in AR."
+            "value": "The 3D model failed to load onto the stage. Your model is safe — try again, or view it in AR."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "3D 模型未能载入舞台。你的扫描仍安全保存 —— 可重试，或在 AR 中查看。"
+            "value": "3D 模型未能载入舞台。你的模型仍安全保存——可重试，或在 AR 中查看。"
           }
         }
       }
@@ -2871,40 +2735,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "存储"
-          }
-        }
-      }
-    },
-    "me.row.icloudSync": {
-      "comment": "Settings row title — iCloud Sync toggle.",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud Sync"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud 同步"
-          }
-        }
-      }
-    },
-    "me.row.icloudSync.note": {
-      "comment": "iCloud Sync note — off by default, uses the user's own iCloud quota.",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Off by default. Turning it on stores your 3D models in your own iCloud and counts against your iCloud quota."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "默认关闭。开启后会把你的 3D 模型存入你自己的 iCloud，并占用你的 iCloud 容量。"
           }
         }
       }
@@ -3058,6 +2888,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "通用"
+          }
+        }
+      }
+    },
+    "cell.a11y.hasModel %@ %@": {
+      "comment": "Catalog/cabinet cell accessibility label — model available.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@, model present"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@，%2$@，有模型"
+          }
+        }
+      }
+    },
+    "cell.a11y.noModel %@ %@": {
+      "comment": "Catalog/cabinet cell accessibility label — no model yet.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@, no model yet"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@，%2$@，暂无模型"
           }
         }
       }

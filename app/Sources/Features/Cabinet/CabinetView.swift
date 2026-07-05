@@ -100,10 +100,10 @@ struct CabinetView: View {
                 Button {
                     showScan = true
                 } label: {
-                    Image(systemName: "camera.viewfinder")
+                    Image(systemName: "plus")
                         .foregroundStyle(Ink.tungsten)
                 }
-                .accessibilityLabel(Text("scan.title"))
+                .accessibilityLabel(Text("addcar.title"))
             }
         }
         .navigationDestination(item: $route) { release in
@@ -114,7 +114,7 @@ struct CabinetView: View {
                 .environmentObject(stylePreference)
         }
         .sheet(isPresented: $showScan) {
-            ScanFlowView()
+            AddCarFlowView()
                 .environmentObject(contributionStore)
         }
     }
@@ -224,7 +224,7 @@ struct CabinetView: View {
             .allowsHitTesting(false)
             HStack(spacing: 10) {
                 Button { showScan = true } label: {
-                    PrimaryCTALabel(title: "cabinet.empty.scan", systemImage: "camera.viewfinder")
+                    PrimaryCTALabel(title: "cabinet.empty.add", systemImage: "plus")
                         .fixedSize()
                 }
                 .buttonStyle(.plain)
