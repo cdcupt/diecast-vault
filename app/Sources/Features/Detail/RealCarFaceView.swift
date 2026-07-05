@@ -23,10 +23,16 @@ struct RealCarFaceView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            heroPhoto
+            // Photo sections only render for real (server-backed) content:
+            // sample profiles have no photographs, so an empty hero frame or a
+            // gallery of license-chipped placeholders would read as broken and
+            // fabricate provenance. The face opens on the editorial content.
+            if !profile.isSample {
+                heroPhoto
+                gallery
+            }
             history
             specs
-            gallery
             compare
         }
     }
@@ -36,7 +42,11 @@ struct RealCarFaceView: View {
     private var heroPhoto: some View {
         VStack(alignment: .leading, spacing: 6) {
             ReferenceImagePlaceholder(image: profile.hero, height: 180)
-            attribution(profile.hero)
+            // No attribution/license line for bundled sample art — credit lines
+            // belong to real photographs only.
+            if !profile.isSample {
+                attribution(profile.hero)
+            }
         }
     }
 
@@ -208,6 +218,8 @@ private struct ReferenceImagePlaceholder: View {
                         HStack(spacing: 3) {
                             Image(systemName: "exclamationmark.triangle.fill")
                             Text("realcar.illustrationBadge")
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.7)
                         }
                         .font(Voice.mono(8, weight: .heavy))
                         .foregroundStyle(.white)

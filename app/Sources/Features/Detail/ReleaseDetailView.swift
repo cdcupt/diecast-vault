@@ -16,6 +16,9 @@ struct ReleaseDetailView: View {
     @Query private var owned: [OwnedModel]
 
     @State private var face: DetailFace
+    /// Set when the pick-to-shelf save fails — surfaces an alert instead of a
+    /// silently-lying green "On your shelf" state.
+    @State private var showSaveError = false
 
     init(release: Release, initialFace: DetailFace = .model) {
         self.release = release
@@ -32,7 +35,7 @@ struct ReleaseDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
-                Picker("View", selection: $face) {
+                Picker("detail.face.picker", selection: $face) {
                     ForEach(DetailFace.allCases) { Text($0.title).tag($0) }
                 }
                 .pickerStyle(.segmented)
@@ -59,14 +62,27 @@ struct ReleaseDetailView: View {
         .navigationDestination(for: ViewerRoute.self) { route in
             ModelViewerView(release: route.release)
         }
+        .alert(Text("error.save.title"), isPresented: $showSaveError) {
+            Button(role: .cancel) {} label: { Text("error.save.dismiss") }
+        } message: {
+            Text("error.save.body")
+        }
     }
 
-    /// Add this release to the local collection (local-first, no network).
+    /// Add this release to the local collection (local-first, no network). A
+    /// failed save rolls back and says so — the button state must never show
+    /// "On your shelf" over data that won't survive a relaunch.
     private func pickToShelf() {
         guard !isOwned else { return }
         let copy = OwnedCopy(key: release.key, editionNo: release.edition, hasModel: release.isLit)
         modelContext.insert(OwnedModel(copy))
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            AppLog.persistence.error("pickToShelf save failed: \(error, privacy: .public)")
+            modelContext.rollback()
+            showSaveError = true
+        }
     }
 }
 

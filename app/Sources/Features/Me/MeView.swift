@@ -1,16 +1,22 @@
 import SwiftUI
+import SwiftData
 import UIKit
 import DiecastVaultCore
 
-/// Me tab (DESIGN F4 §Settings) — the signed-in identity, the contribution
-/// summary that frames sharing as helping other owners, and the settings rows.
-/// Language is the live in-app switch; the rest are honest placeholders until
-/// their backends land. Account/contribution numbers are local sample copy.
+/// Me tab (DESIGN F4 §Settings) — the local-collection identity and the
+/// settings rows. Language is the live in-app switch; every control here
+/// performs a real action (no account, no sync, no share pitch — those return
+/// only with their real backends, per the App Review 2.1a lessons).
 struct MeView: View {
     @EnvironmentObject private var localeManager: LocaleManager
     @EnvironmentObject private var stylePreference: CabinetStylePreference
-    @EnvironmentObject private var contributionStore: ContributionStore
     @State private var showStylePicker = false
+    /// Set when a mailto: open fails (no Mail app) — drives the copy-address alert.
+    @State private var mailFallbackAddress: String?
+
+    /// The user's actual on-device collection — the source of truth for the
+    /// Storage row (NOT contribution shares, which are always 0 in this build).
+    @Query private var owned: [OwnedModel]
 
     /// App version for the About row — read from the bundle, never hardcoded.
     private var appVersion: String {
@@ -19,17 +25,12 @@ struct MeView: View {
         return "\(v) (\(b))"
     }
 
-    /// Recognition is DERIVED from the user's opted-in shares — never hardcoded, so
-    /// it tracks a fresh share from the post-bond prompt the instant it lands.
-    private var summary: ContributionSummary { contributionStore.summary }
-
     var body: some View {
         ScrollViewReader { proxy in
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
                     Lightbar(label: "tab.me")
                     identity
-                    contribution
                     account
                     storage
                     general
@@ -78,84 +79,11 @@ struct MeView: View {
         }
     }
 
-    // MARK: Contribution summary
-
-    private var contribution: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("me.contribution.heading")
-                .textCase(.uppercase)
-                .font(Voice.mono(10, weight: .semibold))
-                .tracking(1.2)
-                .foregroundStyle(Ink.muted)
-
-            if summary.litReleases > 0 {
-                // The headline reads the derived count — "You've lit N releases…".
-                Text("me.contribution.litHeadline \(summary.litReleases)")
-                    .font(Voice.serif(24))
-                    .foregroundStyle(Ink.primary)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                // Telemetry breakdown in mono (shares · downloads · world-firsts).
-                Text("me.contribution.tele \(summary.litReleases) \(summary.totalDownloads) \(summary.worldFirsts)")
-                    .font(Voice.mono(10))
-                    .foregroundStyle(Ink.soft)
-
-                badges
-
-                Text("me.contribution.creditNote")
-                    .font(.footnote)
-                    .foregroundStyle(Ink.soft)
-            } else {
-                // Fresh install: nothing shared yet, so nothing is claimed —
-                // recognition is earned, never seeded. Aspirational empty state.
-                Text("me.contribution.emptyHeadline")
-                    .font(Voice.serif(24))
-                    .foregroundStyle(Ink.primary)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                Text("me.contribution.note")
-                    .font(.footnote)
-                    .foregroundStyle(Ink.soft)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(16)
-        .background(Color(Palette.tungstenGlow).opacity(0.4))
-        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(Ink.tungsten.opacity(0.5), lineWidth: 1)
-        )
-    }
-
-    /// Light badges earned from opted-in shares (mockup #s-settings strip).
-    private var badges: some View {
-        HStack(spacing: 6) {
-            ForEach(summary.badges) { badge in
-                badgeChip(badge)
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func badgeChip(_ badge: ContributionBadge) -> some View {
-        switch badge {
-        case .firstLight:
-            chip("me.badge.firstLight \(summary.worldFirsts)",
-                 fg: Ink.tungstenDeep, bg: Color(Palette.tungstenGlow))
-        case .seeder:
-            chip("me.badge.seeder", fg: Ink.steel, bg: Ink.steelSoft)
-        case .verifiedOwner:
-            chip("me.badge.verifiedOwner", fg: .white, bg: Ink.ok)
-        }
-    }
-
-    private func chip(_ key: LocalizedStringKey, fg: Color, bg: Color) -> some View {
-        Text(key)
-            .font(Voice.mono(10, weight: .semibold))
-            .foregroundStyle(fg)
-            .padding(.horizontal, 9).padding(.vertical, 4)
-            .background(bg, in: Capsule())
-    }
+    // The contribution/recognition card is deliberately ABSENT in v1.0: sharing
+    // has no entry point in this build, so a card promising "models you share
+    // will be credited" would pitch a feature that cannot be exercised — the
+    // exact incomplete-feature class App Review rejected twice (2.1a). It
+    // returns with the real share flow.
 
     // MARK: Account (none exists in this build — the row says so honestly;
     // everything lives on-device)
@@ -179,21 +107,12 @@ struct MeView: View {
             SettingsRow(
                 icon: "iphone",
                 title: "me.row.localStorage",
-                // Derived from the live collection size; storage estimate is a stub
-                // (~40 MB / car) until the real on-disk USDZ accounting lands.
-                value: Text("me.row.localStorage.value \(summary.litReleases) \(storageEstimate)"),
+                // The real owned-model count from SwiftData — no invented byte
+                // estimates (the only 3D asset is the shared app-bundle sample).
+                value: Text("me.row.localStorage.count \(owned.count)"),
                 chevron: false
             )
         }
-    }
-
-    /// Rough on-disk estimate (sample USDZ ~40 MB / car) for the storage row.
-    private var storageEstimate: String {
-        let bytes = Int64(summary.litReleases) * 40_000_000
-        let formatter = ByteCountFormatter()
-        formatter.allowedUnits = [.useGB, .useMB]
-        formatter.countStyle = .file
-        return formatter.string(fromByteCount: max(bytes, 0))
     }
 
     // MARK: General (cabinet style + language)
@@ -221,25 +140,51 @@ struct MeView: View {
         }
     }
 
-    // MARK: Safety & legal (report / DMCA — local mailto stubs for now)
+    // MARK: Safety & legal (report / DMCA via mail, with a copy-address
+    // fallback when no mail client is installed; license stated in the footer)
+
+    private static let supportAddress = "support@daichenlab.com"
 
     private var legal: some View {
-        SettingsGroup(header: "me.section.legal") {
+        SettingsGroup(header: "me.section.legal", footer: "me.section.legal.footer") {
             mailRow(icon: "flag", title: "me.row.report", subject: "Diecast Vault — report a problem")
             divider
             mailRow(icon: "doc.text", title: "me.row.dmca", subject: "Diecast Vault — DMCA / takedown")
-            divider
-            SettingsRow(icon: "checkmark.seal", title: "me.row.license", value: Text(verbatim: ""), chevron: false)
+        }
+        .alert(
+            Text("me.mail.fallback.title"),
+            isPresented: Binding(
+                get: { mailFallbackAddress != nil },
+                set: { if !$0 { mailFallbackAddress = nil } }
+            ),
+            presenting: mailFallbackAddress
+        ) { address in
+            Button {
+                UIPasteboard.general.string = address
+                mailFallbackAddress = nil
+            } label: {
+                Text("me.mail.fallback.copy")
+            }
+            Button(role: .cancel) { mailFallbackAddress = nil } label: {
+                Text("me.mail.fallback.dismiss")
+            }
+        } message: { address in
+            Text("me.mail.fallback.body \(address)")
         }
     }
 
-    /// A settings row that opens a prefilled mailto (stubbed contact until the
-    /// backend support routing lands). Falls back gracefully if mail isn't set up.
+    /// A settings row that opens a prefilled mailto. If no mail client is
+    /// installed (Mail is commonly deleted), it falls back to an alert showing
+    /// the address with a Copy button — the contact routes must never dead-end.
     private func mailRow(icon: String, title: LocalizedStringKey, subject: String) -> some View {
         Button {
             let encoded = subject.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-            if let url = URL(string: "mailto:support@daichenlab.com?subject=\(encoded)") {
-                UIApplication.shared.open(url)
+            guard let url = URL(string: "mailto:\(Self.supportAddress)?subject=\(encoded)") else {
+                mailFallbackAddress = Self.supportAddress
+                return
+            }
+            UIApplication.shared.open(url, options: [:]) { success in
+                if !success { mailFallbackAddress = Self.supportAddress }
             }
         } label: {
             SettingsRow(icon: icon, title: title, value: Text(verbatim: ""))
@@ -303,31 +248,6 @@ private struct SettingsGroup<Content: View>: View {
                     .padding(.horizontal, 4)
             }
         }
-    }
-}
-
-/// A settings row carrying a tungsten-tinted toggle (e.g. iCloud Sync). The
-/// switch is the row's only trailing control — no chevron.
-private struct SettingsToggleRow: View {
-    let icon: String
-    let title: LocalizedStringKey
-    @Binding var isOn: Bool
-
-    var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: icon)
-                .font(.system(size: 16, weight: .regular))
-                .foregroundStyle(Ink.steel)
-                .frame(width: 24)
-            Toggle(isOn: $isOn) {
-                Text(title)
-                    .font(.body)
-                    .foregroundStyle(Ink.primary)
-            }
-            .tint(Ink.tungsten)
-        }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 9)
     }
 }
 

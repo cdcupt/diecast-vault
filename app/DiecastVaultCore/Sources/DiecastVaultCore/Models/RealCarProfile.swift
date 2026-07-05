@@ -39,9 +39,10 @@ public struct RealCarImage: Hashable, Codable, Sendable, Identifiable {
 
 /// The light reference profile of the full-size car a release replicates
 /// (DESIGN §4.5b "Model | Real Car"). On the server this is built once per
-/// `(mgtNumber, locale)` by the §8 enrichment pipeline and cached; **in slice 2
-/// it is STUBBED with local sample data** (`RealCarProfile.sample(for:)`) and is
-/// clearly tagged "sample — server-backed later" in the UI. No network.
+/// `(mgtNumber, locale)` by the §8 enrichment pipeline and cached; v1.0 ships
+/// bundled local profiles (`RealCarProfile.sample(for:)`, `isSample == true`).
+/// Sample profiles carry no attribution/license claims — the view layer hides
+/// credit lines and the gallery for them. No network.
 public struct RealCarProfile: Hashable, Codable, Sendable {
     public let mgtNumber: String
     /// History paragraphs (grounded + cited in the real pipeline).
@@ -106,11 +107,10 @@ public extension RealCarProfile {
                     "This reference profile is bundled with the app — a quick offline read on the car behind the model."
                 ],
             historySource: zh ? "内置参考资料" : "Bundled reference notes",
+            // Only rows with REAL values ship: dash-placeholder rows read as
+            // unfinished data on a production screen (App Review 2.1a lesson).
             specs: [
                 RealCarSpec(key: zh ? "厂商" : "MAKER", value: String(model.split(separator: " ").first ?? "—")),
-                RealCarSpec(key: zh ? "引擎" : "ENGINE", value: zh ? "—（样例）" : "— (sample)"),
-                RealCarSpec(key: zh ? "马力" : "POWER", value: zh ? "—（样例）" : "— (sample)"),
-                RealCarSpec(key: "0–100", value: zh ? "—（样例）" : "— (sample)"),
                 RealCarSpec(key: zh ? "驱动" : "DRIVETRAIN", value: drivetrain)
             ],
             hero: RealCarImage(

@@ -59,13 +59,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Drive — required (half the key)"
+            "value": "Drive — required"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "驾驶位——必选（构成识别键的一半）"
+            "value": "驾驶位——必选"
           }
         }
       }
@@ -93,13 +93,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Stamped on this copy only — never part of the shared dedup key."
+            "value": "Stamped on your copy only — not shared."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "仅印于此件之上——绝不参与共享去重键。"
+            "value": "仅记录在你的这件藏品上——不会共享。"
           }
         }
       }
@@ -155,7 +155,7 @@
         }
       }
     },
-    "bond.subhead.dev": {
+    "bond.subhead": {
       "comment": "Bond subhead on the dev/invite path (no live scan).",
       "localizations": {
         "en": {
@@ -236,23 +236,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "陈列柜"
-          }
-        }
-      }
-    },
-    "cabinet.litCount %lld": {
-      "comment": "Lit-of-total count next to the big serif number, e.g. '/ 12 lit'. %lld is the total shelf size.",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "/ %lld lit"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "/ 共 %lld 件点亮"
           }
         }
       }
@@ -835,57 +818,6 @@
         }
       }
     },
-    "me.contribution.emptyHeadline": {
-      "comment": "Me contribution card, fresh-install empty state (nothing shared yet).",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Models you share will be credited here"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "你分享的模型将在这里获得署名"
-          }
-        }
-      }
-    },
-    "me.contribution.heading": {
-      "comment": "Contribution summary section heading (rendered uppercase)",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your contribution"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "你的贡献"
-          }
-        }
-      }
-    },
-    "me.contribution.note": {
-      "comment": "Framing note for the contribution summary",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Every model you share helps another owner light the same release."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "你每分享一款模型，都会帮另一位车主点亮同款车。"
-          }
-        }
-      }
-    },
     "me.footer": {
       "comment": "App version + legal footnote",
       "localizations": {
@@ -916,57 +848,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "陈列柜外观"
-          }
-        }
-      }
-    },
-    "me.row.device": {
-      "comment": "Settings row title — device model",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Device"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "设备"
-          }
-        }
-      }
-    },
-    "me.row.icloud": {
-      "comment": "Settings row title — iCloud sync",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud sync"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud 同步"
-          }
-        }
-      }
-    },
-    "me.row.icloud.value": {
-      "comment": "iCloud sync row value — off by default",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Off"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "关闭"
           }
         }
       }
@@ -1022,23 +903,6 @@
         }
       }
     },
-    "me.tier.pro": {
-      "comment": "Device capability tier badge (rendered uppercase)",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pro"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pro"
-          }
-        }
-      }
-    },
     "realcar.attribution.ai": {
       "comment": "Caption under an AI illustration",
       "localizations": {
@@ -1062,13 +926,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Photo: %1$@ · %2$@ · Wikimedia Commons"
+            "value": "Photo: %1$@ · %2$@"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "照片：%1$@ · %2$@ · 维基共享资源"
+            "value": "照片：%1$@ · %2$@"
           }
         }
       }
@@ -2212,108 +2076,6 @@
         }
       }
     },
-    "me.contribution.litHeadline %lld": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "You’ve lit %lld releases for the community"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "你已为社区点亮 %lld 款车"
-          }
-        }
-      }
-    },
-    "me.contribution.tele %lld %lld %lld": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld MODELS SHARED · ↓ %2$lld DOWNLOADS · %3$lld FIRSTS"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld 个共享模型 · ↓ %2$lld 次下载 · %3$lld 个首发"
-          }
-        }
-      }
-    },
-    "me.badge.firstLight %lld": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "★ First Light ×%lld"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "★ 首次点亮 ×%lld"
-          }
-        }
-      }
-    },
-    "me.badge.seeder": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Seeder"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "播种者"
-          }
-        }
-      }
-    },
-    "me.badge.verifiedOwner": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Verified owner"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "已验证车主"
-          }
-        }
-      }
-    },
-    "me.contribution.creditNote": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Each model credits you; you can remove any upload anytime."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "每个模型都会署名于你；你可随时移除任意上传。"
-          }
-        }
-      }
-    },
     "community.scannedBy %@": {
       "extractionState": "manual",
       "localizations": {
@@ -2405,13 +2167,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld MODELS · 1 CANONICAL / (NO.,DRIVE)"
+            "value": "%lld MODELS · ONE CANONICAL PER RELEASE"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld 个模型 · 每（编号·驾驶位）一份"
+            "value": "%lld 个模型 · 每款车一份公认模型"
           }
         }
       }
@@ -2637,6 +2399,23 @@
         }
       }
     },
+    "viewer.edition %@": {
+      "comment": "3D viewer control-bar edition telemetry.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EDITION %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "版号 %@"
+          }
+        }
+      }
+    },
     "viewer.error.retry": {
       "comment": "3D viewer error — retry loading the model.",
       "localizations": {
@@ -2756,19 +2535,19 @@
         }
       }
     },
-    "me.row.localStorage.value %lld %@": {
-      "comment": "Local storage value — N cars · size. %1 is the car count, %2 the size string.",
+    "me.row.localStorage.count %lld": {
+      "comment": "Storage row value — the real on-device owned-model count.",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$lld cars · %2$@"
+            "value": "%lld cars"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$lld 辆 · %2$@"
+            "value": "%lld 辆"
           }
         }
       }
@@ -2786,6 +2565,142 @@
           "stringUnit": {
             "state": "translated",
             "value": "安全与法务"
+          }
+        }
+      }
+    },
+    "me.section.legal.footer": {
+      "comment": "Safety & legal group footer — states the license.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diecast Vault is free for personal, non-commercial use."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diecast Vault 供个人非商业用途免费使用。"
+          }
+        }
+      }
+    },
+    "me.mail.fallback.title": {
+      "comment": "Alert title when a mailto: open fails.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No email app"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未找到邮件应用"
+          }
+        }
+      }
+    },
+    "me.mail.fallback.body %@": {
+      "comment": "Alert body — shows the support address.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Write to us at %@."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请发送邮件至 %@。"
+          }
+        }
+      }
+    },
+    "me.mail.fallback.copy": {
+      "comment": "Alert action — copies the support address.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy address"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "复制地址"
+          }
+        }
+      }
+    },
+    "me.mail.fallback.dismiss": {
+      "comment": "Alert dismiss.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "好"
+          }
+        }
+      }
+    },
+    "error.save.title": {
+      "comment": "Save-failure alert title.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn’t save"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存失败"
+          }
+        }
+      }
+    },
+    "error.save.body": {
+      "comment": "Save-failure alert body.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Something went wrong while saving to your collection. Please try again."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存到收藏时出了点问题，请重试。"
+          }
+        }
+      }
+    },
+    "error.save.dismiss": {
+      "comment": "Save-failure alert dismiss.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "好"
           }
         }
       }
@@ -2820,23 +2735,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "DMCA / 下架联系"
-          }
-        }
-      }
-    },
-    "me.row.license": {
-      "comment": "Settings row — non-commercial license note.",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Non-commercial license"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "非商业许可"
           }
         }
       }
@@ -2922,6 +2820,91 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@，%2$@，暂无模型"
+          }
+        }
+      }
+    },
+    "cabinet.a11y %lld %lld": {
+      "comment": "VoiceOver label for the RealityKit cabinet.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3D cabinet, %1$lld niches, %2$lld lit"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3D 陈列柜，共 %1$lld 格，已点亮 %2$lld 格"
+          }
+        }
+      }
+    },
+    "cell.a11y.catalog %@": {
+      "comment": "VoiceOver label for the catalog placard.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Catalog number %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目录编号 %@"
+          }
+        }
+      }
+    },
+    "drive.a11y.lhd": {
+      "comment": "VoiceOver name for the LHD decal/toggle.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Left-hand drive"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "左舵"
+          }
+        }
+      }
+    },
+    "drive.a11y.rhd": {
+      "comment": "VoiceOver name for the RHD decal/toggle.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Right-hand drive"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "右舵"
+          }
+        }
+      }
+    },
+    "detail.face.picker": {
+      "comment": "VoiceOver title of the Model | Real Car segmented picker.",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "视图"
           }
         }
       }

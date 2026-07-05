@@ -1,5 +1,21 @@
 import SwiftUI
+import os
 import DiecastVaultCore
+
+/// Localized VoiceOver names for the Core `Drive` enum — the Core layer stays
+/// locale-free, so the app layer owns the translation.
+extension Drive {
+    var a11yNameKey: LocalizedStringResource {
+        self == .lhd ? "drive.a11y.lhd" : "drive.a11y.rhd"
+    }
+}
+
+/// Shared os.Logger handles — persistence failures must be diagnosable from a
+/// sysdiagnose, never silently swallowed.
+enum AppLog {
+    static let persistence = Logger(subsystem: "com.daichenlab.diecastvault", category: "persistence")
+    static let perf = Logger(subsystem: "com.daichenlab.diecastvault", category: "perf")
+}
 
 /// The signature "lightbar" eyebrow from the design — a lit bulb, a mono label,
 /// and a tungsten light-spill segment. Sits above section content. The label is a
@@ -49,7 +65,7 @@ struct DriveDecal: View {
             .frame(width: 24, height: 24)
             .background(drive == .lhd ? Ink.lhd : Ink.rhd)
             .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
-            .accessibilityLabel(drive.displayName)
+            .accessibilityLabel(Text(drive.a11yNameKey))
     }
 }
 
@@ -99,7 +115,7 @@ struct DriveToggle: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(drive.displayName)
+        .accessibilityLabel(Text(drive.a11yNameKey))
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
 }
@@ -122,13 +138,13 @@ struct CatalogPlacard: View {
             .padding(.vertical, 3)
             .background(Ink.cellRecess)
             .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
-            .accessibilityLabel("Catalog \(mgtNumber)")
+            .accessibilityLabel(Text("cell.a11y.catalog \(mgtNumber)"))
     }
 }
 
-/// One cabinet niche. Light is state: a LIT niche glows with pooled tungsten and
-/// lifts off the paper; a MATTE recess is carved into the wall with no scan yet.
-/// (Real 3D content lands in Spike-1; here the car is a placeholder glyph.)
+/// One cabinet niche (2D fallback for iOS 17). Light is state: a LIT niche glows
+/// with pooled tungsten and lifts off the paper; a MATTE recess is carved into
+/// the wall — no model yet.
 struct CabinetCell: View {
     let release: Release
 
@@ -178,8 +194,8 @@ struct CabinetCell: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text(
             release.isLit
-                ? "cell.a11y.hasModel \(release.name) \(release.drive.displayName)"
-                : "cell.a11y.noModel \(release.name) \(release.drive.displayName)"
+                ? "cell.a11y.hasModel \(release.name) \(String(localized: release.drive.a11yNameKey))"
+                : "cell.a11y.noModel \(release.name) \(String(localized: release.drive.a11yNameKey))"
         ))
     }
 

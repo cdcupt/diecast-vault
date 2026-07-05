@@ -181,9 +181,13 @@ struct ModelViewerView: View {
                     DriveDecal(drive: release.drive)
                         .scaleEffect(0.72)
                 }
-                Text(telemetryDetail)
-                    .font(Voice.mono(10))
-                    .foregroundStyle(.white.opacity(0.55))
+                // Edition telemetry only when the release carries one — no
+                // filler line, no file-format jargon, fully localized.
+                if let edition = release.edition {
+                    Text("viewer.edition \(edition)")
+                        .font(Voice.mono(10))
+                        .foregroundStyle(.white.opacity(0.55))
+                }
             }
 
             Spacer()
@@ -216,8 +220,4 @@ struct ModelViewerView: View {
         )
     }
 
-    private var telemetryDetail: String {
-        let edition = release.edition.map { "EDITION \($0)" } ?? "SAMPLE MODEL"
-        return "\(edition) · sample USDZ"
-    }
 }

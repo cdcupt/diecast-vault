@@ -140,6 +140,14 @@ final class ProductionCopyAuditTests: XCTestCase {
             "me.row.icloudSync",
             "me.row.icloudSync.note",
             "cabinet.empty.scan",
+            // Polish pass: the Me contribution card pitched a share flow that has
+            // no production entry point, and these rows claimed sync/tier states
+            // that don't exist. They return only with their real features.
+            "me.contribution.emptyHeadline",
+            "me.contribution.note",
+            "me.row.icloud",
+            "me.row.icloud.value",
+            "me.tier.pro",
         ]
         for key in bannedKeys {
             XCTAssertNil(

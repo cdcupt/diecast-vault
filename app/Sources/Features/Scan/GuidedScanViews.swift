@@ -384,21 +384,32 @@ struct StepChip: View {
 
 /// The shared primary CTA label (full-width, filled). Tungsten by default; a
 /// `fill` override lets a secondary action (e.g. "offer as alternate") wear steel
-/// while keeping the same shape and metrics.
+/// while keeping the same shape and metrics. Horizontal padding keeps the label
+/// off the fill's edge when a caller collapses the full-width frame with
+/// `.fixedSize()` (wide zh labels were rendering flush to the rounded edge).
+/// `isEnabled: false` renders a deliberate disabled state — dimmed fill under
+/// fully readable text — instead of fading the whole label into the background.
 struct PrimaryCTALabel: View {
     let title: LocalizedStringKey
     let systemImage: String
     var fill: Color = Ink.tungsten
+    var isEnabled: Bool = true
 
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: systemImage)
             Text(title).font(.system(size: 15, weight: .semibold))
         }
-        .foregroundStyle(.white)
+        // Disabled = dark text on a light wash (readable, clearly inactive) —
+        // NOT white on a faded fill, which vanishes against the cream paper.
+        .foregroundStyle(isEnabled ? Color.white : Ink.tungstenDeep.opacity(0.7))
         .frame(maxWidth: .infinity)
+        .padding(.horizontal, 16)
         .padding(.vertical, 14)
-        .background(fill, in: RoundedRectangle(cornerRadius: 11, style: .continuous))
+        .background(
+            fill.opacity(isEnabled ? 1 : 0.18),
+            in: RoundedRectangle(cornerRadius: 11, style: .continuous)
+        )
     }
 }
 

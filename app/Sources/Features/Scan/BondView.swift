@@ -2,21 +2,19 @@ import SwiftUI
 import SwiftData
 import DiecastVaultCore
 
-/// The BOND step (mockup #s-bond) — deliberately SEPARATE from scanning. It
-/// attaches the catalog identity `(mgtNumber, drive)` + optional per-copy edition
-/// serial to a model and saves it to the local collection, where it appears LIT
-/// in the 3D cabinet. Identity never depends on a scan succeeding: this same
-/// screen bonds a freshly-kept scan, a community model, or (the DEV path) the
-/// bundled sample USDZ.
+/// The Add-a-car form (mockup #s-bond) — the production body of
+/// `AddCarFlowView`. It attaches the catalog identity `(mgtNumber, drive)` +
+/// optional per-copy edition serial to a copy the user owns and saves it to the
+/// local collection, where it appears LIT in the 3D cabinet. No camera is ever
+/// involved on this path.
 ///
 /// The number is matched live against the bundled catalog so the user gets the
 /// car's name back as confirmation. The drive toggle is the teal-L / amber-R
-/// control; drive is required because it is half the dedup key.
+/// control; drive is required because `(number, drive)` is the identity.
 struct BondView: View {
-    /// The scan being bonded. `nil` on the dev / invite path (no live scan) —
-    /// `hasModel` is still true because the bundled sample USDZ is attached, so
-    /// the bonded niche lights up and the bond→save→cabinet chain is verifiable
-    /// without a camera.
+    /// A capture to bond — always `nil` in production (the guided capture flow
+    /// is unshipped, DEBUG-route-only). When nil, the bundled sample USDZ backs
+    /// the lit niche.
     let scanResult: ScanResult?
     /// When the bond was launched from a release's gap-nudge, the form opens
     /// pre-seeded with that release's `(number, drive)` so a world-first lights the
@@ -27,6 +25,9 @@ struct BondView: View {
     @EnvironmentObject private var router: ScanRouter
 
     @State private var draft: BondDraft
+    /// Set when the SwiftData save fails — the sheet stays open and says so
+    /// instead of dismissing as if the car were saved.
+    @State private var showSaveError = false
 
     init(scanResult: ScanResult?, prefillKey: CatalogKey? = nil) {
         self.scanResult = scanResult
@@ -54,8 +55,8 @@ struct BondView: View {
                 editionField
 
                 Button(action: bond) {
-                    PrimaryCTALabel(title: "bond.cta", systemImage: "link")
-                        .opacity(draft.isComplete ? 1 : 0.45)
+                    PrimaryCTALabel(title: "bond.cta", systemImage: "link",
+                                    isEnabled: draft.isComplete)
                 }
                 .buttonStyle(.plain)
                 .disabled(!draft.isComplete)
@@ -68,6 +69,11 @@ struct BondView: View {
         .background(Ink.paper)
         .navigationTitle(Text("bond.title"))
         .navigationBarTitleDisplayMode(.inline)
+        .alert(Text("error.save.title"), isPresented: $showSaveError) {
+            Button(role: .cancel) {} label: { Text("error.save.dismiss") }
+        } message: {
+            Text("error.save.body")
+        }
     }
 
     // MARK: Sections
@@ -78,7 +84,7 @@ struct BondView: View {
             Text("bond.heading")
                 .font(Voice.serif(28))
                 .foregroundStyle(Ink.primary)
-            Text(scanResult != nil ? "bond.subhead.scan" : "bond.subhead.dev")
+            Text(scanResult != nil ? "bond.subhead.scan" : "bond.subhead")
                 .font(.footnote)
                 .foregroundStyle(Ink.soft)
         }
@@ -142,31 +148,39 @@ struct BondView: View {
     // MARK: Save
 
     /// Persist the bonded copy to the local SwiftData store. `hasModel` is true
-    /// whenever a viewable model is attached (a real/dev scan), which is what
-    /// lights the niche in the cabinet. Upsert-safe against the unique key.
+    /// whenever a viewable model is attached, which is what lights the niche in
+    /// the cabinet. Upsert-safe against the unique key. Navigation happens ONLY
+    /// after a successful save — a failed save keeps the sheet open with an
+    /// alert instead of dismissing over silently-lost data.
     private func bond() {
-        // A model is attached for both the real scan and the dev path (bundled USDZ).
+        // A model is attached for both a real capture and the production path
+        // (bundled sample USDZ).
         let hasModel = scanResult != nil || SampleModel.url != nil
         guard let copy = draft.ownedCopy(hasModel: hasModel) else { return }
 
         let id = copy.key.stableID
-        let existing = try? modelContext.fetch(
-            FetchDescriptor<OwnedModel>(predicate: #Predicate { $0.stableID == id })
-        )
-        if let row = existing?.first {
-            // Already on the shelf — light it (a model is now bonded) and keep the
-            // newer edition serial if one was entered.
-            row.hasModel = hasModel || row.hasModel
-            if let edition = copy.editionNo { row.editionNo = edition }
-        } else {
-            modelContext.insert(OwnedModel(copy))
+        do {
+            let existing = try modelContext.fetch(
+                FetchDescriptor<OwnedModel>(predicate: #Predicate { $0.stableID == id })
+            )
+            if let row = existing.first {
+                // Already on the shelf — light it (a model is now bonded) and keep
+                // the newer edition serial if one was entered.
+                row.hasModel = hasModel || row.hasModel
+                if let edition = copy.editionNo { row.editionNo = edition }
+            } else {
+                modelContext.insert(OwnedModel(copy))
+            }
+            try modelContext.save()
+        } catch {
+            AppLog.persistence.error("bond save failed: \(error, privacy: .public)")
+            modelContext.rollback()
+            showSaveError = true
+            return
         }
-        try? modelContext.save()
-        // Only a bond that carries a REAL capture has a scan to offer the
-        // community. An invite / gap-nudge bond (scanResult == nil — no camera
-        // ever ran) saves quietly and finishes back to the cabinet: narrating
-        // "you're the first to scan this" after a camera-free form would
-        // fabricate a scan that never happened (App Review 2.1a).
+        // Only a bond that carries a REAL capture has anything to offer the
+        // community; the camera-free production path finishes quietly back to
+        // the cabinet (App Review 2.1a: never narrate a capture that didn't run).
         if scanResult != nil {
             router.go(.share(copy: copy, isFirstToScan: true))
         } else {
